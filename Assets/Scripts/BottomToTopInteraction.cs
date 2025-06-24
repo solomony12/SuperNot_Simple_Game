@@ -24,6 +24,13 @@ public class BottomToTopInteraction : MonoBehaviour
     HashSet<string> charNameSet;
     void Start()
     {
+        // Get all buttons and add listeners
+        Button[] buttons = GetComponentsInChildren<Button>();
+        foreach (Button btn in buttons)
+        {
+            btn.onClick.AddListener(() => OnAnyButtonClicked(btn));
+        }
+
         // Get the characterDialogueParent
         charDialParent = GameObject.FindWithTag(characterAndDialogueString);
 
@@ -51,20 +58,13 @@ public class BottomToTopInteraction : MonoBehaviour
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
-        Debug.Log($"Path: {path}");
+        //Debug.Log($"Path: {path}");
         if (File.Exists(path))
         {
             charNameSet = new HashSet<string>(File.ReadAllLines(path));
             Debug.Log($"Loaded {charNameSet.Count} names.");
         } else {
             throw new Exception("names.txt was not found");
-        }
-
-        // Get all buttons and add listeners
-        Button[] buttons = GetComponentsInChildren<Button>();
-        foreach (Button btn in buttons)
-        {
-            btn.onClick.AddListener(() => OnAnyButtonClicked(btn));
         }
     }
 
@@ -90,16 +90,16 @@ public class BottomToTopInteraction : MonoBehaviour
             // (the "if" statement below will not run)
             string[] topSplitArray = characterImagePose.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
             string topNameStr = topSplitArray[0];
-            Debug.Log($"Top character's name is {topNameStr}");
+            //Debug.Log($"Top character's name is {topNameStr}");
             bool isSameCharacter = nameStr.Equals(topNameStr, StringComparison.OrdinalIgnoreCase);
 
-            Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
-            Debug.Log($"Is same character is {isSameCharacter}");
+            //Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
+            //Debug.Log($"Is same character is {isSameCharacter}");
 
             // Make sure it's a proper character, and not the same character that's currently showing
             if (charNameSet.Contains(nameStr) && !isSameCharacter)
             {
-                Debug.Log($"{nameStr} found in charNameSet (names.txt)");
+                //Debug.Log($"{nameStr} found in charNameSet (names.txt)");
 
                 // Hide the dialogue box for this new character
                 // TODO: Change to invisible and disabled(so we can do fade -in/out)
@@ -110,11 +110,11 @@ public class BottomToTopInteraction : MonoBehaviour
 
                 // Pose
                 string charImagePoseName = CharacterPoseNumIdToStringName(nameStr, poseNum);
-                Debug.Log($"charImagePoseName is: {charImagePoseName}");
+                //Debug.Log($"charImagePoseName is: {charImagePoseName}");
 
                 // Face
                 string charImageFaceName = CharacterFaceNumIdToStringName(nameStr, faceNum);
-                Debug.Log($"charImageFaceName is: {charImageFaceName}");
+                //Debug.Log($"charImageFaceName is: {charImageFaceName}");
 
                 try
                 {
@@ -134,6 +134,7 @@ public class BottomToTopInteraction : MonoBehaviour
             }
         }
 
+
         // The character/dialogue box was clicked on. Advance dialogue (top)
         if (clickedButton.gameObject.CompareTag(characterAndDialogueString))
         {
@@ -147,6 +148,7 @@ public class BottomToTopInteraction : MonoBehaviour
             else {
                 // Show the dialogue box
                 // TODO: Change to fade-in and enabled (so we can do fade-in/out)
+                Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
             }
         }
@@ -225,7 +227,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
         if (newSpritePose != null)
         {
-            Debug.Log($"Loaded pose sprite: {characterPoseName}");
+            //Debug.Log($"Loaded pose sprite: {characterPoseName}");
             characterImagePose.GetComponent<Image>().sprite = newSpritePose;
         }
         else
@@ -241,7 +243,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
         if (newSpriteFace != null)
         {
-            Debug.Log($"Loaded face sprite: {characterFaceName}");
+            //Debug.Log($"Loaded face sprite: {characterFaceName}");
             characterImageFace.GetComponent<Image>().sprite = newSpriteFace;
         }
         else
