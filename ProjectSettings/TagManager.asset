@@ -8,6 +8,7 @@ TagManager:
   - CharacterImagePose
   - CharacterImageFace
   - CharacterAndDialogue
+  - DialogueBoxPanel
   layers:
   - Default
   - TransparentFX

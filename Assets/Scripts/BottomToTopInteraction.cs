@@ -50,12 +50,12 @@ public class BottomToTopInteraction : MonoBehaviour
 
 
         // Get the list of character names from the .txt file
-        string path = Application.streamingAssetsPath + "/Files/names.txt";
-        Debug.Log("Path: " + path);
+        string path = $"{Application.streamingAssetsPath}/Files/names.txt";
+        Debug.Log($"Path: {path}");
         if (File.Exists(path))
         {
             charNameSet = new HashSet<string>(File.ReadAllLines(path));
-            Debug.Log("Loaded " + charNameSet.Count + " names.");
+            Debug.Log($"Loaded {charNameSet.Count} names.");
         } else {
             throw new Exception("names.txt was not found");
         }
@@ -84,15 +84,20 @@ public class BottomToTopInteraction : MonoBehaviour
             int.TryParse(splitArray[1], out faceNum);
             int poseNum;
             int.TryParse(splitArray[2], out poseNum);
+            Debug.Log($"{nameStr}, {faceNum}, {poseNum}");
 
             // If it's the same character that's currently showing, don't change the top at all
             // (the "if" statement below will not run)
             string[] topSplitArray = characterImagePose.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
-            string topNameStr = splitArray[0];
+            string topNameStr = topSplitArray[0];
+            Debug.Log($"Top character's name is {topNameStr}");
             bool isSameCharacter = nameStr.Equals(topNameStr, StringComparison.OrdinalIgnoreCase);
 
+            Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
+            Debug.Log($"Is same character is {isSameCharacter}");
+
             // Make sure it's a proper character, and not the same character that's currently showing
-            if (charNameSet != null && charNameSet.Contains(nameStr) && !isSameCharacter)
+            if (charNameSet.Contains(nameStr) && !isSameCharacter)
             {
                 Debug.Log($"{nameStr} found in charNameSet (names.txt)");
 
@@ -216,15 +221,33 @@ public class BottomToTopInteraction : MonoBehaviour
     // Updates the character pose
     void ChangeCharacterPose(string characterPoseName)
     {
-        Sprite newSpritePose = Resources.Load<Sprite>("/Art/CharacterArt/" + characterPoseName);
-        characterImagePose.GetComponent<Image>().sprite = newSpritePose;
+        Sprite newSpritePose = Resources.Load<Sprite>($"Art/CharacterArt/Poses/{characterPoseName}");
+
+        if (newSpritePose != null)
+        {
+            Debug.Log($"Loaded pose sprite: {characterPoseName}");
+            characterImagePose.GetComponent<Image>().sprite = newSpritePose;
+        }
+        else
+        {
+            throw new Exception($"{characterPoseName} pose was not found.");
+        }
     }
 
     // Updates the character face
     void ChangeCharacterFace(string characterFaceName)
     {
-        Sprite newSpriteFace = Resources.Load<Sprite>("/Art/CharacterArt/" + characterFaceName);
-        characterImageFace.GetComponent<Image>().sprite = newSpriteFace;
+        Sprite newSpriteFace = Resources.Load<Sprite>($"Art/CharacterArt/Faces/{characterFaceName}");
+
+        if (newSpriteFace != null)
+        {
+            Debug.Log($"Loaded face sprite: {characterFaceName}");
+            characterImageFace.GetComponent<Image>().sprite = newSpriteFace;
+        }
+        else
+        {
+            throw new Exception($"{characterFaceName} face was not found.");
+        }
     }
 
     /*void Update()
