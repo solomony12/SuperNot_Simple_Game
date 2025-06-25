@@ -288,8 +288,6 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     public void LoadProgress()
     {
-        Debug.Log("Load path: " + Application.persistentDataPath);
-
         // New game - set initial main story part here
         if (!File.Exists(SavePath))
         {

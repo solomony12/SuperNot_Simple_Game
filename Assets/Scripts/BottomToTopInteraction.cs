@@ -260,6 +260,32 @@ public class BottomToTopInteraction : MonoBehaviour
         }
         // Finally, disable the original (as we only use the instances)
         characterArcStoryMarker.SetActive(false);
+
+        GameObject[] characterMarkers = GameObject.FindGameObjectsWithTag(ScriptConstants.characterArcStoryMarkerString);
+
+        // A potential overlapping pair
+        if (mainStoryMarker.activeSelf && characterMarkers.Length != 0)
+        {
+            Vector2 mainMarkerPos = mainStoryMarker.transform.position;
+
+            float threshold = 0.01f;
+
+            // Go through each character marker instance to see if there's a match overlap
+            foreach (GameObject charMarkInstance in characterMarkers)
+            {
+                Vector2 charPos = charMarkInstance.transform.position;
+                // Overlap is found if true
+                if (Vector2.Distance(mainMarkerPos, charPos) < threshold)
+                {
+                    // Change position so that main is on right and character arc is on left
+                    mainStoryMarker.transform.position += new Vector3(1f, 0f, 0f);
+                    charMarkInstance.transform.position += new Vector3(-1f, 0f, 0f);
+
+                    // There can only ever be one match
+                    break;
+                }
+            }
+        }
      }
 
     /*void Update()
