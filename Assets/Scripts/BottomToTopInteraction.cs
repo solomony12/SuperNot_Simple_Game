@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Yarn.Unity;
+using static CharacterAnimations.AnimationType;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
@@ -21,7 +22,6 @@ public class BottomToTopInteraction : MonoBehaviour
 
     public GameObject charDialParent;
     public GameObject characterImagePose;
-    public GameObject characterImageFace;
     public GameObject dialogueBoxPanel;
 
     public DialogueRunner dialogueRunner;
@@ -67,18 +67,14 @@ public class BottomToTopInteraction : MonoBehaviour
         }
 
         characterImagePose = CharacterCommands.characterImagePose;
-        characterImageFace = CharacterCommands.characterImagePose;
 
         // By default, we don't show it
-        // TODO: Change to invisible and disabled (so we can do fade-in/out)
         characterImagePose.SetActive(false);
-        characterImageFace.SetActive(false);
 
         // Disable the top UIs
         charDialParent.SetActive(false);
 
         // By default, we don't show it
-        // TODO: Change to invisible and disabled (so we can do fade-in/out)
         dialogueBoxPanel.SetActive(false);
     }
 
@@ -116,8 +112,15 @@ public class BottomToTopInteraction : MonoBehaviour
                 //Debug.Log($"{nameStr} found in charNameSet (names.txt)");
 
                 // Hide the dialogue box for this new character
-                // TODO: Change to invisible and disabled(so we can do fade -in/out)
-                dialogueBoxPanel.SetActive(false);
+                if (dialogueBoxPanel.activeSelf)
+                {
+                    // TODO: Change to invisible and disabled(so we can do fade -in/out)
+                    dialogueBoxPanel.SetActive(false); // TODO: temporary
+                }
+                else
+                {
+                    dialogueBoxPanel.SetActive(false);
+                }
 
                 // Get the matching image based on the seat data
                 // (Example: KoumeMomone, 0, 1 -> KoumeMomone_Default (face) and KoumeMomone_Default02 (pose))
@@ -135,12 +138,10 @@ public class BottomToTopInteraction : MonoBehaviour
                     charDialParent.SetActive(true);
 
                     // Change the characterImage to that character
-                    // TODO: Change to fade-in and enabled (so we can do fade-in/out)
                     characterImagePose.SetActive(true);
                     CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
-                    
-                    characterImageFace.SetActive(true);
                     CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
+                    CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeIn);
                     
                 } catch (Exception e) { 
                     Debug.Log($"Failed to switch character pose/face.\nError: {e.ToString()}");

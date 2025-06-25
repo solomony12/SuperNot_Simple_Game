@@ -4,14 +4,20 @@ using UnityEngine.UI;
 
 public class CharacterCommands : MonoBehaviour
 {
+    public CharacterAnimations CharacterAnimationsInstance;
+
     private string characterImagePoseString = "CharacterImagePose";
     private string characterImageFaceString = "CharacterImageFace";
+    private string gameControllerString = "GameController";
 
     public static GameObject characterImagePose;
     public static GameObject characterImageFace;
 
     private void Awake()
     {
+        // CharacterAnimations script instance
+        CharacterAnimationsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<CharacterAnimations>();
+
         // Get the Character Image
         characterImagePose = GameObject.FindWithTag(characterImagePoseString);
         characterImageFace = GameObject.FindWithTag(characterImageFaceString);
@@ -117,5 +123,11 @@ public class CharacterCommands : MonoBehaviour
         {
             throw new Exception($"{characterFaceName} face was not found.");
         }
+    }
+
+    // MVC method for Play animation on character
+    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 1f)
+    {
+        CharacterAnimationsInstance.PlayAnimation(characterImagePose, animation, duration);
     }
 }
