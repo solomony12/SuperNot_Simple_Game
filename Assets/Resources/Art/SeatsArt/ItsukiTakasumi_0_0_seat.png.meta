@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ItsukiTakasumi_0_0_seat_0: 8636926069000083056
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

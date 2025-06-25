@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HarutoSakuma_0_0_seat_0: -1348173297079063096
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
