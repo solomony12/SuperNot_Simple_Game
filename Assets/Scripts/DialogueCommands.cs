@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Yarn.Unity;
+using static Animations.AnimationType;
 
 public class DialogueCommands : MonoBehaviour
 {
@@ -23,6 +24,13 @@ public class DialogueCommands : MonoBehaviour
         dialogueRunner = GameObject.FindWithTag(ScriptConstants.dialogueSystemString).GetComponent<DialogueRunner>();
     }
 
+    void Start()
+    {
+        // Listeners
+        dialogueRunner.onDialogueStart.AddListener(PlayingScene);
+        dialogueRunner.onDialogueComplete.AddListener(EndOfScene);
+    }
+
     /// <summary>
     /// MVC method for Play animation on dialogue box
     /// </summary>
@@ -40,6 +48,28 @@ public class DialogueCommands : MonoBehaviour
     /// <returns>True if the last line was ran, indicating the end of the scene</returns>
     public bool AdvanceLine()
     {
+        dialogueRunner.RequestNextLine();
         return true;
+    }
+
+    public void StartScene()
+    {
+        
+    }
+
+    private void SceneSelection()
+    {
+        
+    }
+
+    public void PlayingScene()
+    {
+
+    }
+
+    public void EndOfScene()
+    {
+        // Hide the dialogue box
+        PlayAnimationOnDialogueBox(FadeOut);
     }
 }

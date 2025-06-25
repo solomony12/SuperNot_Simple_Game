@@ -160,10 +160,18 @@ public class BottomToTopInteraction : MonoBehaviour
 
                 // Yarn Spinner here to go through the dialogue as well as different expressions/poses
                 // This just calls 'next' in DialogueCommands. This script file should basically do NOTHING else
-                bool endOfScene = DialogueCommandsInstance.AdvanceLine();
+                DialogueCommandsInstance.AdvanceLine();
             }
             else
             {
+                /// TODO: Based on DialogueCommands, we need to see if there's a scene able to be played.
+                /// We'll probably be using the idea of Main, Character Relation, and Random so it wlll always play
+                /// a 'scene;' in most cases, Random.
+                /// HOWEVER this does bring up the use case where if a Main or Character Relation scene just ended,
+                /// it should repeat a new last line so that it always helps direct the player where they should go/tap
+                /// to progress the Main/Character Relation story
+                DialogueCommandsInstance.StartScene();
+
                 // Show the dialogue box
                 //Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
