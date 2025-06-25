@@ -153,14 +153,17 @@ public class BottomToTopInteraction : MonoBehaviour
         // The character/dialogue box was clicked on. Advance dialogue (top)
         if (clickedButton.gameObject.CompareTag(ScriptConstants.characterAndDialogueString))
         {
-            // TODO: Change to check to see if it's enabled/already faded-in
+            // TCheck to see if it's enabled/already faded-in
             if (dialogueBoxPanel.activeSelf)
             {
                 Debug.Log("The dialogue will advance.");
 
-                // TODO: yarn here to go through the dialogue as well as different expressions/poses
+                // Yarn Spinner here to go through the dialogue as well as different expressions/poses
+                // This just calls 'next' in DialogueCommands. This script file should basically do NOTHING else
+                bool endOfScene = DialogueCommandsInstance.AdvanceLine();
             }
-            else {
+            else
+            {
                 // Show the dialogue box
                 //Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
@@ -169,7 +172,11 @@ public class BottomToTopInteraction : MonoBehaviour
         }
     }
 
-    // Change the characterImage to that character
+    /// <summary>
+    /// Change the two characterImages to <paramref name="charImagePoseName"/> and <paramref name="charImageFaceName"/>
+    /// </summary>
+    /// <param name="charImagePoseName">Character name with the pose name</param>
+    /// <param name="charImageFaceName">Character name with the face expression</param>
     void showCharacter(string charImagePoseName, string charImageFaceName)
     {
         characterImagePose.SetActive(true);

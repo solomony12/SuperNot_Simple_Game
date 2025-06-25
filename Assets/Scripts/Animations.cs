@@ -7,7 +7,9 @@ using UnityEngine.UI;
 
 public class Animations : MonoBehaviour
 {
-    // Types of animations
+    /// <summary>
+    /// Types of animations
+    /// </summary>
     public enum AnimationType
     {
         FadeIn,
@@ -16,7 +18,13 @@ public class Animations : MonoBehaviour
 
     private Dictionary<GameObject, Coroutine> runningAnimations = new Dictionary<GameObject, Coroutine>();
 
-    // Public method for other scripts to call to play an animation
+    /// <summary>
+    /// Public method for other scripts to call to play an animation
+    /// </summary>
+    /// <param name="obj">GameObject the animation will run on</param>
+    /// <param name="animation">Type of animation to play</param>
+    /// <param name="duration">Duration of animation in seconds</param>
+    /// <param name="onComplete">Action/method to run when animation is done</param>
     public void PlayAnimation(GameObject obj, AnimationType animation, float duration, Action onComplete)
     {
         Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
@@ -50,8 +58,12 @@ public class Animations : MonoBehaviour
     }
 
 
-    // Stop any animation currently running
-    private void StopExistingAnimation(GameObject obj, bool completeFadeIn)
+    /// <summary>
+    /// Stop any animation currently running
+    /// </summary>
+    /// <param name="obj">GameObject to stop the exiting animation on</param>
+    /// <param name="completeAnimation">If the animation has been completed</param>
+    private void StopExistingAnimation(GameObject obj, bool completeAnimation)
     {
         if (runningAnimations.TryGetValue(obj, out Coroutine runningCoroutine))
         {
@@ -62,14 +74,18 @@ public class Animations : MonoBehaviour
             CanvasGroup cg = obj.GetComponent<CanvasGroup>();
             if (cg != null)
             {
-                cg.alpha = completeFadeIn ? 1f : 0f;
-                if (!completeFadeIn)
+                cg.alpha = completeAnimation ? 1f : 0f;
+                if (!completeAnimation)
                     obj.SetActive(false);
             }
         }
     }
 
-    // Called at the end of each animation coroutine
+    /// <summary>
+    /// Called at the end of each animation coroutine
+    /// </summary>
+    /// <param name="obj">GameObject the animation was ran on</param>
+    /// <param name="onComplete">Action/method to run when animation is done</param>
     private void FinishAnimation(GameObject obj, Action onComplete)
     {
         runningAnimations.Remove(obj);
@@ -78,7 +94,13 @@ public class Animations : MonoBehaviour
 
 
 
-    // The coroutine for fading in
+    /// <summary>
+    /// The coroutine for fading in
+    /// </summary>
+    /// <param name="obj">GameObject the animation will be run on</param>
+    /// <param name="duration">Duration of animation in seconds</param>
+    /// <param name="onComplete">Action/method to run when animation is done</param>
+    /// <returns>An IEnumerator used by Unity to run the coroutine</returns>
     private IEnumerator FadeInCoroutine(GameObject obj, float duration, Action onComplete)
     {
         // Enable the GameObject
@@ -111,7 +133,13 @@ public class Animations : MonoBehaviour
     }
 
 
-    // The coroutine for fading out
+    /// <summary>
+    /// The coroutine for fading out
+    /// </summary>
+    /// <param name="obj">GameObject the animation will be run on</param>
+    /// <param name="duration">Duration of animation in seconds</param>
+    /// <param name="onComplete">Action/method to run when animation is done</param>
+    /// <returns>An IEnumerator used by Unity to run the coroutine</returns>
     private IEnumerator FadeOutCoroutine(GameObject obj, float duration, Action onComplete)
     {
         // Get or add a CanvasGroup component on the parent object

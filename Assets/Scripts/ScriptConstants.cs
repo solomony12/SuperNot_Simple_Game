@@ -16,7 +16,9 @@ public static class ScriptConstants
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
 
-    // Character pose types
+    /// <summary>
+    /// Character pose types
+    /// </summary>
     public enum PoseTypes
     {
         Default,
@@ -25,7 +27,9 @@ public static class ScriptConstants
         Thinking,
     }
 
-    // Character face/expression types
+    /// <summary>
+    /// Character face/expression types
+    /// </summary>
     public enum FaceTypes
     {
         Default,

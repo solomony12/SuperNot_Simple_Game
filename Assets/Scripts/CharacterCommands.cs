@@ -23,7 +23,12 @@ public class CharacterCommands : MonoBehaviour
         }
     }
 
-    // Takes in characterName and poseNumberID to return charName_poseName
+    /// <summary>
+    /// Converts name and pose ID to the respective string
+    /// </summary>
+    /// <param name="charName">Character name</param>
+    /// <param name="poseNum">Pose ID</param>
+    /// <returns>Takes in <paramref name="charName"/> and <paramref name="poseNum"/> to return charName_poseName</returns>
     public string CharacterPoseNumIdToStringName(string charName, int poseNum)
     {
         string poseStr;
@@ -35,7 +40,12 @@ public class CharacterCommands : MonoBehaviour
         return $"{charName}_{poseStr}";
     }
 
-    // Takes in characterName and faceNumberID to return charName_faceName
+    /// <summary>
+    /// Converts name and face ID to the respective string
+    /// </summary>
+    /// <param name="charName">Character name</param>
+    /// <param name="faceNum">Face ID</param>
+    /// <returns>Takes in <paramref name="charName"/> and <paramref name="faceNum"/> to return charName_faceName</returns>
     public string CharacterFaceNumIdToStringName(string charName, int faceNum)
     {
         string faceStr;
@@ -47,7 +57,10 @@ public class CharacterCommands : MonoBehaviour
         return $"{charName}_{faceStr}";
     }
 
-    // Updates the character pose
+    /// <summary>
+    /// Updates the character pose
+    /// </summary>
+    /// <param name="characterPoseName">Character name with pose name</param>
     public void ChangeCharacterPose(string characterPoseName)
     {
         Sprite newSpritePose = Resources.Load<Sprite>($"{ScriptConstants.characterArtPath}Poses/{characterPoseName}");
@@ -63,7 +76,10 @@ public class CharacterCommands : MonoBehaviour
         }
     }
 
-    // Updates the character face
+    /// <summary>
+    /// Updates the character face
+    /// </summary>
+    /// <param name="characterFaceName">Character name and face expression</param>
     public void ChangeCharacterFace(string characterFaceName)
     {
         Sprite newSpriteFace = Resources.Load<Sprite>($"{ScriptConstants.characterArtPath}Faces/{characterFaceName}");
@@ -79,7 +95,12 @@ public class CharacterCommands : MonoBehaviour
         }
     }
 
-    // MVC method for Play animation on character
+    /// <summary>
+    /// MVC method for Play animation on character
+    /// </summary>
+    /// <param name="animation">Type of animation to be played</param>
+    /// <param name="duration">Duration of animation in seconds</param>
+    /// <param name="onComplete">Action/method to run when animation is completed. Null by default</param>
     public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = ScriptConstants.defaultAnimationDuration, Action onComplete = null)
     {
         AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
