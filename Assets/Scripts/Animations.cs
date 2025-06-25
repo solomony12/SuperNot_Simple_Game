@@ -167,4 +167,6 @@ public class Animations : MonoBehaviour
         // Animation is done
         FinishAnimation(obj, onComplete);
     }
+
+    // TODO: A Dim 'Animation' that is just the dimming effect immediately
 }

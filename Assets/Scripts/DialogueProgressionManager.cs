@@ -23,6 +23,11 @@ public class DialogueProgressionManager : MonoBehaviour
     private string latestMainStory;
     private Dictionary<string, string> latestCharacterArcs = new();
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     public void Start()
     {
         LoadUnlockParts();

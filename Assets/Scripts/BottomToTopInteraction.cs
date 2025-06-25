@@ -27,6 +27,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
     private HashSet<string> charNameSet;
 
+    private GameObject lastClickedObject;
     private string currentCharacterShownName;
 
     private void Awake()
@@ -97,6 +98,8 @@ public class BottomToTopInteraction : MonoBehaviour
         // Upon clicking on a new character, we show the character but hide the dialogue box
         if (clickedButton.gameObject.CompareTag(ScriptConstants.seatString))
         {
+            lastClickedObject = clickedButton.gameObject;
+
             // 0: Name, 1: Face, 2: Pose, 3: "seat" (redundant)
             // (Example: KoumeMomone_0_1_seat)
             string[] splitArray = clickedButton.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
@@ -179,22 +182,27 @@ public class BottomToTopInteraction : MonoBehaviour
             else
             {
                 // Show the dialogue box
-                //Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
                 DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeIn);
 
-                /// TODO: Based on DialogueCommands, we need to see if there's a scene able to be played.
-                /// We'll probably be using the idea of Main, Character Relation, and Random so it wlll always play
-                /// a 'scene;' in most cases, Random.
-                /// HOWEVER this does bring up the use case where if a Main or Character Relation scene just ended,
-                /// it should repeat a new last line so that it always helps direct the player where they should go/tap
-                /// to progress the Main/Character Relation story:
-                /// What we'll do for that last line repeat is we'll just have that as its own scene that is set after the main scene
-                /// is finished playing. That way, it'll run that yarn script over and over again.
-                /// If Main and Character Relation overlap on the same character, allow the player to choose which one they want to start
-                /// 
-                /// So now, if there's a marker as a child, we pass in the marker ID
-                DialogueCommandsInstance.StartScene(currentCharacterShownName);
+                // Start scene
+                // TODO: Currently, if there's overlap, it will always play the main story first
+                // Main
+                if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.mainStoryMarkerString))
+                {
+                    DialogueCommandsInstance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
+                }
+                // Character Arc
+                else if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.characterArcStoryMarkerString))
+                {
+                    DialogueCommandsInstance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
+                }
+                // Random Dialogue
+                else 
+                {
+                    DialogueCommandsInstance.StartScene(lastClickedObject.name);
+                }
+                // TODO: Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
             }
         }
     }

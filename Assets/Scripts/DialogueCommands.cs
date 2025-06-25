@@ -55,37 +55,34 @@ public class DialogueCommands : MonoBehaviour
         return true;
     }
 
-    private void SceneSelection(string characterName)
+    private void SceneSelection(string objName, string markerId)
     {
         Debug.Log("Selecting Scene");
 
-        /*List<UnlockPart> possibleStoryParts = DPMInstance.GetUnlockedPartsForCharacter(characterName);
-
-        // Check if there are unlocked parts
-        if (possibleStoryParts != null && possibleStoryParts.Count > 0)
+        // Random Dialogue
+        if (markerId.Equals(ScriptConstants.randomID))
         {
-
-            if (DPMInstance.hasMainStory || DPMInstance.HasCharacterArcStory)
-            {
-                // Has both: player gets to choose
-                if (hasMainStory && hasCharacterArc) { }
-            }
-            // Select a random dialogue for this character
-            else
-            {
-
-            }
-
+            // TODO: Select a random dialogue from the given character/object
         }
+        // Main Story
+        else if (markerId.Equals(ScriptConstants.mainStoryMarkerID))
+        {
+            string mainStoryName = DPMInstance.GetLatestMainStory();
+
+            // TODO: Start yarn script scene with that name (mainStoryName)
+        }
+        // Character Arc Story
         else
         {
-            throw new Exception("No unlocked parts found, including random dialogue");
-        }*/
+            string characterPartName = DPMInstance.GetLatestCharacterArc(objName);
+
+            // TODO: Start yarn script scene with that name (characterPartName)
+        }
     }
 
-    public void StartScene(string characterName)
+    public void StartScene(string objName, string markerId = ScriptConstants.randomID)
     {
-        SceneSelection(characterName);
+        SceneSelection(objName, markerId);
 
         Debug.Log("Scene Start");
     }
