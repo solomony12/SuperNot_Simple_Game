@@ -40,7 +40,12 @@ public class DialogueProgressionManager : MonoBehaviour
     /// <param name="state"> The state/part that has been reached</param>
     public void ReachState(string state)
     {
-        if (!reachedStates.Add(state)) return;
+        // Tries to add to reachedStates
+        if (!reachedStates.Add(state))
+        {
+            // If fails to add, it was already there so return
+            return;
+        }
 
         Debug.Log($"Reached state: {state}");
 
@@ -53,6 +58,12 @@ public class DialogueProgressionManager : MonoBehaviour
         else if (state.StartsWith(ScriptConstants.characterArcStoryMarkerID))
         {
             UpdateLatestCharacter(state);
+        }
+        // Random
+        else
+        {
+            // Don't save so early return
+            return;
         }
 
         // Auto-Save

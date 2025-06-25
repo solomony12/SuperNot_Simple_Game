@@ -14,6 +14,8 @@ public class DialogueCommands : MonoBehaviour
 
     public static DialogueRunner dialogueRunner;
 
+    private string currentStoryRunning;
+
     private void Awake()
     {
         // Script instances
@@ -55,14 +57,13 @@ public class DialogueCommands : MonoBehaviour
         return true;
     }
 
-    private void SceneSelection(string objName, string markerId)
+    public void StartScene(string objName, string markerId = ScriptConstants.randomID)
     {
-        Debug.Log("Selecting Scene");
-
         // Random Dialogue
         if (markerId.Equals(ScriptConstants.randomID))
         {
             // TODO: Select a random dialogue from the given character/object
+            currentStoryRunning = "random";
             dialogueRunner.StartDialogue("random");
         }
         // Main Story
@@ -71,6 +72,7 @@ public class DialogueCommands : MonoBehaviour
             string mainStoryName = DPMInstance.GetLatestMainStory();
 
             // Start yarn script scene with that name (mainStoryName)
+            currentStoryRunning = mainStoryName;
             dialogueRunner.StartDialogue(mainStoryName);
         }
         // Character Arc Story
@@ -79,13 +81,9 @@ public class DialogueCommands : MonoBehaviour
             string characterPartName = DPMInstance.GetLatestCharacterArc(objName);
 
             // Start yarn script scene with that name (characterPartName)
+            currentStoryRunning = characterPartName;
             dialogueRunner.StartDialogue(characterPartName);
         }
-    }
-
-    public void StartScene(string objName, string markerId = ScriptConstants.randomID)
-    {
-        SceneSelection(objName, markerId);
 
         Debug.Log("Scene Start");
     }
@@ -93,6 +91,9 @@ public class DialogueCommands : MonoBehaviour
     public void EndOfScene()
     {
         Debug.Log("End of Scene");
+
+        // Mark story part as completed
+        DPMInstance.ReachState(currentStoryRunning);
 
         // Hide the dialogue box
         PlayAnimationOnDialogueBox(FadeOut);

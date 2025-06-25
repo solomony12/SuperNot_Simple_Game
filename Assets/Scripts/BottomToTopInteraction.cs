@@ -203,6 +203,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     DialogueCommandsInstance.StartScene(lastClickedObject.name);
                 }
                 // TODO: Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
+                // TODO: Rerun the markers once the ran scene is done
             }
         }
     }
