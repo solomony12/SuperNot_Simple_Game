@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class CharacterCommands : MonoBehaviour
 {
-    public CharacterAnimations CharacterAnimationsInstance;
+    public Animations AnimationsInstance;
 
     private string characterImagePoseString = "CharacterImagePose";
     private string characterImageFaceString = "CharacterImageFace";
@@ -15,8 +15,8 @@ public class CharacterCommands : MonoBehaviour
 
     private void Awake()
     {
-        // CharacterAnimations script instance
-        CharacterAnimationsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<CharacterAnimations>();
+        // Animations script instance
+        AnimationsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<Animations>();
 
         // Get the Character Image
         characterImagePose = GameObject.FindWithTag(characterImagePoseString);
@@ -127,8 +127,8 @@ public class CharacterCommands : MonoBehaviour
 
     // TODO: Have the same method like this but for Dialogue
     // MVC method for Play animation on character
-    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 0.5f, Action onComplete = null)
+    public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = 0.5f, Action onComplete = null)
     {
-        CharacterAnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
+        AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
     }
 }

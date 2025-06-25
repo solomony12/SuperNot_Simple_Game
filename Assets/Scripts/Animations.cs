@@ -5,7 +5,7 @@ using System.Drawing;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterAnimations : MonoBehaviour
+public class Animations : MonoBehaviour
 {
     // Types of animations
     public enum AnimationType

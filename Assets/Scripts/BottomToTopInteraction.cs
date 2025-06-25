@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Yarn.Unity;
-using static CharacterAnimations.AnimationType;
+using static Animations.AnimationType;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
@@ -140,8 +140,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     // If current character exists, fade them out first
                     if (characterImagePose.activeSelf)
                     {
-                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(
-                            CharacterAnimations.AnimationType.FadeOut, 0.5f,
+                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeOut, 0.5f,
                                 () => showCharacter(charImagePoseName, charImageFaceName));
                     }
                     else
