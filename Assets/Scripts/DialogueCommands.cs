@@ -63,20 +63,23 @@ public class DialogueCommands : MonoBehaviour
         if (markerId.Equals(ScriptConstants.randomID))
         {
             // TODO: Select a random dialogue from the given character/object
+            dialogueRunner.StartDialogue("random");
         }
         // Main Story
         else if (markerId.Equals(ScriptConstants.mainStoryMarkerID))
         {
             string mainStoryName = DPMInstance.GetLatestMainStory();
 
-            // TODO: Start yarn script scene with that name (mainStoryName)
+            // Start yarn script scene with that name (mainStoryName)
+            dialogueRunner.StartDialogue(mainStoryName);
         }
         // Character Arc Story
         else
         {
             string characterPartName = DPMInstance.GetLatestCharacterArc(objName);
 
-            // TODO: Start yarn script scene with that name (characterPartName)
+            // Start yarn script scene with that name (characterPartName)
+            dialogueRunner.StartDialogue(characterPartName);
         }
     }
 

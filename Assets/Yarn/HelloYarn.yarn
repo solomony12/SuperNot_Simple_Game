@@ -1,10 +1,31 @@
-﻿title: Start
+﻿title: M00
 ---
-This is an example of a Yarn Spinner script. Write your dialogue here!
+Welcome to the game!
+-> QuestStart
+    <<jump QuestStart>>
+===
 
-Here's another line.
+title: QuestStart
+---
+Do you want to accept the quest?
+    -> Yes
+        <<jump QuestAccepted>>
+    -> No
+        <<jump QuestDeclined>>
+===
 
-And another!
+title: QuestAccepted
+---
+Great! Good luck.
+===
 
-Last one!
+title: QuestDeclined
+---
+Maybe next time.
+===
+
+title: random
+---
+Hello
+This is a random dialogue
 ===
