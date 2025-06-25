@@ -28,24 +28,9 @@ public class CharacterCommands : MonoBehaviour
     {
         string poseStr;
 
-        switch (poseNum)
-        {
-            case 0:
-                poseStr = "Default";
-                break;
-            case 1:
-                poseStr = "Confident";
-                break;
-            case 2:
-                poseStr = "Reclusive";
-                break;
-            case 3:
-                poseStr = "Thinking";
-                break;
-            default:
-                poseStr = "Default";
-                break;
-        }
+        poseStr = Enum.IsDefined(typeof(ScriptConstants.PoseTypes), poseNum)
+            ? ((ScriptConstants.PoseTypes)poseNum).ToString()
+            : ScriptConstants.PoseTypes.Default.ToString();
 
         return $"{charName}_{poseStr}";
     }
@@ -55,36 +40,9 @@ public class CharacterCommands : MonoBehaviour
     {
         string faceStr;
 
-        switch (faceNum)
-        {
-            case 0:
-                faceStr = "Default";
-                break;
-            case 1:
-                faceStr = "Happy";
-                break;
-            case 2:
-                faceStr = "Embarrassed";
-                break;
-            case 3:
-                faceStr = "Angry";
-                break;
-            case 4:
-                faceStr = "Sad";
-                break;
-            case 5:
-                faceStr = "Surprised";
-                break;
-            case 6:
-                faceStr = "Playful";
-                break;
-            case 7:
-                faceStr = "Pouting";
-                break;
-            default:
-                faceStr = "Default";
-                break;
-        }
+        faceStr = Enum.IsDefined(typeof(ScriptConstants.FaceTypes), faceNum) 
+            ? ((ScriptConstants.FaceTypes)faceNum).ToString()
+            : ScriptConstants.FaceTypes.Default.ToString();
 
         return $"{charName}_{faceStr}";
     }
@@ -92,7 +50,7 @@ public class CharacterCommands : MonoBehaviour
     // Updates the character pose
     public void ChangeCharacterPose(string characterPoseName)
     {
-        Sprite newSpritePose = Resources.Load<Sprite>($"Art/CharacterArt/Poses/{characterPoseName}");
+        Sprite newSpritePose = Resources.Load<Sprite>($"{ScriptConstants.characterArtPath}Poses/{characterPoseName}");
 
         if (newSpritePose != null)
         {
@@ -108,7 +66,7 @@ public class CharacterCommands : MonoBehaviour
     // Updates the character face
     public void ChangeCharacterFace(string characterFaceName)
     {
-        Sprite newSpriteFace = Resources.Load<Sprite>($"Art/CharacterArt/Faces/{characterFaceName}");
+        Sprite newSpriteFace = Resources.Load<Sprite>($"{ScriptConstants.characterArtPath}Faces/{characterFaceName}");
 
         if (newSpriteFace != null)
         {

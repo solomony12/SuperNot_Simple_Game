@@ -2,6 +2,8 @@ using UnityEngine;
 
 public static class ScriptConstants
 {
+    // Paths
+    public const string characterArtPath = "Art/CharacterArt/";
     // Tag name strings
     public const string seatString = "Seat";
     public const string characterAndDialogueString = "CharacterAndDialogue";
@@ -11,5 +13,28 @@ public static class ScriptConstants
     public const string dialogueSystemString = "DialogueSystem";
     public const string gameControllerString = "GameController";
 
+    // Animation values
     public const float defaultAnimationDuration = 0.5f;
+
+    // Character pose types
+    public enum PoseTypes
+    {
+        Default,
+        Confident,
+        Reclusive,
+        Thinking,
+    }
+
+    // Character face/expression types
+    public enum FaceTypes
+    {
+        Default,
+        Happy,
+        Embarrassed,
+        Angry,
+        Sad,
+        Surprised,
+        Playful,
+        Pouting
+    }
 }
