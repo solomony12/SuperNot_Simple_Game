@@ -18,6 +18,8 @@ public static class ScriptConstants
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";
 
+    public const string startingStoryID = "M00";
+
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
 

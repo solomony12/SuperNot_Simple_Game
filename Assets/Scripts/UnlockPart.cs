@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 [System.Serializable]
-public class UnlockRule
+public class UnlockPart
 {
     // Story State/Part
     public string node;
@@ -25,7 +25,7 @@ public class UnlockRule
 }
 
 [System.Serializable]
-public class UnlockRulesData
+public class UnlockPartsData
 {
-    public List<UnlockRule> unlockRules;
+    public List<UnlockPart> unlockParts;
 }

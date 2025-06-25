@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -12,8 +13,8 @@ public class DialogueProgressionManager : MonoBehaviour
     private string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
 
     // Data for story parts unlocking
-    private UnlockRulesData unlockRulesData;
-    private List<UnlockRule> unlockRules = new();
+    private UnlockPartsData unlockPartsData;
+    private List<UnlockPart> unlockParts = new();
 
     // Story parts reached
     private HashSet<string> reachedStates = new();
@@ -24,7 +25,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
     public void Start()
     {
-        LoadUnlockRules();
+        LoadUnlockParts();
         LoadProgress();
     }
 
@@ -104,20 +105,20 @@ public class DialogueProgressionManager : MonoBehaviour
     public string GetLatestMainStory() => latestMainStory;
 
     /// <summary>
-    /// Gets the latest unlocked main story part as an UnlockRule, or null if none found.
+    /// Gets the latest unlocked main story part as an UnlockPart, or null if none found.
     /// </summary>
-    public UnlockRule GetLatestMainStoryRule()
+    public UnlockPart GetLatestMainStoryPart()
     {
         if (string.IsNullOrEmpty(latestMainStory))
             return null;
 
-        var mainRule = unlockRules.FirstOrDefault(rule =>
-            rule.node == latestMainStory &&
-            !string.IsNullOrEmpty(rule.node) &&
-            rule.node.StartsWith(ScriptConstants.mainStoryMarkerID) &&
-            IsNodeUnlocked(rule.node));
+        var mainPart = unlockParts.FirstOrDefault(part =>
+            part.node == latestMainStory &&
+            !string.IsNullOrEmpty(part.node) &&
+            part.node.StartsWith(ScriptConstants.mainStoryMarkerID) &&
+            IsNodeUnlocked(part.node));
 
-        return mainRule;
+        return mainPart;
     }
 
     public string GetLatestCharacterArc(string character) =>
@@ -126,19 +127,19 @@ public class DialogueProgressionManager : MonoBehaviour
     /// <summary>
     /// Returns a list of the latest unlocked character arc parts for each character.
     /// </summary>
-    /// <returns>List of UnlockRule for latest character arcs unlocked</returns>
-    public List<UnlockRule> GetAllLatestCharacterArcRules()
+    /// <returns>List of Unlockpart for latest character arcs unlocked</returns>
+    public List<UnlockPart> GetAllLatestCharacterArcParts()
     {
-        List<UnlockRule> latestParts = new();
+        List<UnlockPart> latestParts = new();
 
         foreach (var kvp in latestCharacterArcs)
         {
             string latestNode = kvp.Value;
-            var rule = unlockRules.FirstOrDefault(r => r.node == latestNode);
+            var part = unlockParts.FirstOrDefault(r => r.node == latestNode);
 
-            if (rule != null && IsNodeUnlocked(rule.node))
+            if (part != null && IsNodeUnlocked(part.node))
             {
-                latestParts.Add(rule);
+                latestParts.Add(part);
             }
         }
 
@@ -150,7 +151,7 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     /// <param name="storyParts">List of story parts</param>
     /// <returns>True if contains a main story part</returns>
-    public bool HasMainStory(List<UnlockRule> storyParts)
+    public bool HasMainStory(List<UnlockPart> storyParts)
     {
         return storyParts.Any(part =>
             !string.IsNullOrEmpty(part.node) &&
@@ -162,7 +163,7 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     /// <param name="storyParts">List of story parts</param>
     /// <returns>True if contains a character arc story part</returns>
-    public bool HasCharacterArcStory(List<UnlockRule> storyParts)
+    public bool HasCharacterArcStory(List<UnlockPart> storyParts)
     {
         return storyParts.Any(part =>
             !string.IsNullOrEmpty(part.node) &&
@@ -176,16 +177,17 @@ public class DialogueProgressionManager : MonoBehaviour
     /// <returns>True if unlocked</returns>
     public bool IsNodeUnlocked(string node)
     {
-        var rule = unlockRules.FirstOrDefault(r => r.node == node);
-        // If no rule exists, assume it's always available
-        if (rule == null)
+        var part = unlockParts.FirstOrDefault(r => r.node == node);
+
+        // If no part exists, assume it's unlocked by default
+        if (part == null)
         {
             return true;
         }
 
         // Conditions
-        bool allConditionsMet = rule.requiresAll == null || rule.requiresAll.All(state => reachedStates.Contains(state));
-        bool anyConditionMet = rule.requiresAny == null || rule.requiresAny.Any(state => reachedStates.Contains(state));
+        bool allConditionsMet = part.requiresAll.Count == 0 || part.requiresAll.All(state => reachedStates.Contains(state));
+        bool anyConditionMet = part.requiresAny.Count == 0 || part.requiresAny.Any(state => reachedStates.Contains(state));
 
         return allConditionsMet && anyConditionMet;
     }
@@ -195,21 +197,21 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     /// <param name="characterName">The character to check</param>
     /// <returns>The latest unlocked story part for that character in the current scene, or null if none</returns>
-    public UnlockRule GetLatestPartForCharacter(string characterName)
+    public UnlockPart GetLatestPartForCharacter(string characterName)
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
         // Check if there's a recorded latest character arc for this character
         if (latestCharacterArcs.TryGetValue(characterName, out string latestNode))
         {
-            // Find the matching rule for this character, scene, and node
-            var rule = unlockRules.FirstOrDefault(r =>
+            // Find the matching part for this character, scene, and node
+            var part = unlockParts.FirstOrDefault(r =>
                 r.node == latestNode &&
                 r.startingCharacter == characterName &&
                 r.startingScene == currentScene &&
                 IsNodeUnlocked(r.node));
 
-            return rule; // may be null if scene doesn't match
+            return part; // may be null if scene doesn't match
         }
 
         return null;
@@ -220,20 +222,23 @@ public class DialogueProgressionManager : MonoBehaviour
     /// Gets all latest unlocked stories in the current scene
     /// </summary>
     /// <returns>List of latest story parts</returns>
-    public List<UnlockRule> GetLatestStoryPartsInScene()
+    public List<UnlockPart> GetLatestStoryPartsInScene()
     {
         string currentScene = SceneManager.GetActiveScene().name;
-        List<UnlockRule> result = new();
+
+        List<UnlockPart> result = new();
 
         // 1. Add latest main story if it's in this scene
         if (!string.IsNullOrEmpty(latestMainStory))
         {
-            var mainRule = unlockRules.FirstOrDefault(rule =>
-                rule.node == latestMainStory && rule.startingScene == currentScene);
 
-            if (mainRule != null && IsNodeUnlocked(mainRule.node))
+            var mainPart = unlockParts.FirstOrDefault(part =>
+                part.node == latestMainStory && part.startingScene == currentScene);
+
+            // Found the main part in this scene and it's unlocked
+            if (mainPart != null && IsNodeUnlocked(mainPart.node))
             {
-                result.Add(mainRule);
+                result.Add(mainPart);
             }
         }
 
@@ -241,12 +246,11 @@ public class DialogueProgressionManager : MonoBehaviour
         foreach (var kvp in latestCharacterArcs)
         {
             string latestNode = kvp.Value;
-            var rule = unlockRules.FirstOrDefault(r =>
-                r.node == latestNode && r.startingScene == currentScene);
-
-            if (rule != null && IsNodeUnlocked(rule.node))
+            UnlockPart part = unlockParts.FirstOrDefault(r =>
+            r.node == latestNode && r.startingScene == currentScene);
+            if (part != null && IsNodeUnlocked(part.node))
             {
-                result.Add(rule);
+                result.Add(part);
             }
         }
 
@@ -275,7 +279,8 @@ public class DialogueProgressionManager : MonoBehaviour
         // Save to JSON
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log("Progression saved.");
+        Debug.Log("Progression saved");
+        Debug.Log("Save path: " + Application.persistentDataPath);
     }
 
     /// <summary>
@@ -283,7 +288,17 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     public void LoadProgress()
     {
-        if (!File.Exists(SavePath)) return;
+        Debug.Log("Load path: " + Application.persistentDataPath);
+
+        // New game - set initial main story part here
+        if (!File.Exists(SavePath))
+        {
+            latestMainStory = ScriptConstants.startingStoryID;
+            reachedStates = new HashSet<string>();
+            latestCharacterArcs = new Dictionary<string, string>();
+            Debug.Log("No save found. Starting new game with initial main story part");
+            return;
+        }
 
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
@@ -299,36 +314,40 @@ public class DialogueProgressionManager : MonoBehaviour
             latestCharacterArcs[arc.character] = arc.node;
         }
 
-        Debug.Log("Progression loaded.");
+        Debug.Log("Progression loaded");
     }
 
     /// <summary>
-    /// Load in the unlock rules
+    /// Load in the unlock parts
     /// </summary>
 
-    public void LoadUnlockRules()
+    public void LoadUnlockParts()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "DialogueUnlockRules.json");
+        string path = Path.Combine(Application.streamingAssetsPath, "DialogueUnlockParts.json");
 
     #if UNITY_ANDROID && !UNITY_EDITOR
-        StartCoroutine(LoadRulesAndroid(path));
+        StartCoroutine(LoadPartsAndroid(path));
     #else
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
-            var data = JsonUtility.FromJson<UnlockRulesData>(json);
-            unlockRules = data.unlockRules;
-            Debug.Log($"Loaded {unlockRules.Count} unlock rules.");
+            var data = JsonUtility.FromJson<UnlockPartsData>(json);
+            unlockParts = data.unlockParts;
+            Debug.Log($"Loaded {unlockParts.Count} total parts");
+            /*foreach (var p in unlockParts)
+            {
+                Debug.Log($"Part Node: {p.node}, StartingCharacter: {p.startingCharacter}, Scene: {p.startingScene}, RequiresAll: [{string.Join(", ", p.requiresAll ?? new List<string>())}], RequiresAny: [{string.Join(", ", p.requiresAny ?? new List<string>())}]");
+            }*/
         }
     #endif
     }
 
     /// <summary>
-    /// Load in the unlock rules for Android devices
+    /// Load in the unlock parts for Android devices
     /// </summary>
     /// <param name="path">Path to JSON</param>
     /// <returns>IEnumerator</returns>
-    private IEnumerator LoadRulesAndroid(string path)
+    private IEnumerator LoadPartsAndroid(string path)
     {
         using UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(path);
         yield return www.SendWebRequest();
@@ -336,13 +355,13 @@ public class DialogueProgressionManager : MonoBehaviour
         if (www.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
         {
             string json = www.downloadHandler.text;
-            var data = JsonUtility.FromJson<UnlockRulesData>(json);
-            unlockRules = data.unlockRules;
-            Debug.Log($"Loaded {unlockRules.Count} unlock rules (Android).");
+            var data = JsonUtility.FromJson<UnlockPartsData>(json);
+            unlockParts = data.unlockParts;
+            Debug.Log($"Loaded {unlockParts.Count} total parts (Android)");
         }
         else
         {
-            Debug.LogError("Failed to load unlock rules from StreamingAssets.");
+            Debug.LogError("Failed to load unlock parts from StreamingAssets");
         }
     }
 

@@ -169,7 +169,7 @@ public class BottomToTopInteraction : MonoBehaviour
         // The character/dialogue box was clicked on. Advance dialogue (top)
         if (clickedButton.gameObject.CompareTag(ScriptConstants.characterAndDialogueString))
         {
-            // TCheck to see if it's enabled/already faded-in
+            // Check to see if it's enabled/already faded-in
             if (dialogueBoxPanel.activeSelf)
             {
                 // Yarn Spinner here to go through the dialogue as well as different expressions/poses
@@ -178,6 +178,11 @@ public class BottomToTopInteraction : MonoBehaviour
             }
             else
             {
+                // Show the dialogue box
+                //Debug.Log("Showing dialogue box");
+                dialogueBoxPanel.SetActive(true);
+                DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeIn);
+
                 /// TODO: Based on DialogueCommands, we need to see if there's a scene able to be played.
                 /// We'll probably be using the idea of Main, Character Relation, and Random so it wlll always play
                 /// a 'scene;' in most cases, Random.
@@ -190,11 +195,6 @@ public class BottomToTopInteraction : MonoBehaviour
                 /// 
                 /// So now, if there's a marker as a child, we pass in the marker ID
                 DialogueCommandsInstance.StartScene(currentCharacterShownName);
-
-                // Show the dialogue box
-                //Debug.Log("Showing dialogue box");
-                dialogueBoxPanel.SetActive(true);
-                DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeIn);
             }
         }
     }
@@ -217,19 +217,21 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     void SetMarkers()
     {
+
         // Get story parts
-        List<UnlockRule> storyParts = DPMInstance.GetLatestStoryPartsInScene();
+        List<UnlockPart> storyParts = DPMInstance.GetLatestStoryPartsInScene();
 
         // Check for main story
         if (DPMInstance.HasMainStory(storyParts))
         {
-            UnlockRule mainStory = DPMInstance.GetLatestMainStoryRule();
+            UnlockPart mainStory = DPMInstance.GetLatestMainStoryPart();
 
             // Find the game object the marker will be a child of
             GameObject mainMarkerCharacter = GameObject.Find(mainStory.startingCharacter);
 
-            // Assign the marker as a child of the startingCharacter (or object)
+            // Assign the marker as a child of the startingCharacter (or object) (and position)
             mainStoryMarker.transform.SetParent(mainMarkerCharacter.transform);
+            mainStoryMarker.transform.position = mainStoryMarker.transform.parent.position;
         }
         else
         {
@@ -241,9 +243,9 @@ public class BottomToTopInteraction : MonoBehaviour
         if (DPMInstance.HasCharacterArcStory(storyParts))
         {
             // Grab all the character arc parts
-            List<UnlockRule> characterStoryParts = DPMInstance.GetAllLatestCharacterArcRules();
+            List<UnlockPart> characterStoryParts = DPMInstance.GetAllLatestCharacterArcParts();
 
-            foreach (UnlockRule charStory in characterStoryParts)
+            foreach (UnlockPart charStory in characterStoryParts)
             {
                 // Find the game object the marker will be a child of
                 GameObject charMarkerCharacter = GameObject.Find(charStory.startingCharacter);
@@ -251,8 +253,9 @@ public class BottomToTopInteraction : MonoBehaviour
                 // Make an instance of the character arc marker
                 GameObject newCharMarker = Instantiate(characterArcStoryMarker);
 
-                // Assign the marker as a child of the startingCharacter (or object)
+                // Assign the marker as a child of the startingCharacter (or object) (and position)
                 newCharMarker.transform.SetParent(charMarkerCharacter.transform);
+                newCharMarker.transform.position = newCharMarker.transform.parent.position;
             }
         }
         // Finally, disable the original (as we only use the instances)

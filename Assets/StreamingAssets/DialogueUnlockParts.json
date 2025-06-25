@@ -1,8 +1,8 @@
     {
-        "unlockRules": [
+        "unlockParts": [
             {
                 "node": "M00",
-                "startingCharacter": "s01",
+                "startingCharacter": "s04",
                 "startingScene": "5E_Classroom",
                 "rules": "Starting node",
                 "title" : "",

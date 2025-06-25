@@ -59,7 +59,7 @@ public class DialogueCommands : MonoBehaviour
     {
         Debug.Log("Selecting Scene");
 
-        /*List<UnlockRule> possibleStoryParts = DPMInstance.GetUnlockedPartsForCharacter(characterName);
+        /*List<UnlockPart> possibleStoryParts = DPMInstance.GetUnlockedPartsForCharacter(characterName);
 
         // Check if there are unlocked parts
         if (possibleStoryParts != null && possibleStoryParts.Count > 0)
