@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,14 +14,20 @@ public class BottomToTopInteraction : MonoBehaviour
 {
     public CharacterCommands CharacterCommandsInstance;
     public DialogueCommands DialogueCommandsInstance;
+    public DialogueProgressionManager DPMInstance;
 
     public GameObject charDialParent;
     public GameObject characterImagePose;
     public GameObject dialogueBoxPanel;
 
+    public GameObject mainStoryMarker;
+    public GameObject characterArcStoryMarker;
+
     public DialogueRunner dialogueRunner;
 
     private HashSet<string> charNameSet;
+
+    private string currentCharacterShownName;
 
     private void Awake()
     {
@@ -28,9 +35,15 @@ public class BottomToTopInteraction : MonoBehaviour
         GameObject gameController = GameObject.FindWithTag(ScriptConstants.gameControllerString);
         CharacterCommandsInstance = gameController.GetComponent<CharacterCommands>();
         DialogueCommandsInstance = gameController.GetComponent<DialogueCommands>();
+        DPMInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).
+            GetComponent<DialogueProgressionManager>();
 
         // Get the characterDialogueParent
         charDialParent = GameObject.FindWithTag(ScriptConstants.characterAndDialogueString);
+
+        // Markers
+        mainStoryMarker = GameObject.FindWithTag(ScriptConstants.mainStoryMarkerString);
+        characterArcStoryMarker = GameObject.FindWithTag(ScriptConstants.characterArcStoryMarkerString);
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
@@ -71,6 +84,9 @@ public class BottomToTopInteraction : MonoBehaviour
 
         // By default, we don't show it
         dialogueBoxPanel.SetActive(false);
+
+        // Set markers for the scene
+        SetMarkers();
     }
 
     void OnAnyButtonClicked(Button clickedButton)
@@ -94,9 +110,9 @@ public class BottomToTopInteraction : MonoBehaviour
             // If it's the same character that's currently showing, don't change the top at all
             // (the "if" statement below will not run)
             string[] topSplitArray = characterImagePose.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
-            string topNameStr = topSplitArray[0];
-            //Debug.Log($"Top character's name is {topNameStr}");
-            bool isSameCharacter = nameStr.Equals(topNameStr, StringComparison.OrdinalIgnoreCase);
+            currentCharacterShownName = topSplitArray[0];
+            //Debug.Log($"Top character's name is {currentCharacterShownName}");
+            bool isSameCharacter = nameStr.Equals(currentCharacterShownName, StringComparison.OrdinalIgnoreCase);
 
             //Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
             //Debug.Log($"Is same character is {isSameCharacter}");
@@ -135,12 +151,12 @@ public class BottomToTopInteraction : MonoBehaviour
                     if (characterImagePose.activeSelf)
                     {
                         CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeOut, ScriptConstants.defaultAnimationDuration,
-                                () => showCharacter(charImagePoseName, charImageFaceName));
+                                () => ShowCharacter(charImagePoseName, charImageFaceName));
                     }
                     else
                     {
                         // Change the characterImage to that character
-                        showCharacter(charImagePoseName, charImageFaceName);
+                        ShowCharacter(charImagePoseName, charImageFaceName);
                     }
                     
                 } catch (Exception e) { 
@@ -171,7 +187,9 @@ public class BottomToTopInteraction : MonoBehaviour
                 /// What we'll do for that last line repeat is we'll just have that as its own scene that is set after the main scene
                 /// is finished playing. That way, it'll run that yarn script over and over again.
                 /// If Main and Character Relation overlap on the same character, allow the player to choose which one they want to start
-                DialogueCommandsInstance.StartScene();
+                /// 
+                /// So now, if there's a marker as a child, we pass in the marker ID
+                DialogueCommandsInstance.StartScene(currentCharacterShownName);
 
                 // Show the dialogue box
                 //Debug.Log("Showing dialogue box");
@@ -186,13 +204,60 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     /// <param name="charImagePoseName">Character name with the pose name</param>
     /// <param name="charImageFaceName">Character name with the face expression</param>
-    void showCharacter(string charImagePoseName, string charImageFaceName)
+    void ShowCharacter(string charImagePoseName, string charImageFaceName)
     {
         characterImagePose.SetActive(true);
         CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
         CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
         CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeIn);
     }
+
+    /// <summary>
+    /// Set the markers as children to the objects/characters they represent to start a story part
+    /// </summary>
+    void SetMarkers()
+    {
+        // Get story parts
+        List<UnlockRule> storyParts = DPMInstance.GetLatestStoryPartsInScene();
+
+        // Check for main story
+        if (DPMInstance.HasMainStory(storyParts))
+        {
+            UnlockRule mainStory = DPMInstance.GetLatestMainStoryRule();
+
+            // Find the game object the marker will be a child of
+            GameObject mainMarkerCharacter = GameObject.Find(mainStory.startingCharacter);
+
+            // Assign the marker as a child of the startingCharacter (or object)
+            mainStoryMarker.transform.SetParent(mainMarkerCharacter.transform);
+        }
+        else
+        {
+            // Hide the marker
+            mainStoryMarker.SetActive(false);
+        }
+
+        // Check for character arcs
+        if (DPMInstance.HasCharacterArcStory(storyParts))
+        {
+            // Grab all the character arc parts
+            List<UnlockRule> characterStoryParts = DPMInstance.GetAllLatestCharacterArcRules();
+
+            foreach (UnlockRule charStory in characterStoryParts)
+            {
+                // Find the game object the marker will be a child of
+                GameObject charMarkerCharacter = GameObject.Find(charStory.startingCharacter);
+
+                // Make an instance of the character arc marker
+                GameObject newCharMarker = Instantiate(characterArcStoryMarker);
+
+                // Assign the marker as a child of the startingCharacter (or object)
+                newCharMarker.transform.SetParent(charMarkerCharacter.transform);
+            }
+        }
+        // Finally, disable the original (as we only use the instances)
+        characterArcStoryMarker.SetActive(false);
+     }
 
     /*void Update()
     {

@@ -12,6 +12,11 @@ public static class ScriptConstants
     public const string dialogueBoxPanelString = "DialogueBoxPanel";
     public const string dialogueSystemString = "DialogueSystem";
     public const string gameControllerString = "GameController";
+    public const string mainStoryMarkerString = "MainStoryMarker";
+    public const string characterArcStoryMarkerString = "CharacterArcStoryMarker";
+
+    public const string mainStoryMarkerID = "M";
+    public const string characterArcStoryMarkerID = "C";
 
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
@@ -41,4 +46,5 @@ public static class ScriptConstants
         Playful,
         Pouting
     }
+
 }

@@ -10,6 +10,8 @@ TagManager:
   - CharacterAndDialogue
   - DialogueBoxPanel
   - DialogueSystem
+  - MainStoryMarker
+  - CharacterArcStoryMarker
   layers:
   - Default
   - TransparentFX

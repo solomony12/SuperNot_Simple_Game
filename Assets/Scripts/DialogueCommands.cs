@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Yarn.Unity;
 using static Animations.AnimationType;
@@ -7,6 +8,7 @@ using static Animations.AnimationType;
 public class DialogueCommands : MonoBehaviour
 {
     public Animations AnimationsInstance;
+    public DialogueProgressionManager DPMInstance;
 
     public static GameObject dialogueBoxPanel;
 
@@ -14,8 +16,10 @@ public class DialogueCommands : MonoBehaviour
 
     private void Awake()
     {
-        // Animations script instance
+        // Script instances
         AnimationsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Animations>();
+        DPMInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).
+            GetComponent<DialogueProgressionManager>();
 
         // Get the dialogueBoxPanel
         dialogueBoxPanel = GameObject.FindWithTag(ScriptConstants.dialogueBoxPanelString);
@@ -51,14 +55,37 @@ public class DialogueCommands : MonoBehaviour
         return true;
     }
 
-    private void SceneSelection()
+    private void SceneSelection(string characterName)
     {
         Debug.Log("Selecting Scene");
+
+        /*List<UnlockRule> possibleStoryParts = DPMInstance.GetUnlockedPartsForCharacter(characterName);
+
+        // Check if there are unlocked parts
+        if (possibleStoryParts != null && possibleStoryParts.Count > 0)
+        {
+
+            if (DPMInstance.hasMainStory || DPMInstance.HasCharacterArcStory)
+            {
+                // Has both: player gets to choose
+                if (hasMainStory && hasCharacterArc) { }
+            }
+            // Select a random dialogue for this character
+            else
+            {
+
+            }
+
+        }
+        else
+        {
+            throw new Exception("No unlocked parts found, including random dialogue");
+        }*/
     }
 
-    public void StartScene()
+    public void StartScene(string characterName)
     {
-        SceneSelection();
+        SceneSelection(characterName);
 
         Debug.Log("Scene Start");
     }

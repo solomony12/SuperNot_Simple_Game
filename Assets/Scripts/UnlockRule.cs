@@ -12,6 +12,8 @@ public class UnlockRule
 
     // The character to select for the dialogue to start
     public string startingCharacter;
+    // The scene it's in for the story marker to show
+    public string startingScene;
 
     // Written out unlock rule for what's needed
     public string rules;
