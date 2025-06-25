@@ -125,8 +125,9 @@ public class CharacterCommands : MonoBehaviour
         }
     }
 
+    // TODO: Have the same method like this but for Dialogue
     // MVC method for Play animation on character
-    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 1f, Action onComplete = null)
+    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 0.5f, Action onComplete = null)
     {
         CharacterAnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
     }

@@ -17,7 +17,7 @@ public class CharacterAnimations : MonoBehaviour
     private Dictionary<GameObject, Coroutine> runningAnimations = new Dictionary<GameObject, Coroutine>();
 
     // Public method for other scripts to call to play an animation
-    public void PlayAnimation(GameObject obj, AnimationType animation, float duration = 1f, Action onComplete = null)
+    public void PlayAnimation(GameObject obj, AnimationType animation, float duration, Action onComplete)
     {
         Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
 

@@ -141,7 +141,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     if (characterImagePose.activeSelf)
                     {
                         CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(
-                            CharacterAnimations.AnimationType.FadeOut, 1f,
+                            CharacterAnimations.AnimationType.FadeOut, 0.5f,
                                 () => showCharacter(charImagePoseName, charImageFaceName));
                     }
                     else
