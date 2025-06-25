@@ -17,9 +17,9 @@ public class CharacterAnimations : MonoBehaviour
     private Dictionary<GameObject, Coroutine> runningAnimations = new Dictionary<GameObject, Coroutine>();
 
     // Public method for other scripts to call to play an animation
-    public void PlayAnimation(GameObject obj, AnimationType animation, float duration = 1f)
+    public void PlayAnimation(GameObject obj, AnimationType animation, float duration = 1f, Action onComplete = null)
     {
-        Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.name}");
+        Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
 
         bool shouldCompleteFadeIn = animation == AnimationType.FadeIn;
 
@@ -35,10 +35,10 @@ public class CharacterAnimations : MonoBehaviour
         switch (animation)
         {
             case AnimationType.FadeIn:
-                newCoroutine = StartCoroutine(FadeInCoroutine(obj, duration));
+                newCoroutine = StartCoroutine(FadeInCoroutine(obj, duration, onComplete));
                 break;
             case AnimationType.FadeOut:
-                newCoroutine = StartCoroutine(FadeOutCoroutine(obj, duration));
+                newCoroutine = StartCoroutine(FadeOutCoroutine(obj, duration, onComplete));
                 break;
         }
 
@@ -69,10 +69,17 @@ public class CharacterAnimations : MonoBehaviour
         }
     }
 
+    // Called at the end of each animation coroutine
+    private void FinishAnimation(GameObject obj, Action onComplete)
+    {
+        runningAnimations.Remove(obj);
+        onComplete?.Invoke();
+    }
+
 
 
     // The coroutine for fading in
-    private IEnumerator FadeInCoroutine(GameObject obj, float duration = 1f)
+    private IEnumerator FadeInCoroutine(GameObject obj, float duration, Action onComplete)
     {
         // Enable the GameObject
         obj.SetActive(true);
@@ -100,12 +107,12 @@ public class CharacterAnimations : MonoBehaviour
         cg.alpha = 1f;
 
         // Animation is done
-        runningAnimations.Remove(obj);
+        FinishAnimation(obj, onComplete);
     }
 
 
     // The coroutine for fading out
-    private IEnumerator FadeOutCoroutine(GameObject obj, float duration = 1f)
+    private IEnumerator FadeOutCoroutine(GameObject obj, float duration, Action onComplete)
     {
         // Get or add a CanvasGroup component on the parent object
         CanvasGroup cg = obj.GetComponent<CanvasGroup>();
@@ -127,6 +134,6 @@ public class CharacterAnimations : MonoBehaviour
         cg.alpha = 0f;
 
         // Animation is done
-        runningAnimations.Remove(obj);
+        FinishAnimation(obj, onComplete);
     }
 }

@@ -137,11 +137,18 @@ public class BottomToTopInteraction : MonoBehaviour
                 {
                     charDialParent.SetActive(true);
 
-                    // Change the characterImage to that character
-                    characterImagePose.SetActive(true);
-                    CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
-                    CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
-                    CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeIn);
+                    // If current character exists, fade them out first
+                    if (characterImagePose.activeSelf)
+                    {
+                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(
+                            CharacterAnimations.AnimationType.FadeOut, 1f,
+                                () => showCharacter(charImagePoseName, charImageFaceName));
+                    }
+                    else
+                    {
+                        // Change the characterImage to that character
+                        showCharacter(charImagePoseName, charImageFaceName);
+                    }
                     
                 } catch (Exception e) { 
                     Debug.Log($"Failed to switch character pose/face.\nError: {e.ToString()}");
@@ -167,6 +174,15 @@ public class BottomToTopInteraction : MonoBehaviour
                 dialogueBoxPanel.SetActive(true);
             }
         }
+    }
+
+    // Change the characterImage to that character
+    void showCharacter(string charImagePoseName, string charImageFaceName)
+    {
+        characterImagePose.SetActive(true);
+        CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
+        CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
+        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeIn);
     }
 
     /*void Update()

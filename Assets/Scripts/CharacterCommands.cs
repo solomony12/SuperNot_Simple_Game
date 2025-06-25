@@ -126,8 +126,8 @@ public class CharacterCommands : MonoBehaviour
     }
 
     // MVC method for Play animation on character
-    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 1f)
+    public void PlayAnimationOnCurrentCharacter(CharacterAnimations.AnimationType animation, float duration = 1f, Action onComplete = null)
     {
-        CharacterAnimationsInstance.PlayAnimation(characterImagePose, animation, duration);
+        CharacterAnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
     }
 }
