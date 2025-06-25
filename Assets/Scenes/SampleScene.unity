@@ -1922,6 +1922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterCommandsInstance: {fileID: 0}
+  DialogueCommandsInstance: {fileID: 0}
   charDialParent: {fileID: 0}
   characterImagePose: {fileID: 0}
   dialogueBoxPanel: {fileID: 0}
@@ -1937,6 +1938,7 @@ GameObject:
   - component: {fileID: 1393894653}
   - component: {fileID: 1393894651}
   - component: {fileID: 1393894654}
+  - component: {fileID: 1393894655}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -1956,7 +1958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8769caece15cdd545887cc3fbc4bf4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterAnimationsInstance: {fileID: 0}
+  AnimationsInstance: {fileID: 0}
 --- !u!4 &1393894653
 Transform:
   m_ObjectHideFlags: 0
@@ -1984,6 +1986,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84f8ea74282d1d44bbe9301f4f58c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1393894655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393894650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3cb4ae0885a4244a50d653bfeb3812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationsInstance: {fileID: 0}
 --- !u!1 &1428449711
 GameObject:
   m_ObjectHideFlags: 0

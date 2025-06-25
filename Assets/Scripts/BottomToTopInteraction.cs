@@ -12,11 +12,7 @@ using static Animations.AnimationType;
 public class BottomToTopInteraction : MonoBehaviour
 {
     public CharacterCommands CharacterCommandsInstance;
-
-    // Tag name strings
-    private string seatString = "Seat";
-    private string characterAndDialogueString = "CharacterAndDialogue";
-    private string gameControllerString = "GameController";
+    public DialogueCommands DialogueCommandsInstance;
 
     public GameObject charDialParent;
     public GameObject characterImagePose;
@@ -28,11 +24,13 @@ public class BottomToTopInteraction : MonoBehaviour
 
     private void Awake()
     {
-        // CharacterCommands script instance
-        CharacterCommandsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<CharacterCommands>();
+        // Commands scripts instances
+        GameObject gameController = GameObject.FindWithTag(ScriptConstants.gameControllerString);
+        CharacterCommandsInstance = gameController.GetComponent<CharacterCommands>();
+        DialogueCommandsInstance = gameController.GetComponent<DialogueCommands>();
 
         // Get the characterDialogueParent
-        charDialParent = GameObject.FindWithTag(characterAndDialogueString);
+        charDialParent = GameObject.FindWithTag(ScriptConstants.characterAndDialogueString);
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
@@ -81,7 +79,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
         // A student seat with a character was clicked (bottom)
         // Upon clicking on a new character, we show the character but hide the dialogue box
-        if (clickedButton.gameObject.CompareTag(seatString))
+        if (clickedButton.gameObject.CompareTag(ScriptConstants.seatString))
         {
             // 0: Name, 1: Face, 2: Pose, 3: "seat" (redundant)
             // (Example: KoumeMomone_0_1_seat)
@@ -111,8 +109,7 @@ public class BottomToTopInteraction : MonoBehaviour
                 // Hide the dialogue box for this new character
                 if (dialogueBoxPanel.activeSelf)
                 {
-                    // TODO: Change to invisible and disabled(so we can do fade -in/out)
-                    dialogueBoxPanel.SetActive(false); // TODO: temporary
+                    DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeOut);
                 }
                 else
                 {
@@ -137,7 +134,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     // If current character exists, fade them out first
                     if (characterImagePose.activeSelf)
                     {
-                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeOut, 0.5f,
+                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeOut, ScriptConstants.defaultAnimationDuration,
                                 () => showCharacter(charImagePoseName, charImageFaceName));
                     }
                     else
@@ -154,7 +151,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
 
         // The character/dialogue box was clicked on. Advance dialogue (top)
-        if (clickedButton.gameObject.CompareTag(characterAndDialogueString))
+        if (clickedButton.gameObject.CompareTag(ScriptConstants.characterAndDialogueString))
         {
             // TODO: Change to check to see if it's enabled/already faded-in
             if (dialogueBoxPanel.activeSelf)
@@ -165,9 +162,9 @@ public class BottomToTopInteraction : MonoBehaviour
             }
             else {
                 // Show the dialogue box
-                // TODO: Change to fade-in and enabled (so we can do fade-in/out)
-                Debug.Log("Showing dialogue box");
+                //Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
+                DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeIn);
             }
         }
     }

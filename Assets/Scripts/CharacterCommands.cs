@@ -6,22 +6,17 @@ public class CharacterCommands : MonoBehaviour
 {
     public Animations AnimationsInstance;
 
-    // Tag name strings
-    private string characterImagePoseString = "CharacterImagePose";
-    private string characterImageFaceString = "CharacterImageFace";
-    private string gameControllerString = "GameController";
-
     public static GameObject characterImagePose;
     public static GameObject characterImageFace;
 
     private void Awake()
     {
         // Animations script instance
-        AnimationsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<Animations>();
+        AnimationsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Animations>();
 
         // Get the Character Image
-        characterImagePose = GameObject.FindWithTag(characterImagePoseString);
-        characterImageFace = GameObject.FindWithTag(characterImageFaceString);
+        characterImagePose = GameObject.FindWithTag(ScriptConstants.characterImagePoseString);
+        characterImageFace = GameObject.FindWithTag(ScriptConstants.characterImageFaceString);
         if (characterImagePose == null || characterImageFace == null)
         {
             throw new Exception("Character Image part could not be found");
@@ -127,7 +122,7 @@ public class CharacterCommands : MonoBehaviour
     }
 
     // MVC method for Play animation on character
-    public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = 0.5f, Action onComplete = null)
+    public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = ScriptConstants.defaultAnimationDuration, Action onComplete = null)
     {
         AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
     }

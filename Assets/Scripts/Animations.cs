@@ -133,6 +133,9 @@ public class Animations : MonoBehaviour
         // Ensure it's fully invisible at the end (and nonnegative)
         cg.alpha = 0f;
 
+        // Disable object
+        obj.SetActive(false);
+
         // Animation is done
         FinishAnimation(obj, onComplete);
     }
