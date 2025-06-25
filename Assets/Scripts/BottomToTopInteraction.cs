@@ -6,55 +6,41 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
+using Yarn.Unity;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
+    public CharacterCommands CharacterCommandsInstance;
+
     // Tag name strings
     private string seatString = "Seat";
     private string characterAndDialogueString = "CharacterAndDialogue";
-    private string characterImagePoseString = "CharacterImagePose";
-    private string characterImageFaceString = "CharacterImageFace";
     private string dialogueBoxPanelString = "DialogueBoxPanel";
+    private string dialogueSystemString = "DialogueSystem";
+    private string gameControllerString = "GameController";
 
     public GameObject charDialParent;
     public GameObject characterImagePose;
     public GameObject characterImageFace;
     public GameObject dialogueBoxPanel;
 
-    HashSet<string> charNameSet;
-    void Start()
+    public DialogueRunner dialogueRunner;
+
+    private HashSet<string> charNameSet;
+
+    private void Awake()
     {
-        // Get all buttons and add listeners
-        Button[] buttons = GetComponentsInChildren<Button>();
-        foreach (Button btn in buttons)
-        {
-            btn.onClick.AddListener(() => OnAnyButtonClicked(btn));
-        }
+        // CharacterCommands script instance
+        CharacterCommandsInstance = GameObject.FindWithTag(gameControllerString).GetComponent<CharacterCommands>();
 
         // Get the characterDialogueParent
         charDialParent = GameObject.FindWithTag(characterAndDialogueString);
 
         // Get the dialogueBoxPanel
-        // By default, we don't show it
-        // TODO: Change to invisible and disabled (so we can do fade-in/out)
         dialogueBoxPanel = GameObject.FindWithTag(dialogueBoxPanelString);
-        dialogueBoxPanel.SetActive(false);
 
-        // Get the Character Image
-        characterImagePose = GameObject.FindWithTag(characterImagePoseString);
-        characterImageFace = GameObject.FindWithTag(characterImageFaceString);
-        if (characterImagePose == null || characterImageFace == null)
-        {
-            throw new Exception("Character Image part could not be found");
-        }
-        // By default, we don't show it
-        // TODO: Change to invisible and disabled (so we can do fade-in/out)
-        characterImagePose.SetActive(false);
-        characterImageFace.SetActive(false);
-
-        // Disable the top UIs
-        charDialParent.SetActive(false);
-
+        // Get the dialogue runner
+        dialogueRunner = GameObject.FindWithTag(dialogueSystemString).GetComponent<DialogueRunner>();
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
@@ -63,9 +49,37 @@ public class BottomToTopInteraction : MonoBehaviour
         {
             charNameSet = new HashSet<string>(File.ReadAllLines(path));
             Debug.Log($"Loaded {charNameSet.Count} names.");
-        } else {
+        }
+        else
+        {
             throw new Exception("names.txt was not found");
         }
+    }
+    void Start()
+    {
+        // Get all buttons and add listeners
+        Button[] buttons = GetComponentsInChildren<Button>(); // Debug Note: it grabs all CHILDREN so this script has to be on a parent
+        //Debug.Log($"Number of buttons: {buttons.Length}");
+        foreach (Button btn in buttons)
+        {
+            btn.onClick.AddListener(() => OnAnyButtonClicked(btn));
+            //Debug.Log($"Lisener added on {btn.gameObject.name}");
+        }
+
+        characterImagePose = CharacterCommands.characterImagePose;
+        characterImageFace = CharacterCommands.characterImagePose;
+
+        // By default, we don't show it
+        // TODO: Change to invisible and disabled (so we can do fade-in/out)
+        characterImagePose.SetActive(false);
+        characterImageFace.SetActive(false);
+
+        // Disable the top UIs
+        charDialParent.SetActive(false);
+
+        // By default, we don't show it
+        // TODO: Change to invisible and disabled (so we can do fade-in/out)
+        dialogueBoxPanel.SetActive(false);
     }
 
     void OnAnyButtonClicked(Button clickedButton)
@@ -109,11 +123,11 @@ public class BottomToTopInteraction : MonoBehaviour
                 // (Example: KoumeMomone, 0, 1 -> KoumeMomone_Default (face) and KoumeMomone_Default02 (pose))
 
                 // Pose
-                string charImagePoseName = CharacterPoseNumIdToStringName(nameStr, poseNum);
+                string charImagePoseName = CharacterCommandsInstance.CharacterPoseNumIdToStringName(nameStr, poseNum);
                 //Debug.Log($"charImagePoseName is: {charImagePoseName}");
 
                 // Face
-                string charImageFaceName = CharacterFaceNumIdToStringName(nameStr, faceNum);
+                string charImageFaceName = CharacterCommandsInstance.CharacterFaceNumIdToStringName(nameStr, faceNum);
                 //Debug.Log($"charImageFaceName is: {charImageFaceName}");
 
                 try
@@ -123,10 +137,10 @@ public class BottomToTopInteraction : MonoBehaviour
                     // Change the characterImage to that character
                     // TODO: Change to fade-in and enabled (so we can do fade-in/out)
                     characterImagePose.SetActive(true);
-                    ChangeCharacterPose(charImagePoseName);
+                    CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
                     
                     characterImageFace.SetActive(true);
-                    ChangeCharacterFace(charImageFaceName);
+                    CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
                     
                 } catch (Exception e) { 
                     Debug.Log($"Failed to switch character pose/face.\nError: {e.ToString()}");
@@ -151,104 +165,6 @@ public class BottomToTopInteraction : MonoBehaviour
                 Debug.Log("Showing dialogue box");
                 dialogueBoxPanel.SetActive(true);
             }
-        }
-    }
-
-    // Takes in characterName and poseNumberID to return charName_poseName
-    string CharacterPoseNumIdToStringName(string charName, int poseNum)
-    {
-        string poseStr;
-
-        switch (poseNum)
-        {
-            case 0:
-                poseStr = "Default";
-                break;
-            case 1:
-                poseStr = "Confident";
-                break;
-            case 2:
-                poseStr = "Reclusive";
-                break;
-            case 3:
-                poseStr = "Thinking";
-                break;
-            default:
-                poseStr = "Default";
-                break;
-        }
-
-        return $"{charName}_{poseStr}";
-    }
-
-    // Takes in characterName and faceNumberID to return charName_faceName
-    string CharacterFaceNumIdToStringName(string charName, int faceNum)
-    {
-        string faceStr;
-
-        switch (faceNum)
-        {
-            case 0:
-                faceStr = "Default";
-                break;
-            case 1:
-                faceStr = "Happy";
-                break;
-            case 2:
-                faceStr = "Embarrassed";
-                break;
-            case 3:
-                faceStr = "Angry";
-                break;
-            case 4:
-                faceStr = "Sad";
-                break;
-            case 5:
-                faceStr = "Surprised";
-                break;
-            case 6:
-                faceStr = "Playful";
-                break;
-            case 7:
-                faceStr = "Pouting";
-                break;
-            default:
-                faceStr = "Default";
-                break;
-        }
-
-        return $"{charName}_{faceStr}";
-    }
-
-    // Updates the character pose
-    void ChangeCharacterPose(string characterPoseName)
-    {
-        Sprite newSpritePose = Resources.Load<Sprite>($"Art/CharacterArt/Poses/{characterPoseName}");
-
-        if (newSpritePose != null)
-        {
-            //Debug.Log($"Loaded pose sprite: {characterPoseName}");
-            characterImagePose.GetComponent<Image>().sprite = newSpritePose;
-        }
-        else
-        {
-            throw new Exception($"{characterPoseName} pose was not found.");
-        }
-    }
-
-    // Updates the character face
-    void ChangeCharacterFace(string characterFaceName)
-    {
-        Sprite newSpriteFace = Resources.Load<Sprite>($"Art/CharacterArt/Faces/{characterFaceName}");
-
-        if (newSpriteFace != null)
-        {
-            //Debug.Log($"Loaded face sprite: {characterFaceName}");
-            characterImageFace.GetComponent<Image>().sprite = newSpriteFace;
-        }
-        else
-        {
-            throw new Exception($"{characterFaceName} face was not found.");
         }
     }
 
