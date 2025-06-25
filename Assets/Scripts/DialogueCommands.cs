@@ -26,8 +26,7 @@ public class DialogueCommands : MonoBehaviour
 
     void Start()
     {
-        // Listeners
-        dialogueRunner.onDialogueStart.AddListener(PlayingScene);
+        // Listener(s)
         dialogueRunner.onDialogueComplete.AddListener(EndOfScene);
     }
 
@@ -52,23 +51,22 @@ public class DialogueCommands : MonoBehaviour
         return true;
     }
 
-    public void StartScene()
-    {
-        
-    }
-
     private void SceneSelection()
     {
-        
+        Debug.Log("Selecting Scene");
     }
 
-    public void PlayingScene()
+    public void StartScene()
     {
+        SceneSelection();
 
+        Debug.Log("Scene Start");
     }
 
     public void EndOfScene()
     {
+        Debug.Log("End of Scene");
+
         // Hide the dialogue box
         PlayAnimationOnDialogueBox(FadeOut);
     }

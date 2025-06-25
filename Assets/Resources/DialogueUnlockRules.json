@@ -1,0 +1,36 @@
+{
+    "unlockRules": [
+        {
+            "node": "M02",
+            "requiresAll": ["M01"],
+            "startingCharacter": "",
+            "rules": "Unlock Main Story Part 1 after Part 2",
+            "title" : "",
+            "description": ""
+        },
+        {
+            "node": "C01_MakotoAtsukawa",
+            "requiresAll": ["M02"],
+            "startingCharacter": "MakotoAtsukawa",
+            "rules": "Unlock Character Arc 1 for Makoto Atsukawa after Main Story 2",
+            "title" : "",
+            "description": ""
+        },
+        {
+            "node": "C01_YuukaKannouji",
+            "requiresAll": ["M04", "C02_MakotoAtsukawa"],
+            "startingCharacter": "YuukaKannouji",
+            "rules": "Unlock Character Arc 1 for Yuuka Kannouji after Main Story 4 and Character Arc 2 for Makoto Atsukawa",
+            "title" : "",
+            "description": ""
+        },
+        {
+            "node": "R04_KoumeMomone",
+            "requiresAny": ["M05", "C03_KoumeMomone"],
+            "startingCharacter": "KoumeMomone",
+            "rules": "Unlock Random Dialogue 4 after Main Story 5 or Character Arc 3 for Koume Momone",
+            "title" : "",
+            "description": ""
+        }
+    ]
+}

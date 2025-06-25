@@ -47,12 +47,6 @@ android {
 tasks.withType(com.android.build.gradle.tasks.ExternalNativeBuildTask) {
     doNotTrackState("Workaround for soFolder unreadable error")
 }
-tasks.matching { it.name == 'mergeReleaseNativeLibs' }.configureEach { task ->
-    // Mark task as untracked immediately
-    task.doNotTrackState("Workaround for Gradle 8.4 task input/output access issues")
-
-    // If needed, delay any other configuration to avoid premature access of inputs
-    task.doFirst {
-        // your task actions if any
-    }
+tasks.matching { it.name == 'mergeReleaseNativeLibs' }.configureEach {
+    doNotTrackState("Workaround for Gradle 8.4 task input/output access issues")
 }

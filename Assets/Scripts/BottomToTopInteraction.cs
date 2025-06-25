@@ -156,8 +156,6 @@ public class BottomToTopInteraction : MonoBehaviour
             // TCheck to see if it's enabled/already faded-in
             if (dialogueBoxPanel.activeSelf)
             {
-                Debug.Log("The dialogue will advance.");
-
                 // Yarn Spinner here to go through the dialogue as well as different expressions/poses
                 // This just calls 'next' in DialogueCommands. This script file should basically do NOTHING else
                 DialogueCommandsInstance.AdvanceLine();
@@ -169,7 +167,10 @@ public class BottomToTopInteraction : MonoBehaviour
                 /// a 'scene;' in most cases, Random.
                 /// HOWEVER this does bring up the use case where if a Main or Character Relation scene just ended,
                 /// it should repeat a new last line so that it always helps direct the player where they should go/tap
-                /// to progress the Main/Character Relation story
+                /// to progress the Main/Character Relation story:
+                /// What we'll do for that last line repeat is we'll just have that as its own scene that is set after the main scene
+                /// is finished playing. That way, it'll run that yarn script over and over again.
+                /// If Main and Character Relation overlap on the same character, allow the player to choose which one they want to start
                 DialogueCommandsInstance.StartScene();
 
                 // Show the dialogue box
