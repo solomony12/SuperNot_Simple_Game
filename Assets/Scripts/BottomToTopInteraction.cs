@@ -16,8 +16,6 @@ public class BottomToTopInteraction : MonoBehaviour
     // Tag name strings
     private string seatString = "Seat";
     private string characterAndDialogueString = "CharacterAndDialogue";
-    private string dialogueBoxPanelString = "DialogueBoxPanel";
-    private string dialogueSystemString = "DialogueSystem";
     private string gameControllerString = "GameController";
 
     public GameObject charDialParent;
@@ -35,12 +33,6 @@ public class BottomToTopInteraction : MonoBehaviour
 
         // Get the characterDialogueParent
         charDialParent = GameObject.FindWithTag(characterAndDialogueString);
-
-        // Get the dialogueBoxPanel
-        dialogueBoxPanel = GameObject.FindWithTag(dialogueBoxPanelString);
-
-        // Get the dialogue runner
-        dialogueRunner = GameObject.FindWithTag(dialogueSystemString).GetComponent<DialogueRunner>();
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
@@ -66,7 +58,12 @@ public class BottomToTopInteraction : MonoBehaviour
             //Debug.Log($"Lisener added on {btn.gameObject.name}");
         }
 
+        // Get the characterPose
         characterImagePose = CharacterCommands.characterImagePose;
+        // Get the dialogueBoxPanel
+        dialogueBoxPanel = DialogueCommands.dialogueBoxPanel;
+        // Get the dialogue runner
+        dialogueRunner = DialogueCommands.dialogueRunner;
 
         // By default, we don't show it
         characterImagePose.SetActive(false);

@@ -6,6 +6,7 @@ public class CharacterCommands : MonoBehaviour
 {
     public Animations AnimationsInstance;
 
+    // Tag name strings
     private string characterImagePoseString = "CharacterImagePose";
     private string characterImageFaceString = "CharacterImageFace";
     private string gameControllerString = "GameController";
@@ -125,7 +126,6 @@ public class CharacterCommands : MonoBehaviour
         }
     }
 
-    // TODO: Have the same method like this but for Dialogue
     // MVC method for Play animation on character
     public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = 0.5f, Action onComplete = null)
     {
