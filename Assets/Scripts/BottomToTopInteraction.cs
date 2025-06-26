@@ -264,7 +264,7 @@ public class BottomToTopInteraction : MonoBehaviour
                 charArcCloneMarkers.Add(newCharMarker);
 
                 // Assign the marker as a child of the startingCharacter (or object) (and position)
-                newCharMarker.transform.SetParent(charMarkerCharacter.transform);
+                newCharMarker.transform.SetParent(charMarkerCharacter.transform, false);
                 newCharMarker.transform.position = newCharMarker.transform.parent.position;
             }
         }
