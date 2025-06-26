@@ -4,6 +4,7 @@ public static class ScriptConstants
 {
     // Paths
     public const string characterArtPath = "Art/CharacterArt/";
+
     // Tag name strings
     public const string gameControllerString = "GameController";
     public const string characterAndDialogueString = "CharacterAndDialogue";
@@ -14,6 +15,8 @@ public static class ScriptConstants
     public const string mainStoryMarkerString = "MainStoryMarker";
     public const string characterArcStoryMarkerString = "CharacterArcStoryMarker";
     public const string interactableObjectString = "InteractableObject";
+    public const string topPanelString = "TopPanel";
+    public const string bottomPanelString = "BottomPanel";
 
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";

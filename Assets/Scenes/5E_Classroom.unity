@@ -2195,7 +2195,7 @@ GameObject:
   - component: {fileID: 1428449715}
   m_Layer: 5
   m_Name: BottomPanel
-  m_TagString: Untagged
+  m_TagString: BottomPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2757,7 +2757,7 @@ GameObject:
   - component: {fileID: 1976679748}
   m_Layer: 5
   m_Name: TopPanel
-  m_TagString: Untagged
+  m_TagString: TopPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

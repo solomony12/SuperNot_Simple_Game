@@ -18,6 +18,10 @@ public class BottomToTopInteraction : MonoBehaviour
 
     public GameObject mainStoryMarker;
     public GameObject characterArcStoryMarker;
+    List<GameObject> charArcCloneMarkers = new List<GameObject>();
+
+    public GameObject topPanel;
+    public GameObject bottomPanel;
 
     public DialogueRunner dialogueRunner;
 
@@ -37,6 +41,10 @@ public class BottomToTopInteraction : MonoBehaviour
         // Markers
         mainStoryMarker = GameObject.FindWithTag(ScriptConstants.mainStoryMarkerString);
         characterArcStoryMarker = GameObject.FindWithTag(ScriptConstants.characterArcStoryMarkerString);
+
+        // Panels
+        topPanel = GameObject.FindWithTag(ScriptConstants.topPanelString);
+        bottomPanel = GameObject.FindWithTag(ScriptConstants.bottomPanelString);
 
         // Get the list of character names from the .txt file
         string path = $"{Application.streamingAssetsPath}/Files/names.txt";
@@ -204,6 +212,7 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     void SetMarkers()
     {
+        ResetMarkers();
 
         // Get story parts
         List<UnlockPart> storyParts = DialogueProgressionManager.Instance.GetLatestStoryPartsInScene();
@@ -239,6 +248,7 @@ public class BottomToTopInteraction : MonoBehaviour
 
                 // Make an instance of the character arc marker
                 GameObject newCharMarker = Instantiate(characterArcStoryMarker);
+                charArcCloneMarkers.Add(newCharMarker);
 
                 // Assign the marker as a child of the startingCharacter (or object) (and position)
                 newCharMarker.transform.SetParent(charMarkerCharacter.transform);
@@ -275,6 +285,25 @@ public class BottomToTopInteraction : MonoBehaviour
         }
      }
 
+    /// <summary>
+    /// Reset the markers positions and clones
+    /// </summary>
+    void ResetMarkers()
+    {
+        // First reset position in relation to child/parent for main
+        mainStoryMarker.transform.SetParent(bottomPanel.transform);
+
+        // Clear all instances of characterArc markers
+        foreach (GameObject clone in charArcCloneMarkers)
+        {
+            Destroy(clone);
+        }
+        charArcCloneMarkers.Clear();
+    }
+
+    /// <summary>
+    /// Figure out which scene to play based on tag and character name
+    /// </summary>
     void SelectScene()
     {
         // Start scene
@@ -296,8 +325,13 @@ public class BottomToTopInteraction : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback for when the scene finishes playing from DialogueCommands
+    /// </summary>
     void HandleSceneEnded()
     {
+        Debug.Log("HandleSceneEnded Ran");
+
         // Update markers
         SetMarkers();
 

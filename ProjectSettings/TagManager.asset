@@ -12,6 +12,8 @@ TagManager:
   - MainStoryMarker
   - CharacterArcStoryMarker
   - InteractableObject
+  - TopPanel
+  - BottomPanel
   layers:
   - Default
   - TransparentFX

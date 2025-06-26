@@ -58,6 +58,11 @@ public class DialogueCommands : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Start in a certain node of the yarn script based on the character and type of story
+    /// </summary>
+    /// <param name="objName">Name of the startingCharacter</param>
+    /// <param name="markerId">Type of story</param>
     public void StartScene(string objName, string markerId = ScriptConstants.randomID)
     {
         // Random Dialogue
@@ -89,6 +94,9 @@ public class DialogueCommands : MonoBehaviour
         Debug.Log("Scene Start");
     }
 
+    /// <summary>
+    /// When the yarn script node finishes running
+    /// </summary>
     public void EndOfScene()
     {
         Debug.Log("End of Scene");
