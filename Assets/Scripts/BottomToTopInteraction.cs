@@ -88,9 +88,9 @@ public class BottomToTopInteraction : MonoBehaviour
     {
         Debug.Log($"GameObject: {clickedButton.name}; Image Name: {clickedButton.GetComponent<Image>().sprite.name}");
 
-        // A student seat with a character was clicked (bottom)
-        // Upon clicking on a new character, we show the character but hide the dialogue box
-        if (clickedButton.gameObject.CompareTag(ScriptConstants.seatString))
+        // Upon clicking on a new character/object, we show the character but hide the dialogue box
+        // (Example: A student seat with a character was clicked (bottom))
+        if (clickedButton.gameObject.CompareTag(ScriptConstants.interactableObjectString))
         {
             lastClickedObject = clickedButton.gameObject;
 

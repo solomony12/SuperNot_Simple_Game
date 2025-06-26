@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Seat
   - CharacterImagePose
   - CharacterImageFace
   - CharacterAndDialogue
@@ -12,6 +11,7 @@ TagManager:
   - DialogueSystem
   - MainStoryMarker
   - CharacterArcStoryMarker
+  - InteractableObject
   layers:
   - Default
   - TransparentFX

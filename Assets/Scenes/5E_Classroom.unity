@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 201011416}
   m_Layer: 5
   m_Name: s02
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 254425318}
   m_Layer: 5
   m_Name: s01
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -500,7 +500,7 @@ GameObject:
   - component: {fileID: 411613752}
   m_Layer: 5
   m_Name: s03
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -916,7 +916,7 @@ GameObject:
   - component: {fileID: 641394597}
   m_Layer: 5
   m_Name: s10
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1036,7 +1036,7 @@ GameObject:
   - component: {fileID: 675250969}
   m_Layer: 5
   m_Name: s05
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1156,7 +1156,7 @@ GameObject:
   - component: {fileID: 702236859}
   m_Layer: 5
   m_Name: s06
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1552,7 +1552,7 @@ GameObject:
   - component: {fileID: 768566870}
   m_Layer: 5
   m_Name: s04
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1672,7 +1672,7 @@ GameObject:
   - component: {fileID: 776347521}
   m_Layer: 5
   m_Name: s12
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1792,7 +1792,7 @@ GameObject:
   - component: {fileID: 843217466}
   m_Layer: 5
   m_Name: s11
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2090,9 +2090,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2316e051e1218554f9edfb646c2595b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterCommandsInstance: {fileID: 1393894651}
-  DialogueCommandsInstance: {fileID: 1393894655}
-  DPMInstance: {fileID: 0}
   charDialParent: {fileID: 2081661173}
   characterImagePose: {fileID: 846552867}
   dialogueBoxPanel: {fileID: 2067157649}
@@ -2172,7 +2169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AnimationsInstance: {fileID: 1393894654}
-  DPMInstance: {fileID: 1393894656}
 --- !u!114 &1393894656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2367,7 +2363,7 @@ GameObject:
   - component: {fileID: 1487776754}
   m_Layer: 5
   m_Name: s07
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2641,7 +2637,7 @@ GameObject:
   - component: {fileID: 1732037424}
   m_Layer: 5
   m_Name: s09
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2852,7 +2848,7 @@ GameObject:
   - component: {fileID: 2032115027}
   m_Layer: 5
   m_Name: s08
-  m_TagString: Seat
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -5,15 +5,15 @@ public static class ScriptConstants
     // Paths
     public const string characterArtPath = "Art/CharacterArt/";
     // Tag name strings
-    public const string seatString = "Seat";
+    public const string gameControllerString = "GameController";
     public const string characterAndDialogueString = "CharacterAndDialogue";
     public const string characterImagePoseString = "CharacterImagePose";
     public const string characterImageFaceString = "CharacterImageFace";
     public const string dialogueBoxPanelString = "DialogueBoxPanel";
     public const string dialogueSystemString = "DialogueSystem";
-    public const string gameControllerString = "GameController";
     public const string mainStoryMarkerString = "MainStoryMarker";
     public const string characterArcStoryMarkerString = "CharacterArcStoryMarker";
+    public const string interactableObjectString = "InteractableObject";
 
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";
