@@ -49,7 +49,7 @@ Arisa: *pouting* Do you want it or not?
     -> Reject it
         Makoto: No. Keep it for yourself
         <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
-        Arisa: *pouting* You should know when a girl likes you
+        Arisa: *pouting* You should know when a girl likes you.
         <<ShowCharacter YuukaKannouji_Default YuukaKannouji_Default>>
         Yuuka: That's our fire starter...
         <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>

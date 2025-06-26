@@ -1,4 +1,22 @@
-﻿title: R00_HarutoSakuma
+﻿title: C00_HarutoSakuma
+---
+Haruto: Koume says a lot of stuff that doesn't mean much sometimes.
+
+Haruto: You should ignore her.
+
+<<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
+
+Koume: I'd thought you wanted me to be more active.
+
+<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
+
+Haruto: Yes, but not tell lies.
+
+<<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
+
+Koume: Who's lying, you dope.
+===
+title: R00_HarutoSakuma
 ---
 Haruto: *reading a book*
 ===
