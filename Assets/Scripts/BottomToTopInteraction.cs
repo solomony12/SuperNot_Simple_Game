@@ -176,28 +176,12 @@ public class BottomToTopInteraction : MonoBehaviour
             else
             {
                 // Show the dialogue box
+                // Select and play the scene after the animation is over
                 dialogueBoxPanel.SetActive(true);
-                DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeIn);
+                DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeIn, ScriptConstants.defaultAnimationDuration,
+                    () => SelectScene());
 
-                // Start scene
-                // TODO: Currently, if there's overlap, it will always play the main story first
-                // Main
-                if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.mainStoryMarkerString))
-                {
-                    DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
-                }
-                // Character Arc
-                else if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.characterArcStoryMarkerString))
-                {
-                    DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
-                }
-                // Random Dialogue
-                else 
-                {
-                    DialogueCommands.Instance.StartScene(lastClickedObject.name);
-                }
                 // TODO: Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
-                // TODO: Rerun the markers once the ran scene is done
             }
         }
     }
@@ -290,6 +274,27 @@ public class BottomToTopInteraction : MonoBehaviour
             }
         }
      }
+
+    void SelectScene()
+    {
+        // Start scene
+        // TODO: Currently, if there's overlap, it will always play the main story first
+        // Main
+        if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.mainStoryMarkerString))
+        {
+            DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
+        }
+        // Character Arc
+        else if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.characterArcStoryMarkerString))
+        {
+            DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
+        }
+        // Random Dialogue
+        else
+        {
+            DialogueCommands.Instance.StartScene(lastClickedObject.name);
+        }
+    }
 
     void HandleSceneEnded()
     {
