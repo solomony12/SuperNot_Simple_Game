@@ -59,8 +59,6 @@ public class DialogueProgressionManager : MonoBehaviour
         if (state.StartsWith(ScriptConstants.mainStoryMarkerID))
         {
             UpdateLatestMain(state);
-            Debug.Log($"Is M01 unlocked? {IsNodeUnlocked("M01")}");
-            Debug.Log($"LatestMainStory: {GetLatestMainStory()}");
         }
         // Character Arc Story
         else if (state.StartsWith(ScriptConstants.characterArcStoryMarkerID))
@@ -75,8 +73,6 @@ public class DialogueProgressionManager : MonoBehaviour
         }
 
         DiscoverNewlyUnlockedParts();
-        Debug.Log($"Is C00_KoumeMomone unlocked? {IsNodeUnlocked("C00_KoumeMomone")}");
-        Debug.Log($"LatestCharacterArc for KoumeMomone: {GetLatestCharacterArc("KoumeMomone")}");
 
         Debug.Log($"Reached state: {state}");
 
