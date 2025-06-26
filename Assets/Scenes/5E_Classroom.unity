@@ -915,7 +915,7 @@ GameObject:
   - component: {fileID: 641394598}
   - component: {fileID: 641394597}
   m_Layer: 5
-  m_Name: s10
+  m_Name: KoumeMomone
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2095,6 +2095,8 @@ MonoBehaviour:
   dialogueBoxPanel: {fileID: 2067157649}
   mainStoryMarker: {fileID: 0}
   characterArcStoryMarker: {fileID: 0}
+  topPanel: {fileID: 0}
+  bottomPanel: {fileID: 0}
   dialogueRunner: {fileID: 707690369}
 --- !u!1 &1393894650
 GameObject:

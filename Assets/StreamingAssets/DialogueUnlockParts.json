@@ -43,6 +43,22 @@
                 "rules": "Unlock Random Dialogue 4 after Main Story 5 or Character Arc 3 for Koume Momone",
                 "title" : "",
                 "description": ""
+            },
+            {
+                "node": "R00_KoumeMomone",
+                "startingCharacter": "KoumeMomone",
+                "startingScene": "5E_Classroom",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R01_KoumeMomone",
+                "startingCharacter": "KoumeMomone",
+                "startingScene": "5E_Classroom",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
             }
         ]
     }
