@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using Yarn.Unity;
 using static Animations.AnimationType;
@@ -63,14 +64,13 @@ public class DialogueCommands : MonoBehaviour
     /// </summary>
     /// <param name="objName">Name of the startingCharacter</param>
     /// <param name="markerId">Type of story</param>
-    public void StartScene(string objName, string markerId = ScriptConstants.randomID)
+    public void StartScene(string objName, string markerId = ScriptConstants.randomStoryID)
     {
         // Random Dialogue
-        if (markerId.Equals(ScriptConstants.randomID))
+        if (markerId.Equals(ScriptConstants.randomStoryID))
         {
-            // TODO: Select a random dialogue from the given character/object
-            currentStoryRunning = "random";
-            dialogueRunner.StartDialogue("random");
+            // Select a random dialogue from the given character/object
+            currentStoryRunning = SelectRandomDialogueForObject(objName);
         }
         // Main Story
         else if (markerId.Equals(ScriptConstants.mainStoryMarkerID))
@@ -79,7 +79,6 @@ public class DialogueCommands : MonoBehaviour
 
             // Start yarn script scene with that name (mainStoryName)
             currentStoryRunning = mainStoryName;
-            dialogueRunner.StartDialogue(mainStoryName);
         }
         // Character Arc Story
         else
@@ -88,8 +87,11 @@ public class DialogueCommands : MonoBehaviour
 
             // Start yarn script scene with that name (characterPartName)
             currentStoryRunning = characterPartName;
-            dialogueRunner.StartDialogue(characterPartName);
         }
+
+        // Play scene
+        Debug.Log($"Playing scene: {currentStoryRunning}");
+        dialogueRunner.StartDialogue(currentStoryRunning);
 
         Debug.Log("Scene Start");
     }
@@ -109,5 +111,35 @@ public class DialogueCommands : MonoBehaviour
 
         // Launch any methods connected to this listener
         OnSceneEnded?.Invoke();
+    }
+
+    /// <summary>
+    /// Get a random dialogue name to play
+    /// </summary>
+    /// <param name="objName">The character/object to get random dialogue for</param>
+    /// <returns>Name of part/node</returns>
+    private string SelectRandomDialogueForObject(string objName)
+    {
+        int dialogueNumberSelected = 0;
+
+        // Grab all the unlocked R nodes with the given character/object name
+        List<UnlockPart> unlockedRandCharParts = DialogueProgressionManager.Instance.GetUnlockedPartsByIDAndName(ScriptConstants.randomStoryID, objName);
+
+        // Choose at random which one to play
+        if (unlockedRandCharParts.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, unlockedRandCharParts.Count);
+            UnlockPart randomPart = unlockedRandCharParts[randomIndex];
+            DialogueProgressionManager.Instance.TryExtractNumber(randomPart.node, out int newNum);
+            dialogueNumberSelected = newNum;
+        }
+        else
+        {
+            // TODO: This 'else' can be deleted later in the future
+            // Nothing found
+            Debug.Log("Playing default random of 0");
+        }
+
+        return $"{ScriptConstants.randomStoryID}{dialogueNumberSelected:D2}_{objName}";
     }
 }

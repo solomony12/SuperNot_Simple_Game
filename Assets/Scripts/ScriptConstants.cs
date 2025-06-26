@@ -20,7 +20,7 @@ public static class ScriptConstants
 
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";
-    public const string randomID = "R";
+    public const string randomStoryID = "R";
 
     public const string startingStoryID = "M00";
 

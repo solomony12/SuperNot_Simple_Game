@@ -130,7 +130,7 @@ public class DialogueProgressionManager : MonoBehaviour
     /// <param name="s">State name</param>
     /// <param name="number">ID for that part</param>
     /// <returns>Successfully pulled out ID</returns>
-    private bool TryExtractNumber(string s, out int number)
+    public bool TryExtractNumber(string s, out int number)
     {
         string digits = new string(s.Where(char.IsDigit).ToArray());
         return int.TryParse(digits, out number);
@@ -289,6 +289,89 @@ public class DialogueProgressionManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Gets all unlock parts whose node starts with a given story ID
+    /// </summary>
+    /// <param name="id">The story ID to filter nodes by</param>
+    /// <returns>List of matching UnlockParts</returns>
+    public List<UnlockPart> GetPartsByStoryID(string id)
+    {
+        // Nothing
+        if (string.IsNullOrEmpty(id))
+        {
+            return new List<UnlockPart>();
+        }
+
+        return unlockParts
+            .Where(part => !string.IsNullOrEmpty(part.node) && part.node.StartsWith(id)).ToList();
+    }
+
+    /// <summary>
+    /// Gets all UnlockParts associated with a specific character/object name
+    /// </summary>
+    /// <param name="name">The name of the character or object</param>
+    /// <returns>List of matching UnlockParts</returns>
+    public List<UnlockPart> GetAllCharacterArcPartsForName(string name)
+    {
+        // Nothing
+        if (string.IsNullOrEmpty(name))
+        {
+            return new List<UnlockPart>();
+        }
+
+        return unlockParts
+            .Where(part =>
+                !string.IsNullOrEmpty(part.node) &&
+                part.node.StartsWith(ScriptConstants.characterArcStoryMarkerID) && // starts with "C"
+                part.node.EndsWith("_" + name)) // ends with _Name
+            .ToList();
+    }
+
+    /// <summary>
+    /// Gets all UnlockParts whose node starts with a given story ID and ends with the given character/object name.
+    /// </summary>
+    /// <param name="id">The story ID </param>
+    /// <param name="name">The character or object name</param>
+    /// <returns>List of matching UnlockParts</returns>
+    public List<UnlockPart> GetPartsByIDAndName(string id, string name)
+    {
+        // Defensive null/empty check
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name))
+        {
+            return new List<UnlockPart>();
+        }
+
+        return unlockParts
+            .Where(part =>
+                !string.IsNullOrEmpty(part.node) &&
+                part.node.StartsWith(id) &&
+                part.node.EndsWith("_" + name))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Gets all unlocked UnlockParts whose node starts with the given story ID and ends with the given character/object name
+    /// </summary>
+    /// <param name="id">The story ID to filter nodes by</param>
+    /// <param name="name">The character or object name to filter nodes by</param>
+    /// <returns>A list of matching UnlockParts that are unlocked</returns>
+    public List<UnlockPart> GetUnlockedPartsByIDAndName(string id, string name)
+    {
+        // Defensive null/empty check
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name))
+        {
+            return new List<UnlockPart>();
+        }
+
+        return unlockParts
+            .Where(part =>
+                !string.IsNullOrEmpty(part.node) &&
+                part.node.StartsWith(id) &&
+                part.node.EndsWith("_" + name) &&
+                IsNodeUnlocked(part.node))
+            .ToList();
     }
 
 
