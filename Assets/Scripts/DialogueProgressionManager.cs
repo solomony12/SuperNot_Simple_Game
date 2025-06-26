@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class DialogueProgressionManager : MonoBehaviour
 {
+    public static DialogueProgressionManager Instance;
+
     // Saving
     private const string SaveFileName = "progression_save.json";
     private string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
@@ -25,6 +27,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -47,8 +50,6 @@ public class DialogueProgressionManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"Reached state: {state}");
-
         // Main Story
         if (state.StartsWith(ScriptConstants.mainStoryMarkerID))
         {
@@ -66,6 +67,8 @@ public class DialogueProgressionManager : MonoBehaviour
             return;
         }
 
+        Debug.Log($"Reached state: {state}");
+
         // Auto-Save
         SaveProgress();
     }
@@ -79,10 +82,17 @@ public class DialogueProgressionManager : MonoBehaviour
         // Get the number ID
         if (!TryExtractNumber(state, out int newNum)) return;
 
+        // Add one episode
+        newNum += 1;
+
+        // The latest episode now is one up
+        // (Example: M05) (The :D2 is for the leading 0 if newNum is a single digit)
+        string newLatestMain = $"{ScriptConstants.mainStoryMarkerID}{newNum:D2}";
+
         // Update main story
         if (latestMainStory == null || TryExtractNumber(latestMainStory, out int currentNum) && newNum > currentNum)
         {
-            latestMainStory = state;
+            latestMainStory = newLatestMain;
         }
     }
 
@@ -94,15 +104,23 @@ public class DialogueProgressionManager : MonoBehaviour
     {
         // 0: C#, 1: Name
         // (Example: C3_HarutoSakuma)
-        var parts = state.Split('_');
+        string[] parts = state.Split('_');
         if (parts.Length < 2 || !TryExtractNumber(parts[0], out int newNum)) return;
 
         string character = parts[1];
+
+        // Add one episode
+        newNum += 1;
+
+        // The latest episode now is one up
+        // (Example: C08_SoraHino) (The :D2 is for the leading 0 if newNum is a single digit)
+        string newLatestCharArc = $"{ScriptConstants.characterArcStoryMarkerID}{newNum:D2}_{character}";
+        
         // Update character arc for that character
         if (!latestCharacterArcs.TryGetValue(character, out string current) ||
             TryExtractNumber(current.Split('_')[0], out int currentNum) && newNum > currentNum)
         {
-            latestCharacterArcs[character] = state;
+            latestCharacterArcs[character] = newLatestCharArc;
         }
     }
 

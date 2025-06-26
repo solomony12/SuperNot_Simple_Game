@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class CharacterCommands : MonoBehaviour
 {
+    public static CharacterCommands Instance;
     public Animations AnimationsInstance;
 
     public static GameObject characterImagePose;
@@ -11,6 +12,8 @@ public class CharacterCommands : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         // Animations script instance
         AnimationsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Animations>();
 

@@ -12,10 +12,6 @@ using static Animations.AnimationType;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
-    public CharacterCommands CharacterCommandsInstance;
-    public DialogueCommands DialogueCommandsInstance;
-    public DialogueProgressionManager DPMInstance;
-
     public GameObject charDialParent;
     public GameObject characterImagePose;
     public GameObject dialogueBoxPanel;
@@ -34,10 +30,6 @@ public class BottomToTopInteraction : MonoBehaviour
     {
         // Commands scripts instances
         GameObject gameController = GameObject.FindWithTag(ScriptConstants.gameControllerString);
-        CharacterCommandsInstance = gameController.GetComponent<CharacterCommands>();
-        DialogueCommandsInstance = gameController.GetComponent<DialogueCommands>();
-        DPMInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).
-            GetComponent<DialogueProgressionManager>();
 
         // Get the characterDialogueParent
         charDialParent = GameObject.FindWithTag(ScriptConstants.characterAndDialogueString);
@@ -88,6 +80,8 @@ public class BottomToTopInteraction : MonoBehaviour
 
         // Set markers for the scene
         SetMarkers();
+
+        DialogueCommands.Instance.OnSceneEnded += HandleSceneEnded;
     }
 
     void OnAnyButtonClicked(Button clickedButton)
@@ -128,7 +122,7 @@ public class BottomToTopInteraction : MonoBehaviour
                 // Hide the dialogue box for this new character
                 if (dialogueBoxPanel.activeSelf)
                 {
-                    DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeOut);
+                    DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeOut);
                 }
                 else
                 {
@@ -139,11 +133,11 @@ public class BottomToTopInteraction : MonoBehaviour
                 // (Example: KoumeMomone, 0, 1 -> KoumeMomone_Default (face) and KoumeMomone_Default02 (pose))
 
                 // Pose
-                string charImagePoseName = CharacterCommandsInstance.CharacterPoseNumIdToStringName(nameStr, poseNum);
+                string charImagePoseName = CharacterCommands.Instance.CharacterPoseNumIdToStringName(nameStr, poseNum);
                 //Debug.Log($"charImagePoseName is: {charImagePoseName}");
 
                 // Face
-                string charImageFaceName = CharacterCommandsInstance.CharacterFaceNumIdToStringName(nameStr, faceNum);
+                string charImageFaceName = CharacterCommands.Instance.CharacterFaceNumIdToStringName(nameStr, faceNum);
                 //Debug.Log($"charImageFaceName is: {charImageFaceName}");
 
                 try
@@ -153,7 +147,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     // If current character exists, fade them out first
                     if (characterImagePose.activeSelf)
                     {
-                        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeOut, ScriptConstants.defaultAnimationDuration,
+                        CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(FadeOut, ScriptConstants.defaultAnimationDuration,
                                 () => ShowCharacter(charImagePoseName, charImageFaceName));
                     }
                     else
@@ -177,30 +171,30 @@ public class BottomToTopInteraction : MonoBehaviour
             {
                 // Yarn Spinner here to go through the dialogue as well as different expressions/poses
                 // This just calls 'next' in DialogueCommands. This script file should basically do NOTHING else
-                DialogueCommandsInstance.AdvanceLine();
+                DialogueCommands.Instance.AdvanceLine();
             }
             else
             {
                 // Show the dialogue box
                 dialogueBoxPanel.SetActive(true);
-                DialogueCommandsInstance.PlayAnimationOnDialogueBox(FadeIn);
+                DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeIn);
 
                 // Start scene
                 // TODO: Currently, if there's overlap, it will always play the main story first
                 // Main
                 if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.mainStoryMarkerString))
                 {
-                    DialogueCommandsInstance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
+                    DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
                 }
                 // Character Arc
                 else if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.characterArcStoryMarkerString))
                 {
-                    DialogueCommandsInstance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
+                    DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
                 }
                 // Random Dialogue
                 else 
                 {
-                    DialogueCommandsInstance.StartScene(lastClickedObject.name);
+                    DialogueCommands.Instance.StartScene(lastClickedObject.name);
                 }
                 // TODO: Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
                 // TODO: Rerun the markers once the ran scene is done
@@ -216,9 +210,9 @@ public class BottomToTopInteraction : MonoBehaviour
     void ShowCharacter(string charImagePoseName, string charImageFaceName)
     {
         characterImagePose.SetActive(true);
-        CharacterCommandsInstance.ChangeCharacterPose(charImagePoseName);
-        CharacterCommandsInstance.ChangeCharacterFace(charImageFaceName);
-        CharacterCommandsInstance.PlayAnimationOnCurrentCharacter(FadeIn);
+        CharacterCommands.Instance.ChangeCharacterPose(charImagePoseName);
+        CharacterCommands.Instance.ChangeCharacterFace(charImageFaceName);
+        CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(FadeIn);
     }
 
     /// <summary>
@@ -228,12 +222,12 @@ public class BottomToTopInteraction : MonoBehaviour
     {
 
         // Get story parts
-        List<UnlockPart> storyParts = DPMInstance.GetLatestStoryPartsInScene();
+        List<UnlockPart> storyParts = DialogueProgressionManager.Instance.GetLatestStoryPartsInScene();
 
         // Check for main story
-        if (DPMInstance.HasMainStory(storyParts))
+        if (DialogueProgressionManager.Instance.HasMainStory(storyParts))
         {
-            UnlockPart mainStory = DPMInstance.GetLatestMainStoryPart();
+            UnlockPart mainStory = DialogueProgressionManager.Instance.GetLatestMainStoryPart();
 
             // Find the game object the marker will be a child of
             GameObject mainMarkerCharacter = GameObject.Find(mainStory.startingCharacter);
@@ -249,10 +243,10 @@ public class BottomToTopInteraction : MonoBehaviour
         }
 
         // Check for character arcs
-        if (DPMInstance.HasCharacterArcStory(storyParts))
+        if (DialogueProgressionManager.Instance.HasCharacterArcStory(storyParts))
         {
             // Grab all the character arc parts
-            List<UnlockPart> characterStoryParts = DPMInstance.GetAllLatestCharacterArcParts();
+            List<UnlockPart> characterStoryParts = DialogueProgressionManager.Instance.GetAllLatestCharacterArcParts();
 
             foreach (UnlockPart charStory in characterStoryParts)
             {
@@ -296,6 +290,14 @@ public class BottomToTopInteraction : MonoBehaviour
             }
         }
      }
+
+    void HandleSceneEnded()
+    {
+        // Update markers
+        SetMarkers();
+
+        // TODO: Reenable the bottom panel
+    }
 
     /*void Update()
     {

@@ -7,8 +7,8 @@ using static Animations.AnimationType;
 
 public class DialogueCommands : MonoBehaviour
 {
+    public static DialogueCommands Instance;
     public Animations AnimationsInstance;
-    public DialogueProgressionManager DPMInstance;
 
     public static GameObject dialogueBoxPanel;
 
@@ -16,12 +16,13 @@ public class DialogueCommands : MonoBehaviour
 
     private string currentStoryRunning;
 
+    public event Action OnSceneEnded;
+
     private void Awake()
     {
         // Script instances
+        Instance = this;
         AnimationsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Animations>();
-        DPMInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).
-            GetComponent<DialogueProgressionManager>();
 
         // Get the dialogueBoxPanel
         dialogueBoxPanel = GameObject.FindWithTag(ScriptConstants.dialogueBoxPanelString);
@@ -69,7 +70,7 @@ public class DialogueCommands : MonoBehaviour
         // Main Story
         else if (markerId.Equals(ScriptConstants.mainStoryMarkerID))
         {
-            string mainStoryName = DPMInstance.GetLatestMainStory();
+            string mainStoryName = DialogueProgressionManager.Instance.GetLatestMainStory();
 
             // Start yarn script scene with that name (mainStoryName)
             currentStoryRunning = mainStoryName;
@@ -78,7 +79,7 @@ public class DialogueCommands : MonoBehaviour
         // Character Arc Story
         else
         {
-            string characterPartName = DPMInstance.GetLatestCharacterArc(objName);
+            string characterPartName = DialogueProgressionManager.Instance.GetLatestCharacterArc(objName);
 
             // Start yarn script scene with that name (characterPartName)
             currentStoryRunning = characterPartName;
@@ -93,9 +94,12 @@ public class DialogueCommands : MonoBehaviour
         Debug.Log("End of Scene");
 
         // Mark story part as completed
-        DPMInstance.ReachState(currentStoryRunning);
+        DialogueProgressionManager.Instance.ReachState(currentStoryRunning);
 
         // Hide the dialogue box
         PlayAnimationOnDialogueBox(FadeOut);
+
+        // Launch any methods connected to this listener
+        OnSceneEnded?.Invoke();
     }
 }
