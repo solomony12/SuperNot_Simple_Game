@@ -383,6 +383,9 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     public void SaveProgress()
     {
+        // TODO: Enable this when necessary or done with build (currently disabled for debugging)
+        return;
+
         // Save data
         var saveData = new DialogueProgressionSaveData
         {

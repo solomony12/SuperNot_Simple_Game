@@ -45,9 +45,22 @@
                 "description": ""
             },
             {
+                "node": "R00_RinRaizan",
+                "startingCharacter": "RinRaizan",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R01_RinRaizan",
+                "startingCharacter": "RinRaizan",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "R00_KoumeMomone",
                 "startingCharacter": "KoumeMomone",
-                "startingScene": "5E_Classroom",
                 "rules": "Basic random",
                 "title" : "",
                 "description": ""
@@ -55,7 +68,6 @@
             {
                 "node": "R01_KoumeMomone",
                 "startingCharacter": "KoumeMomone",
-                "startingScene": "5E_Classroom",
                 "rules": "Basic random",
                 "title" : "",
                 "description": ""
