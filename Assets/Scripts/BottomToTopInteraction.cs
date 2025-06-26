@@ -303,6 +303,10 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     void ResetMarkers()
     {
+        // Let markers able to be used
+        mainStoryMarker.SetActive(true);
+        characterArcStoryMarker.SetActive(true);
+
         // First reset position in relation to child/parent for main
         mainStoryMarker.transform.SetParent(bottomPanel.transform);
 

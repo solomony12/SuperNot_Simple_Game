@@ -18,6 +18,11 @@ public class DialogueProgressionManager : MonoBehaviour
     private UnlockPartsData unlockPartsData;
     private List<UnlockPart> unlockParts = new();
 
+    // Efficient unlocking new parts lists
+    private SortedDictionary<int, UnlockPart> mainStoryPartsByNumber = new();
+    private Dictionary<string, SortedDictionary<int, UnlockPart>> characterArcPartsByCharacter = new();
+    private Dictionary<string, SortedDictionary<int, UnlockPart>> randomPartsByGroup = new();
+
     // Story parts reached
     private HashSet<string> reachedStates = new();
 
@@ -54,6 +59,8 @@ public class DialogueProgressionManager : MonoBehaviour
         if (state.StartsWith(ScriptConstants.mainStoryMarkerID))
         {
             UpdateLatestMain(state);
+            Debug.Log($"Is M01 unlocked? {IsNodeUnlocked("M01")}");
+            Debug.Log($"LatestMainStory: {GetLatestMainStory()}");
         }
         // Character Arc Story
         else if (state.StartsWith(ScriptConstants.characterArcStoryMarkerID))
@@ -67,7 +74,12 @@ public class DialogueProgressionManager : MonoBehaviour
             return;
         }
 
+        DiscoverNewlyUnlockedParts();
+        Debug.Log($"Is C00_KoumeMomone unlocked? {IsNodeUnlocked("C00_KoumeMomone")}");
+        Debug.Log($"LatestCharacterArc for KoumeMomone: {GetLatestCharacterArc("KoumeMomone")}");
+
         Debug.Log($"Reached state: {state}");
+
 
         // Auto-Save
         SaveProgress();
@@ -109,18 +121,84 @@ public class DialogueProgressionManager : MonoBehaviour
 
         string character = parts[1];
 
+        // Currently the character didn't have their arc ran yet so we add the first one
+        if (!latestCharacterArcs.ContainsKey(character))
+        {
+            latestCharacterArcs[character] = state;
+        }
+
         // Add one episode
         newNum += 1;
 
         // The latest episode now is one up
         // (Example: C08_SoraHino) (The :D2 is for the leading 0 if newNum is a single digit)
         string newLatestCharArc = $"{ScriptConstants.characterArcStoryMarkerID}{newNum:D2}_{character}";
-        
+
         // Update character arc for that character
         if (!latestCharacterArcs.TryGetValue(character, out string current) ||
             TryExtractNumber(current.Split('_')[0], out int currentNum) && newNum > currentNum)
         {
             latestCharacterArcs[character] = newLatestCharArc;
+        }
+    }
+
+    /// <summary>
+    /// Creates and stores all parts/nodes in dictionaries for faster unlocking
+    /// </summary>
+    private void IndexUnlockParts()
+    {
+        mainStoryPartsByNumber.Clear();
+        characterArcPartsByCharacter.Clear();
+
+        foreach (var part in unlockParts)
+        {
+            if (string.IsNullOrEmpty(part.node))
+                continue;
+
+            // Main story
+            if (part.node.StartsWith(ScriptConstants.mainStoryMarkerID))
+            {
+                // Index that part with the number following the ID
+                if (TryExtractNumber(part.node, out int num))
+                {
+                    mainStoryPartsByNumber[num] = part;
+                }
+            }
+            // Character Arc story
+            else if (part.node.StartsWith(ScriptConstants.characterArcStoryMarkerID))
+            {
+                var parts = part.node.Split('_');
+                if (parts.Length >= 2 && TryExtractNumber(parts[0], out int num))
+                {
+                    string character = parts[1];
+                    // Make a new dictionary if that character doesn't have one already
+                    if (!characterArcPartsByCharacter.ContainsKey(character))
+                    {
+                        characterArcPartsByCharacter[character] = new SortedDictionary<int, UnlockPart>();
+                    }
+
+                    // Index that part with the number following the ID
+                    characterArcPartsByCharacter[character][num] = part;
+                }
+            }
+            // Random dialogue
+            else
+            {
+                var parts = part.node.Split('_');
+                if (parts.Length >= 2 && TryExtractNumber(parts[0], out int num))
+                {
+                    string group = parts[1];
+
+                    // Make a new dictionary if that character doesn't have one already
+                    if (!randomPartsByGroup.ContainsKey(group))
+                    {
+                        randomPartsByGroup[group] = new SortedDictionary<int, UnlockPart>();
+                    }
+
+                    // Index that part with the number following the ID
+                    randomPartsByGroup[group][num] = part;
+                }
+            }
         }
     }
 
@@ -136,6 +214,70 @@ public class DialogueProgressionManager : MonoBehaviour
         return int.TryParse(digits, out number);
     }
 
+    /// <summary>
+    /// Set new unlocked parts after a scene was finished
+    /// </summary>
+    private void DiscoverNewlyUnlockedParts()
+    {
+        // Main story
+        if (TryExtractNumber(latestMainStory, out int currentMainNum))
+        {
+            int nextMainNum = currentMainNum + 1;
+            if (mainStoryPartsByNumber.TryGetValue(nextMainNum, out var nextMainPart))
+            {
+                if (!reachedStates.Contains(nextMainPart.node) && IsNodeUnlocked(nextMainPart.node))
+                {
+                    latestMainStory = nextMainPart.node;
+                    Debug.Log($"Discovered new main story part: {nextMainPart.node}");
+                }
+            }
+        }
+
+        // Character arcs
+        foreach (var kvp in characterArcPartsByCharacter)
+        {
+            string character = kvp.Key;
+            var arcDict = kvp.Value;
+
+            // If we have a latest node already, extract its number, otherwise start from -1 (i.e., check from 0)
+            int latestNum = -1;
+            if (latestCharacterArcs.TryGetValue(character, out string currentNode))
+            {
+                if (TryExtractNumber(currentNode.Split('_')[0], out int currentCharNum))
+                    latestNum = currentCharNum;
+            }
+
+            // Try to find the next part after the latest one (or the first part if none tracked yet)
+            int nextNum = latestNum + 1;
+            if (arcDict.TryGetValue(nextNum, out var nextCharPart))
+            {
+                if (!reachedStates.Contains(nextCharPart.node) && IsNodeUnlocked(nextCharPart.node))
+                {
+                    latestCharacterArcs[character] = nextCharPart.node;
+                    Debug.Log($"Discovered new character arc for {character}: {nextCharPart.node}");
+                }
+            }
+        }
+
+        // Random dialogue
+        foreach (var groupEntry in randomPartsByGroup)
+        {
+            var partsByNum = groupEntry.Value;
+
+            foreach (var kvp in partsByNum)
+            {
+                var node = kvp.Value.node;
+                if (reachedStates.Contains(node)) continue;
+
+                if (IsNodeUnlocked(node))
+                {
+                    Debug.Log($"Discovered untracked unlocked random node: {node}");
+                }
+            }
+        }
+    }
+
+
     public string GetLatestMainStory() => latestMainStory;
 
     /// <summary>
@@ -143,16 +285,14 @@ public class DialogueProgressionManager : MonoBehaviour
     /// </summary>
     public UnlockPart GetLatestMainStoryPart()
     {
-        if (string.IsNullOrEmpty(latestMainStory))
-            return null;
+        if (string.IsNullOrEmpty(latestMainStory)) return null;
 
-        var mainPart = unlockParts.FirstOrDefault(part =>
-            part.node == latestMainStory &&
-            !string.IsNullOrEmpty(part.node) &&
-            part.node.StartsWith(ScriptConstants.mainStoryMarkerID) &&
-            IsNodeUnlocked(part.node));
+        if (TryExtractNumber(latestMainStory, out int num) && mainStoryPartsByNumber.TryGetValue(num, out var part))
+        {
+            if (IsNodeUnlocked(part.node)) return part;
+        }
 
-        return mainPart;
+        return null;
     }
 
     public string GetLatestCharacterArc(string character) =>
@@ -166,12 +306,17 @@ public class DialogueProgressionManager : MonoBehaviour
     {
         List<UnlockPart> latestParts = new();
 
+        // Get latest arcs for all characters
         foreach (var kvp in latestCharacterArcs)
         {
+            string character = kvp.Key;
             string latestNode = kvp.Value;
-            var part = unlockParts.FirstOrDefault(r => r.node == latestNode);
 
-            if (part != null && IsNodeUnlocked(part.node))
+            // Check if node is unlocked for that latest part
+            if (TryExtractNumber(latestNode.Split('_')[0], out int num) &&
+                characterArcPartsByCharacter.TryGetValue(character, out var dict) &&
+                dict.TryGetValue(num, out var part) &&
+                IsNodeUnlocked(part.node))
             {
                 latestParts.Add(part);
             }
@@ -280,6 +425,7 @@ public class DialogueProgressionManager : MonoBehaviour
         foreach (var kvp in latestCharacterArcs)
         {
             string latestNode = kvp.Value;
+            // Found the character part in this scene and it's unlocked
             UnlockPart part = unlockParts.FirstOrDefault(r =>
             r.node == latestNode && r.startingScene == currentScene);
             if (part != null && IsNodeUnlocked(part.node))
@@ -458,6 +604,7 @@ public class DialogueProgressionManager : MonoBehaviour
             }*/
         }
     #endif
+        IndexUnlockParts();
     }
 
     /// <summary>

@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 201011417}
   - component: {fileID: 201011416}
   m_Layer: 5
-  m_Name: s02
+  m_Name: YuukaKannouji
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 254425319}
   - component: {fileID: 254425318}
   m_Layer: 5
-  m_Name: s01
+  m_Name: RinRaizan
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 411613753}
   - component: {fileID: 411613752}
   m_Layer: 5
-  m_Name: s03
+  m_Name: ArisaYoneyama
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,7 +1035,7 @@ GameObject:
   - component: {fileID: 675250970}
   - component: {fileID: 675250969}
   m_Layer: 5
-  m_Name: s05
+  m_Name: SoraHino
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1155,7 +1155,7 @@ GameObject:
   - component: {fileID: 702236860}
   - component: {fileID: 702236859}
   m_Layer: 5
-  m_Name: s06
+  m_Name: HyoukaEnomoto
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1551,7 +1551,7 @@ GameObject:
   - component: {fileID: 768566871}
   - component: {fileID: 768566870}
   m_Layer: 5
-  m_Name: s04
+  m_Name: MakotoAtsukawa
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1671,7 +1671,7 @@ GameObject:
   - component: {fileID: 776347522}
   - component: {fileID: 776347521}
   m_Layer: 5
-  m_Name: s12
+  m_Name: KiraraTsubasa
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1791,7 +1791,7 @@ GameObject:
   - component: {fileID: 843217467}
   - component: {fileID: 843217466}
   m_Layer: 5
-  m_Name: s11
+  m_Name: HarutoSakuma
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2377,7 +2377,7 @@ GameObject:
   - component: {fileID: 1487776755}
   - component: {fileID: 1487776754}
   m_Layer: 5
-  m_Name: s07
+  m_Name: ItsukiTakasumi
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2518,8 +2518,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -13.522949}
-  m_SizeDelta: {x: 2410.638, y: 1346.3}
+  m_AnchoredPosition: {x: 18.398, y: -13.099}
+  m_SizeDelta: {x: 2447.434, y: 1347.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1666590797
 MonoBehaviour:
@@ -2651,7 +2651,7 @@ GameObject:
   - component: {fileID: 1732037425}
   - component: {fileID: 1732037424}
   m_Layer: 5
-  m_Name: s09
+  m_Name: NozomiHinase
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2862,7 +2862,7 @@ GameObject:
   - component: {fileID: 2032115028}
   - component: {fileID: 2032115027}
   m_Layer: 5
-  m_Name: s08
+  m_Name: YumiYasuyuki
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

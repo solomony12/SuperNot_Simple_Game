@@ -2,7 +2,7 @@
         "unlockParts": [
             {
                 "node": "M00",
-                "startingCharacter": "s04",
+                "startingCharacter": "MakotoAtsukawa",
                 "startingScene": "5E_Classroom",
                 "rules": "Starting node",
                 "title" : "",
@@ -14,15 +14,6 @@
                 "startingCharacter": "MakotoAtsukawa",
                 "startingScene": "5E_Classroom",
                 "rules": "Unlock Main Story Part 1 after Part 2",
-                "title" : "",
-                "description": ""
-            },
-            {
-                "node": "C01_MakotoAtsukawa",
-                "requiresAll": ["M02"],
-                "startingCharacter": "MakotoAtsukawa",
-                "startingScene": "",
-                "rules": "Unlock Character Arc 1 for Makoto Atsukawa after Main Story 2",
                 "title" : "",
                 "description": ""
             },
@@ -45,6 +36,20 @@
                 "description": ""
             },
             {
+                "node": "R00_MakotoAtsukawa",
+                "startingCharacter": "MakotoAtsukawa",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R01_MakotoAtsukawa",
+                "startingCharacter": "MakotoAtsukawa",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "R00_RinRaizan",
                 "startingCharacter": "RinRaizan",
                 "rules": "Basic random",
@@ -53,8 +58,18 @@
             },
             {
                 "node": "R01_RinRaizan",
+                "requiresAll": ["M00"],
                 "startingCharacter": "RinRaizan",
                 "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "C00_KoumeMomone",
+                "requiresAll": ["M00"],
+                "startingCharacter": "KoumeMomone",
+                "startingScene": "5E_Classroom",
+                "rules": "Test character arc unlock",
                 "title" : "",
                 "description": ""
             },

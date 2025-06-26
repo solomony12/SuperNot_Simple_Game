@@ -104,8 +104,12 @@ public class DialogueCommands : MonoBehaviour
     {
         Debug.Log("End of Scene");
 
-        // Mark story part as completed
-        DialogueProgressionManager.Instance.ReachState(currentStoryRunning);
+        // Mark story part as completed (if not random dialogue)
+        if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))
+        {
+            Debug.Log($"Marking {currentStoryRunning} as completed");
+            DialogueProgressionManager.Instance.ReachState(currentStoryRunning);
+        }
 
         // Hide the dialogue box
         PlayAnimationOnDialogueBox(FadeOut);
