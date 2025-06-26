@@ -13,7 +13,7 @@ using static Animations.AnimationType;
 public class BottomToTopInteraction : MonoBehaviour
 {
     public GameObject charDialParent;
-    public GameObject characterImagePose;
+    public static GameObject characterImagePose;
     public GameObject dialogueBoxPanel;
 
     public GameObject mainStoryMarker;
@@ -201,8 +201,11 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     /// <param name="charImagePoseName">Character name with the pose name (null is an option)</param>
     /// <param name="charImageFaceName">Character name with the face expression (null is an option)</param>
-    void ShowCharacter(string charImagePoseName, string charImageFaceName)
+    [YarnCommand("ShowCharacter")]
+    public static void ShowCharacter(string charImagePoseName, string charImageFaceName)
     {
+        Debug.Log($"[YarnCommand] ShowCharacter called with: Pose = '{charImagePoseName}', Face = '{charImageFaceName}'");
+
         characterImagePose.SetActive(true);
 
         // Change pose
@@ -348,6 +351,9 @@ public class BottomToTopInteraction : MonoBehaviour
     void HandleSceneEnded()
     {
         Debug.Log("HandleSceneEnded Ran");
+
+        // TODO: Change characterImage back to the starting image default
+
 
         // Update markers
         SetMarkers();

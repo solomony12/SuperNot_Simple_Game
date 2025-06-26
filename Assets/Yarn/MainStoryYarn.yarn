@@ -10,7 +10,15 @@ title: M01
 ---
 Main Story 01
 
-Another line
+Arisa: Heyyyy Mako~
+
+<<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
+
+Makoto: What do you want?
+
+<<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
+
+Arisa: Don't be so cold, Mako~
 
 The end of this part
 ===

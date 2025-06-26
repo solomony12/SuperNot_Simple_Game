@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Yarn.Unity;
 
 public class CharacterCommands : MonoBehaviour
 {
@@ -66,7 +67,8 @@ public class CharacterCommands : MonoBehaviour
     /// <param name="characterPoseName">Character name with pose name</param>
     public void ChangeCharacterPose(string characterPoseName)
     {
-        Sprite newSpritePose = Resources.Load<Sprite>($"{ScriptConstants.characterArtPath}Poses/{characterPoseName}");
+        string path = $"{ScriptConstants.characterArtPath}Poses/{characterPoseName}";
+        Sprite newSpritePose = Resources.Load<Sprite>(path);
 
         if (newSpritePose != null)
         {
@@ -75,7 +77,7 @@ public class CharacterCommands : MonoBehaviour
         }
         else
         {
-            throw new Exception($"{characterPoseName} pose was not found.");
+            throw new Exception($"'{characterPoseName}' pose was not found.\nPath is: {path}");
         }
     }
 
@@ -94,7 +96,7 @@ public class CharacterCommands : MonoBehaviour
         }
         else
         {
-            throw new Exception($"{characterFaceName} face was not found.");
+            throw new Exception($"'{characterFaceName}' face was not found.");
         }
     }
 
@@ -104,6 +106,7 @@ public class CharacterCommands : MonoBehaviour
     /// <param name="animation">Type of animation to be played</param>
     /// <param name="duration">Duration of animation in seconds</param>
     /// <param name="onComplete">Action/method to run when animation is completed. Null by default</param>
+    //[YarnCommand("PlayAnimationOnCharacter")]
     public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = ScriptConstants.defaultAnimationDuration, Action onComplete = null)
     {
         AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
