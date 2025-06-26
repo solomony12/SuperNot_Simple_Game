@@ -295,8 +295,8 @@ public class BottomToTopInteraction : MonoBehaviour
                 if (Vector2.Distance(mainMarkerPos, charPos) < threshold)
                 {
                     // Change position so that main is on right and character arc is on left
-                    mainStoryMarker.transform.position += new Vector3(1f, 0f, 0f);
-                    charMarkInstance.transform.position += new Vector3(-1f, 0f, 0f);
+                    mainStoryMarker.transform.position += new Vector3(15f, 0f, 0f);
+                    charMarkInstance.transform.position += new Vector3(-15f, 0f, 0f);
 
                     // There can only ever be one match
                     break;
@@ -335,16 +335,19 @@ public class BottomToTopInteraction : MonoBehaviour
         // Main
         if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.mainStoryMarkerString))
         {
+            //Debug.Log("Main runs");
             DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.mainStoryMarkerID);
         }
         // Character Arc
         else if (HelperMethods.HasChildWithTag(lastClickedObject, ScriptConstants.characterArcStoryMarkerString))
         {
+            //Debug.Log("Char runs");
             DialogueCommands.Instance.StartScene(lastClickedObject.name, ScriptConstants.characterArcStoryMarkerID);
         }
         // Random Dialogue
         else
         {
+            //Debug.Log("Rand runs");
             DialogueCommands.Instance.StartScene(lastClickedObject.name);
         }
     }
@@ -354,7 +357,7 @@ public class BottomToTopInteraction : MonoBehaviour
     /// </summary>
     void HandleSceneEnded()
     {
-        Debug.Log("HandleSceneEnded Ran");
+        //Debug.Log("HandleSceneEnded Ran");
 
         // Change characterImage back to the starting image default
         string defaultCurrCharPose = $"{currentCharacterShownName}_{ScriptConstants.PoseTypes.Default}";

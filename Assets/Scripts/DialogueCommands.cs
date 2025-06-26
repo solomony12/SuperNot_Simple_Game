@@ -67,11 +67,14 @@ public class DialogueCommands : MonoBehaviour
     /// <param name="markerId">Type of story</param>
     public void StartScene(string objName, string markerId = ScriptConstants.randomStoryID)
     {
+        //Debug.Log($"StartScene: objName: {objName}; markerID: {markerId}");
+
         // Random Dialogue
         if (markerId.Equals(ScriptConstants.randomStoryID))
         {
             // Select a random dialogue from the given character/object
             currentStoryRunning = SelectRandomDialogueForObject(objName);
+            //Debug.Log($"Rand currStoryRunning is {currentStoryRunning}");
         }
         // Main Story
         else if (markerId.Equals(ScriptConstants.mainStoryMarkerID))
@@ -80,6 +83,7 @@ public class DialogueCommands : MonoBehaviour
 
             // Start yarn script scene with that name (mainStoryName)
             currentStoryRunning = mainStoryName;
+            //Debug.Log($"Main currStoryRunning is {currentStoryRunning}");
         }
         // Character Arc Story
         else
@@ -88,6 +92,7 @@ public class DialogueCommands : MonoBehaviour
 
             // Start yarn script scene with that name (characterPartName)
             currentStoryRunning = characterPartName;
+            //Debug.Log($"Char currStoryRunning is {currentStoryRunning}");
         }
 
         // Play scene

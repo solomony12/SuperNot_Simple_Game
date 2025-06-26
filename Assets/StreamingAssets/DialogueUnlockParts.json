@@ -27,15 +27,6 @@
                 "description": ""
             },
             {
-                "node": "C01_YuukaKannouji",
-                "requiresAll": ["M04", "C02_MakotoAtsukawa"],
-                "startingCharacter": "YuukaKannouji",
-                "startingScene": "",
-                "rules": "Unlock Character Arc 1 for Yuuka Kannouji after Main Story 4 and Character Arc 2 for Makoto Atsukawa",
-                "title" : "",
-                "description": ""
-            },
-            {
                 "node": "R04_KoumeMomone",
                 "requiresAny": ["M05", "C03_KoumeMomone"],
                 "startingCharacter": "KoumeMomone",
@@ -125,6 +116,15 @@
             {
                 "node": "C00_KoumeMomone",
                 "requiresAll": ["M00"],
+                "startingCharacter": "KoumeMomone",
+                "startingScene": "5E_Classroom",
+                "rules": "Test character arc unlock",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "C01_KoumeMomone",
+                "requiresAll": ["M01", "C00_KoumeMomone"],
                 "startingCharacter": "KoumeMomone",
                 "startingScene": "5E_Classroom",
                 "rules": "Test character arc unlock",
