@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 using Yarn.Unity;
+using Yarn.Unity.Legacy;
 using static Animations.AnimationType;
 
 public class DialogueCommands : MonoBehaviour
@@ -108,6 +109,10 @@ public class DialogueCommands : MonoBehaviour
 
         // Hide the dialogue box
         PlayAnimationOnDialogueBox(FadeOut);
+
+        // TODO: Reset the line viewer to clear the dialogue after scene is finished
+        //var lineView = FindObjectOfType<LineView>();
+        //lineView.textComponent.text = "";
 
         // Launch any methods connected to this listener
         OnSceneEnded?.Invoke();

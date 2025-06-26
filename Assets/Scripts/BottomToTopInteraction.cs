@@ -189,21 +189,34 @@ public class BottomToTopInteraction : MonoBehaviour
                 DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeIn, ScriptConstants.defaultAnimationDuration,
                     () => SelectScene());
 
-                // TODO: Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
+                // Disable (don't allow tapping on the) bottom panel when a scene starts and reenable it once the scene is done
+                DisableBottomPanel();
             }
         }
     }
 
     /// <summary>
-    /// Change the two characterImages to <paramref name="charImagePoseName"/> and <paramref name="charImageFaceName"/>
+    /// Change the two characterImages to <paramref name="charImagePoseName"/> and <paramref name="charImageFaceName"/>.
+    /// Can pass in "null" if only one of the two images should be changed
     /// </summary>
-    /// <param name="charImagePoseName">Character name with the pose name</param>
-    /// <param name="charImageFaceName">Character name with the face expression</param>
+    /// <param name="charImagePoseName">Character name with the pose name (null is an option)</param>
+    /// <param name="charImageFaceName">Character name with the face expression (null is an option)</param>
     void ShowCharacter(string charImagePoseName, string charImageFaceName)
     {
         characterImagePose.SetActive(true);
-        CharacterCommands.Instance.ChangeCharacterPose(charImagePoseName);
-        CharacterCommands.Instance.ChangeCharacterFace(charImageFaceName);
+
+        // Change pose
+        if (!string.IsNullOrEmpty(charImagePoseName))
+        {
+            CharacterCommands.Instance.ChangeCharacterPose(charImagePoseName);
+        }
+
+        // Change face
+        if (!string.IsNullOrEmpty(charImageFaceName))
+        {
+            CharacterCommands.Instance.ChangeCharacterFace(charImageFaceName);
+        }
+
         CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(FadeIn);
     }
 
@@ -335,7 +348,28 @@ public class BottomToTopInteraction : MonoBehaviour
         // Update markers
         SetMarkers();
 
-        // TODO: Reenable the bottom panel
+        // Reenable the bottom panel
+        EnableBottomPanel();
+    }
+
+    /// <summary>
+    /// Prevents the player from interacting with the UI in the bottom panel
+    /// </summary>
+    void DisableBottomPanel()
+    {
+        CanvasGroup bottomCanvasGroup = bottomPanel.GetComponent<CanvasGroup>();
+        bottomCanvasGroup.blocksRaycasts = false;
+        bottomCanvasGroup.alpha = 1f;
+    }
+
+    /// <summary>
+    /// Allows the player to interact with the UI in the bottom panel
+    /// </summary>
+    void EnableBottomPanel()
+{
+        CanvasGroup bottomCanvasGroup = bottomPanel.GetComponent<CanvasGroup>();
+        bottomCanvasGroup.blocksRaycasts = true;
+        bottomCanvasGroup.alpha = 1f;
     }
 
     /*void Update()
