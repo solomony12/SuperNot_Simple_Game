@@ -36,6 +36,25 @@ Makoto: ...
 
 Makoto: And why would I want that..?
 
+<<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
+
+Arisa: *pouting* Do you want it or not?
+
+<<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
+    -> Take it
+        Makoto: I'll take it
+        <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
+        Arisa: *beams* Good! Here you go!
+        Relationship with Arisa has increased.
+    -> Reject it
+        Makoto: No. Keep it for yourself
+        <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
+        Arisa: *pouting* You should know when a girl likes you
+        <<ShowCharacter YuukaKannouji_Default YuukaKannouji_Default>>
+        Yuuka: That's our fire starter...
+        <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
+        Makoto: Shut it.
+
 The end of this part
 ===
 title: M02
