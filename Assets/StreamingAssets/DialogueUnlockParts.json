@@ -9,11 +9,20 @@
                 "description": ""
             },
             {
+                "node": "M01",
+                "requiresAll": ["M00"],
+                "startingCharacter": "ArisaYoneyama",
+                "startingScene": "5E_Classroom",
+                "rules": "Unlock Main Story Part 1 after Part 0",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "M02",
                 "requiresAll": ["M01"],
-                "startingCharacter": "MakotoAtsukawa",
+                "startingCharacter": "YuukaKannouji",
                 "startingScene": "5E_Classroom",
-                "rules": "Unlock Main Story Part 1 after Part 2",
+                "rules": "Unlock Main Story Part 2 after Part 1",
                 "title" : "",
                 "description": ""
             },
@@ -50,6 +59,20 @@
                 "description": ""
             },
             {
+                "node": "R00_ArisaYoneyama",
+                "startingCharacter": "ArisaYoneyama",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_YuukaKannouji",
+                "startingCharacter": "YuukaKannouji",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "R00_RinRaizan",
                 "startingCharacter": "RinRaizan",
                 "rules": "Basic random",
@@ -60,6 +83,41 @@
                 "node": "R01_RinRaizan",
                 "requiresAll": ["M00"],
                 "startingCharacter": "RinRaizan",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_YumiYasuyuki",
+                "startingCharacter": "YumiYasuyuki",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_ItsukiTakasumi",
+                "startingCharacter": "ItsukiTakasumi",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_HyoukaEnomoto",
+                "startingCharacter": "HyoukaEnomoto",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_SoraHino",
+                "startingCharacter": "SoraHino",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_NozomiHinase",
+                "startingCharacter": "NozomiHinase",
                 "rules": "Basic random",
                 "title" : "",
                 "description": ""
@@ -83,6 +141,41 @@
             {
                 "node": "R01_KoumeMomone",
                 "startingCharacter": "KoumeMomone",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_HarutoSakuma",
+                "startingCharacter": "HarutoSakuma",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_KiraraTsubasa",
+                "startingCharacter": "KiraraTsubasa",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_RyoumaAran",
+                "startingCharacter": "RyoumaAran",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_TetsuFujihara",
+                "startingCharacter": "TetsuFujihara",
+                "rules": "Basic random",
+                "title" : "",
+                "description": ""
+            },
+            {
+                "node": "R00_RyoumaMizushima",
+                "startingCharacter": "RyoumaMizushima",
                 "rules": "Basic random",
                 "title" : "",
                 "description": ""
