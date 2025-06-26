@@ -117,6 +117,7 @@ public class BottomToTopInteraction : MonoBehaviour
             string[] topSplitArray = characterImagePose.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
             currentCharacterShownName = topSplitArray[0];
             //Debug.Log($"Top character's name is {currentCharacterShownName}");
+
             bool isSameCharacter = nameStr.Equals(currentCharacterShownName, StringComparison.OrdinalIgnoreCase);
 
             //Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
@@ -126,6 +127,9 @@ public class BottomToTopInteraction : MonoBehaviour
             if (charNameSet.Contains(nameStr) && !isSameCharacter)
             {
                 //Debug.Log($"{nameStr} found in charNameSet (names.txt)");
+
+                // Update the current character
+                currentCharacterShownName = nameStr;
 
                 // Hide the dialogue box for this new character
                 if (dialogueBoxPanel.activeSelf)
@@ -352,8 +356,10 @@ public class BottomToTopInteraction : MonoBehaviour
     {
         Debug.Log("HandleSceneEnded Ran");
 
-        // TODO: Change characterImage back to the starting image default
-
+        // Change characterImage back to the starting image default
+        string defaultCurrCharPose = $"{currentCharacterShownName}_{ScriptConstants.PoseTypes.Default}";
+        string defaultCurrCharFace = $"{currentCharacterShownName}_{ScriptConstants.FaceTypes.Default}";
+        ShowCharacter(defaultCurrCharPose, defaultCurrCharFace);
 
         // Update markers
         SetMarkers();

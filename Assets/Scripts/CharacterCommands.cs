@@ -106,7 +106,7 @@ public class CharacterCommands : MonoBehaviour
     /// <param name="animation">Type of animation to be played</param>
     /// <param name="duration">Duration of animation in seconds</param>
     /// <param name="onComplete">Action/method to run when animation is completed. Null by default</param>
-    //[YarnCommand("PlayAnimationOnCharacter")]
+    //TODO: [YarnCommand("PlayAnimationOnCharacter")]
     public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = ScriptConstants.defaultAnimationDuration, Action onComplete = null)
     {
         AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);

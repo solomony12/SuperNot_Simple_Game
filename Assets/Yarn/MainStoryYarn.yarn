@@ -20,6 +20,22 @@ Makoto: What do you want?
 
 Arisa: Don't be so cold, Mako~
 
+Arisa: I just wanted to see if you wanted this!
+
+<<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
+
+Makoto: What is that?
+
+<<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
+
+Arisa: It's a limited-edition Chiikawa keychain!
+
+<<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
+
+Makoto: ...
+
+Makoto: And why would I want that..?
+
 The end of this part
 ===
 title: M02
