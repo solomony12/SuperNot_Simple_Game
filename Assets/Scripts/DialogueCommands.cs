@@ -20,6 +20,8 @@ public class DialogueCommands : MonoBehaviour
 
     public event Action OnSceneEnded;
 
+    bool isQuitting = false;
+
     private void Awake()
     {
         // Script instances
@@ -37,6 +39,10 @@ public class DialogueCommands : MonoBehaviour
     {
         // Listener(s)
         dialogueRunner.onDialogueComplete.AddListener(EndOfScene);
+    }
+    void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 
     /// <summary>
@@ -108,6 +114,9 @@ public class DialogueCommands : MonoBehaviour
     public void EndOfScene()
     {
         Debug.Log("End of Scene");
+
+        // Prevents saving if game quit abruptly (like stopping editor or closing app or crash)
+        if (isQuitting) return;
 
         // Mark story part as completed (if not random dialogue)
         if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))

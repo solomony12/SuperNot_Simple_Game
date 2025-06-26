@@ -155,6 +155,15 @@
                 "description": ""
             },
             {
+                "node": "C01_HarutoSakuma",
+                "requiresAll": ["C01_KoumeMomone", "C00_HarutoSakuma"],
+                "startingCharacter": "HarutoSakuma",
+                "startingScene": "5E_Classroom",
+                "rules": "Test character arc unlock",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "R00_HarutoSakuma",
                 "startingCharacter": "HarutoSakuma",
                 "rules": "Basic random",
