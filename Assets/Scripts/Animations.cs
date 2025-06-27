@@ -29,8 +29,6 @@ public class Animations : MonoBehaviour
     {
         Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
 
-        bool shouldCompleteFadeIn = animation == AnimationType.FadeIn;
-
         // If an animation is already playing on obj, don't start another
         if (runningAnimations.ContainsKey(obj))
         {

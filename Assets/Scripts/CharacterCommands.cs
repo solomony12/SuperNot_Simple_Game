@@ -7,16 +7,19 @@ public class CharacterCommands : MonoBehaviour
 {
     public static CharacterCommands Instance;
     public Animations AnimationsInstance;
+    public Effects EffectsInstance;
 
     public static GameObject characterImagePose;
     public static GameObject characterImageFace;
+    public static GameObject effectsImageGameObject;
 
     private void Awake()
     {
         Instance = this;
 
-        // Animations script instance
+        // Script instances
         AnimationsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Animations>();
+        EffectsInstance = GameObject.FindWithTag(ScriptConstants.gameControllerString).GetComponent<Effects>();
 
         // Get the Character Image
         characterImagePose = GameObject.FindWithTag(ScriptConstants.characterImagePoseString);
@@ -24,6 +27,12 @@ public class CharacterCommands : MonoBehaviour
         if (characterImagePose == null || characterImageFace == null)
         {
             throw new Exception("Character Image part could not be found");
+        }
+        // Get Effect GameObject
+        effectsImageGameObject = GameObject.FindWithTag(ScriptConstants.effectsImageGameObjectString);
+        if (effectsImageGameObject == null)
+        {
+            throw new Exception("Effects Image part could not be found");
         }
     }
 
@@ -109,6 +118,11 @@ public class CharacterCommands : MonoBehaviour
     //TODO: [YarnCommand("PlayAnimationOnCharacter")]
     public void PlayAnimationOnCurrentCharacter(Animations.AnimationType animation, float duration = ScriptConstants.defaultAnimationDuration, Action onComplete = null)
     {
-        AnimationsInstance.PlayAnimation(characterImagePose, animation, duration, onComplete);
+        AnimationsInstance.PlayAnimation(effectsImageGameObject, animation, duration, onComplete); // We call this on the effectsImageGameObject since that holds the character
+    }
+
+    public void PlayEffectOnCurrentCharacter(Effects.EffectType effect)
+    {
+        EffectsInstance.PlayEffect(effectsImageGameObject, effect);
     }
 }

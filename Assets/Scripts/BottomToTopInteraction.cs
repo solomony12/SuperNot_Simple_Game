@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Yarn.Unity;
 using static Animations.AnimationType;
+using static Effects;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
@@ -205,7 +206,7 @@ public class BottomToTopInteraction : MonoBehaviour
     /// <param name="charImagePoseName">Character name with the pose name (null is an option)</param>
     /// <param name="charImageFaceName">Character name with the face expression (null is an option)</param>
     [YarnCommand("ShowCharacter")]
-    public static void ShowCharacter(string charImagePoseName, string charImageFaceName)
+    public static void ShowCharacter(string charImagePoseName, string charImageFaceName, string effect = ScriptConstants.defaultString)
     {
         Debug.Log($"[YarnCommand] ShowCharacter called with: Pose = '{charImagePoseName}', Face = '{charImageFaceName}'");
 
@@ -222,6 +223,19 @@ public class BottomToTopInteraction : MonoBehaviour
         {
             CharacterCommands.Instance.ChangeCharacterFace(charImageFaceName);
         }
+
+        // Apply effect
+        if (Enum.TryParse(effect, true, out EffectType effectType))
+        {
+            // Parsed successfully, effectType now equals Effects.EffectType.Dim
+        }
+        else
+        {
+            // Handle invalid input
+            Debug.Log($"[YarnCommand] Improper effect called: '{effect}'; Switching to {ScriptConstants.defaultString}");
+            effectType = Effects.EffectType.Default;
+        }
+        CharacterCommands.Instance.PlayEffectOnCurrentCharacter(effectType);
 
         CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(FadeIn);
     }

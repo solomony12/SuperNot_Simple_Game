@@ -18,6 +18,7 @@ public static class ScriptConstants
     public const string topPanelString = "TopPanel";
     public const string bottomPanelString = "BottomPanel";
     public const string mainCanvasString = "MainCanvas";
+    public const string effectsImageGameObjectString = "EffectsImage";
 
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";
@@ -29,6 +30,8 @@ public static class ScriptConstants
 
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
+
+    public const string defaultString = "Default";
 
     /// <summary>
     /// Character pose types

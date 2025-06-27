@@ -8,7 +8,7 @@ Haruto: You should ignore her.
 
 Koume: I'd thought you wanted me to be more active.
 
-<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
+<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Dim>>
 
 Haruto: Yes, but not tell lies.
 
@@ -18,11 +18,11 @@ Koume: Who's lying, you dope.
 ===
 title: C01_HarutoSakuma
 ---
-<<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
+<<ShowCharacter KoumeMomone_Default KoumeMomone_Default Dim>>
 
 Koume walks out in only a white bra and a pair of matching shorts.
 
-<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
+<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Affection>>
 
 Haruto: Put on a hoodie, will you?
 
@@ -36,7 +36,7 @@ Koume: *sniffs the sleeves*
 
 Koume: This one isn't mine.
 
-<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
+<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Affection>>
 
 Haruto: Just wear it.
 
