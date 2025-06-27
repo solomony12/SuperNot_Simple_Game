@@ -23,8 +23,6 @@ public class BottomToTopInteraction : MonoBehaviour
     public GameObject topPanel;
     public GameObject bottomPanel;
 
-    public DialogueRunner dialogueRunner;
-
     private HashSet<string> charNameSet;
 
     private GameObject lastClickedObject;
@@ -74,8 +72,6 @@ public class BottomToTopInteraction : MonoBehaviour
         characterImagePose = CharacterCommands.characterImagePose;
         // Get the dialogueBoxPanel
         dialogueBoxPanel = DialogueCommands.dialogueBoxPanel;
-        // Get the dialogue runner
-        dialogueRunner = DialogueCommands.dialogueRunner;
 
         // By default, we don't show it
         characterImagePose.SetActive(false);
