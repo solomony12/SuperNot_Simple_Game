@@ -526,11 +526,12 @@ public class DialogueProgressionManager : MonoBehaviour
     public void SaveProgress()
     {
         // TODO: Enable this when necessary or done with build (currently disabled for debugging)
-        return;
+        //return;
 
         // Save data
         var saveData = new DialogueProgressionSaveData
         {
+            currentScene = SceneManager.GetActiveScene().name,
             reachedStates = reachedStates.ToList(),
             latestMainStory = latestMainStory,
             latestCharacterArcs = latestCharacterArcs
@@ -632,6 +633,7 @@ public class DialogueProgressionManager : MonoBehaviour
 [System.Serializable]
 public class DialogueProgressionSaveData
 {
+    public string currentScene;
     public List<string> reachedStates;
     public string latestMainStory;
     public List<CharacterArcEntry> latestCharacterArcs;
