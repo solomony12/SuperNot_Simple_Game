@@ -103,7 +103,7 @@ public class BottomToTopInteraction : MonoBehaviour
         {
             lastClickedObject = clickedButton.gameObject;
 
-            // 0: Name, 1: Face, 2: Pose, 3: "seat" (redundant)
+            // 0: Name, 1: Face, 2: Pose, (anything past that is redundant info)
             // (Example: KoumeMomone_0_1_seat)
             string[] splitArray = clickedButton.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
             string nameStr = splitArray[0];
@@ -113,26 +113,23 @@ public class BottomToTopInteraction : MonoBehaviour
             int.TryParse(splitArray[2], out poseNum);
             Debug.Log($"{nameStr}, {faceNum}, {poseNum}");
 
-            // If it's the same character that's currently showing, don't change the top at all
+            // If it's the same character/object that's currently showing, don't change the top at all
             // (the "if" statement below will not run)
             string[] topSplitArray = characterImagePose.GetComponent<Image>().sprite.name.Split(char.Parse("_"));
             currentCharacterShownName = topSplitArray[0];
-            //Debug.Log($"Top character's name is {currentCharacterShownName}");
+            //Debug.Log($"Top character/object's name is {currentCharacterShownName}");
 
             bool isSameCharacter = nameStr.Equals(currentCharacterShownName, StringComparison.OrdinalIgnoreCase);
 
-            //Debug.Log($"Name in set is {charNameSet.Contains(nameStr)}");
-            //Debug.Log($"Is same character is {isSameCharacter}");
-
-            // Make sure it's a proper character, and not the same character that's currently showing
+            // Make sure it's a proper character/object, and not the same character/object that's currently showing
             if (charNameSet.Contains(nameStr) && !isSameCharacter)
             {
                 //Debug.Log($"{nameStr} found in charNameSet (names.txt)");
 
-                // Update the current character
+                // Update the current character/object
                 currentCharacterShownName = nameStr;
 
-                // Hide the dialogue box for this new character
+                // Hide the dialogue box for this new character/object
                 if (dialogueBoxPanel.activeSelf)
                 {
                     DialogueCommands.Instance.PlayAnimationOnDialogueBox(FadeOut);
@@ -142,7 +139,7 @@ public class BottomToTopInteraction : MonoBehaviour
                     dialogueBoxPanel.SetActive(false);
                 }
 
-                // Get the matching image based on the seat data
+                // Get the matching image based on the character/object data
                 // (Example: KoumeMomone, 0, 1 -> KoumeMomone_Default (face) and KoumeMomone_Default02 (pose))
 
                 // Pose
