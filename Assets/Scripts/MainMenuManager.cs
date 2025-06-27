@@ -10,6 +10,7 @@ public class MainMenuManager : MonoBehaviour
     public Button continueButton;
 
     public GameObject creditsPanel;
+    public GameObject warningPanel;
 
     private bool saveFileExists;
     private string savePath;
@@ -18,6 +19,7 @@ public class MainMenuManager : MonoBehaviour
     {
         continueButton = GameObject.Find("ContinueButton").GetComponent<Button>();
         creditsPanel = GameObject.Find("CreditsPanel");
+        warningPanel = GameObject.Find("WarningPanel");
     }
 
     void Start()
@@ -25,8 +27,9 @@ public class MainMenuManager : MonoBehaviour
         savePath = DialogueProgressionManager.Instance.SavePath;
         saveFileExists = File.Exists(savePath);
 
-        // Hide Credits Panel
+        // Hide panels
         creditsPanel.SetActive(false);
+        warningPanel.SetActive(false);
 
         // Non-interactable Continue button if a save doesn't exist
         if (saveFileExists)
@@ -59,24 +62,20 @@ public class MainMenuManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Start a new game by deleting the old save file
+    /// Start a new game; gives last warning
     /// </summary>
     public void NewGame()
     {
-        // Just delete the old save file
+        // Warning popup if a save exists. That way, they don't just accidentally start a new game
         if (saveFileExists)
         {
-            File.Delete(savePath);
-            Debug.Log($"Old save file deleted: {savePath}");
+            warningPanel.SetActive(true);
         }
-
-        Debug.Log("Starting a new game!");
-
-        // TODO: Change the scene to the first starting scene with the first Main Story marker M00
-        SceneManager.LoadScene("5E_Classroom");
-
-        // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
-        // If the first scene is never finished, we don't wanna save since that would skip the first one.
+        else
+        {
+            // Start new game
+            YesNewGame();
+        }
     }
 
     public void Continue()
@@ -88,5 +87,31 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(sceneToLoad);
 
         // TODO: (after this implementation, check to see that markers are automatically loaded in rather than having to start a scene first)
+    }
+
+    /// <summary>
+    /// Start new game by deleting the old save file
+    /// </summary>
+    public void YesNewGame()
+    {
+        // Just delete the old save file
+        File.Delete(savePath);
+        Debug.Log($"Old save file deleted: {savePath}");
+
+        Debug.Log("Starting a new game!");
+
+        // TODO: Change the scene to the first starting scene with the first Main Story marker M00
+        SceneManager.LoadScene("5E_Classroom");
+
+        // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
+        // If the first scene is never finished, we don't wanna save since that would skip the first one.
+    }
+
+    /// <summary>
+    /// Hide warning dialogue as no new game is started
+    /// </summary>
+    public void NoNewGame()
+    {
+        warningPanel.SetActive(false);
     }
 }
