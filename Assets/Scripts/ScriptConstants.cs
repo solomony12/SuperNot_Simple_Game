@@ -23,6 +23,8 @@ public static class ScriptConstants
     public const string randomStoryID = "R";
 
     public const string startingStoryID = "M00";
+    // TODO: Change when we figure out which one is the first
+    public const string newGameFirstScene = "5E_Classroom";
 
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
@@ -36,6 +38,7 @@ public static class ScriptConstants
         Confident,
         Reclusive,
         Thinking,
+        Fighting
     }
 
     /// <summary>

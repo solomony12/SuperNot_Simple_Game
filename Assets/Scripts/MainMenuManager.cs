@@ -100,8 +100,8 @@ public class MainMenuManager : MonoBehaviour
 
         Debug.Log("Starting a new game!");
 
-        // TODO: Change the scene to the first starting scene with the first Main Story marker M00
-        SceneManager.LoadScene("5E_Classroom");
+        // Change the scene to the first starting scene
+        SceneManager.LoadScene(ScriptConstants.newGameFirstScene);
 
         // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
         // If the first scene is never finished, we don't wanna save since that would skip the first one.
