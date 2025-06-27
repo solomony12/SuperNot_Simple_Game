@@ -15,6 +15,7 @@ TagManager:
   - TopPanel
   - BottomPanel
   - MainCanvas
+  - EffectsImage
   layers:
   - Default
   - TransparentFX

@@ -87,6 +87,7 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(sceneToLoad);
 
         Destroy(GetComponent<MainMenuManager>());
+        Destroy(GetComponent<DialogueProgressionManager>());
     }
 
     /// <summary>
@@ -104,6 +105,7 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(ScriptConstants.newGameFirstScene);
 
         Destroy(GetComponent<MainMenuManager>());
+        Destroy(GetComponent<DialogueProgressionManager>());
 
         // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
         // If the first scene is never finished, we don't wanna save since that would skip the first one.
