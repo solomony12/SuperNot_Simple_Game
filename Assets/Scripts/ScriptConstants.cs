@@ -17,6 +17,7 @@ public static class ScriptConstants
     public const string interactableObjectString = "InteractableObject";
     public const string topPanelString = "TopPanel";
     public const string bottomPanelString = "BottomPanel";
+    public const string mainCanvasString = "MainCanvas";
 
     public const string mainStoryMarkerID = "M";
     public const string characterArcStoryMarkerID = "C";

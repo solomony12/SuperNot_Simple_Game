@@ -80,13 +80,13 @@ public class MainMenuManager : MonoBehaviour
 
     public void Continue()
     {
-        // Load scene based on JSON. That's it
+        // Load scene based on JSON
         string json = File.ReadAllText(savePath);
         var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
         string sceneToLoad = saveData.currentScene;
         SceneManager.LoadScene(sceneToLoad);
 
-        // TODO: (after this implementation, check to see that markers are automatically loaded in rather than having to start a scene first)
+        Destroy(GetComponent<MainMenuManager>());
     }
 
     /// <summary>
@@ -102,6 +102,8 @@ public class MainMenuManager : MonoBehaviour
 
         // Change the scene to the first starting scene
         SceneManager.LoadScene(ScriptConstants.newGameFirstScene);
+
+        Destroy(GetComponent<MainMenuManager>());
 
         // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
         // If the first scene is never finished, we don't wanna save since that would skip the first one.
