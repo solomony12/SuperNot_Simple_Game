@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Yarn.Unity;
+using static Animations;
 using static Animations.AnimationType;
 using static Effects;
 
@@ -206,7 +207,7 @@ public class BottomToTopInteraction : MonoBehaviour
     /// <param name="charImagePoseName">Character name with the pose name (null is an option)</param>
     /// <param name="charImageFaceName">Character name with the face expression (null is an option)</param>
     [YarnCommand("ShowCharacter")]
-    public static void ShowCharacter(string charImagePoseName, string charImageFaceName, string effect = ScriptConstants.defaultString)
+    public static void ShowCharacter(string charImagePoseName, string charImageFaceName = "", string effect = ScriptConstants.defaultString, string animation = ScriptConstants.defaultString, string durationString = "")
     {
         Debug.Log($"[YarnCommand] ShowCharacter called with: Pose = '{charImagePoseName}', Face = '{charImageFaceName}'");
 
@@ -225,11 +226,7 @@ public class BottomToTopInteraction : MonoBehaviour
         }
 
         // Apply effect
-        if (Enum.TryParse(effect, true, out EffectType effectType))
-        {
-            // Parsed successfully, effectType now equals Effects.EffectType.Dim
-        }
-        else
+        if (!Enum.TryParse(effect, true, out EffectType effectType))
         {
             // Handle invalid input
             Debug.Log($"[YarnCommand] Improper effect called: '{effect}'; Switching to {ScriptConstants.defaultString}");
@@ -237,7 +234,20 @@ public class BottomToTopInteraction : MonoBehaviour
         }
         CharacterCommands.Instance.PlayEffectOnCurrentCharacter(effectType);
 
-        CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(FadeIn);
+        // Play animation
+        AnimationType animationType;
+        if (animation.Equals(ScriptConstants.defaultString) || !Enum.TryParse(animation, true, out animationType))
+        {
+            // Default is fading in
+            animationType = FadeIn;
+        }
+        float duration = ScriptConstants.defaultAnimationDuration;
+        if (!string.IsNullOrEmpty(durationString) && !float.TryParse(durationString, out duration))
+        {
+            duration = ScriptConstants.defaultAnimationDuration;
+            Debug.Log($"[YarnCommand] Improper duration set: '{durationString}'; Switching to {duration}");
+        }
+        CharacterCommands.Instance.PlayAnimationOnCurrentCharacter(animationType, duration);
     }
 
     /// <summary>
