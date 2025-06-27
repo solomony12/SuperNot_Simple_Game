@@ -18,15 +18,15 @@ Koume: Who's lying, you dope.
 ===
 title: C01_HarutoSakuma
 ---
-<<ShowCharacter KoumeMomone_Default KoumeMomone_Default Dim FadeIn 5.0>>
+<<ShowCharacter KoumeMomone_Default KoumeMomone_Default Dim FadeIn 5>>
 
 Koume walks out in only a white bra and a pair of matching shorts.
 
-<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Affection fdajk;l fdjf>>
+<<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Affection Shake 1.5>>
 
 Haruto: Put on a hoodie, will you?
 
-<<ShowCharacter KoumeMomone_Default KoumeMomone_Default "" fdafj; 10.0>>
+<<ShowCharacter KoumeMomone_Default KoumeMomone_Default "" fdafj; 10>>
 
 Koume holds her arms up like a child to allow Haruto to slide an oversized black hoodie over her.
 

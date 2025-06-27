@@ -14,6 +14,7 @@ public class Animations : MonoBehaviour
     {
         FadeIn,
         FadeOut,
+        Shake
     }
 
     private Dictionary<GameObject, Coroutine> runningAnimations = new Dictionary<GameObject, Coroutine>();
@@ -45,6 +46,9 @@ public class Animations : MonoBehaviour
                 break;
             case AnimationType.FadeOut:
                 newCoroutine = StartCoroutine(FadeOutCoroutine(obj, duration, onComplete));
+                break;
+            case AnimationType.Shake:
+                newCoroutine = StartCoroutine(ShakeCoroutine(obj, duration, onComplete));
                 break;
         }
 
@@ -166,5 +170,41 @@ public class Animations : MonoBehaviour
         FinishAnimation(obj, onComplete);
     }
 
-    // TODO: A Dim 'Animation' that is just the dimming effect immediately
+    private IEnumerator ShakeCoroutine(GameObject obj, float duration, Action onComplete)
+    {
+        obj.SetActive(true);
+
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            cg = obj.AddComponent<CanvasGroup>();
+        }
+
+        // Make sure it's visible
+        cg.alpha = 1f;
+
+        // Store original position so we can return to it
+        Vector3 originalPos = obj.transform.localPosition;
+
+        float elapsed = 0f;
+        float shakeMagnitude = 5f;  // how far it shakes
+        float shakeFrequency = 40f; // how fast it shakes
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            // Shake X position using sine wave
+            float xOffset = Mathf.Sin(elapsed * shakeFrequency) * shakeMagnitude;
+            obj.transform.localPosition = originalPos + new Vector3(xOffset, 0f, 0f);
+
+            yield return null;
+        }
+
+        // Reset position
+        obj.transform.localPosition = originalPos;
+
+        FinishAnimation(obj, onComplete);
+    }
+
 }
