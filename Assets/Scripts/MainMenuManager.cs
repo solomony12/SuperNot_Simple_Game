@@ -71,7 +71,8 @@ public class MainMenuManager : MonoBehaviour
         }
 
         Debug.Log("Starting a new game!");
-        // TODO: This is a test
+
+        // TODO: Change the scene to the first starting scene with the first Main Story marker M00
         SceneManager.LoadScene("5E_Classroom");
 
         // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
@@ -80,7 +81,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void Continue()
     {
-        // TODO: Load scene based on JSON. That's it
+        // Load scene based on JSON. That's it
         string json = File.ReadAllText(savePath);
         var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
         string sceneToLoad = saveData.currentScene;

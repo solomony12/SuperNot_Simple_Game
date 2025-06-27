@@ -86,10 +86,13 @@ public class BottomToTopInteraction : MonoBehaviour
         // By default, we don't show it
         dialogueBoxPanel.SetActive(false);
 
-        // Set markers for the scene
-        SetMarkers();
+        // Markers are set for the scene once the listerner activates, which means the data has finished loading
 
+        // When a scene ends
         DialogueCommands.Instance.OnSceneEnded += HandleSceneEnded;
+
+        // Upon Unity Scene load, wait for data to come before setting markers
+        DialogueProgressionManager.Instance.OnDataInitialized += SetMarkers;
     }
 
     void OnAnyButtonClicked(Button clickedButton)

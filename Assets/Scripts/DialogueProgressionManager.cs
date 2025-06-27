@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -30,6 +31,8 @@ public class DialogueProgressionManager : MonoBehaviour
     private string latestMainStory;
     private Dictionary<string, string> latestCharacterArcs = new();
 
+    public event Action OnDataInitialized;
+
     private void Awake()
     {
         Instance = this;
@@ -40,6 +43,7 @@ public class DialogueProgressionManager : MonoBehaviour
     {
         LoadUnlockParts();
         LoadProgress();
+        OnDataInitialized?.Invoke();
     }
 
     /// <summary>
