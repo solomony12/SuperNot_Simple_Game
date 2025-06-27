@@ -12,7 +12,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
     // Saving
     private const string SaveFileName = "progression_save.json";
-    private string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
+    public string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
 
     // Data for story parts unlocking
     private UnlockPartsData unlockPartsData;
