@@ -16,12 +16,17 @@ public class SaveLoad : MonoBehaviour
     private const string SaveFileName = "progression_save.json";
     public string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
 
+    // ----- DIALOGUE PROGRESSION MANAGER DATA -----
+
     // Story parts reached
     private HashSet<string> reachedStates = new();
 
     // Latest story parts
     private string latestMainStory;
     private Dictionary<string, string> latestCharacterArcs = new();
+
+    // ----- SCENE ORGANIZER DATA -----
+
 
     private void Awake()
     {
@@ -37,7 +42,7 @@ public class SaveLoad : MonoBehaviour
         //return;
 
         // Save data
-        var saveData = new DialogueProgressionSaveData
+        var saveData = new SaveData
         {
             currentScene = SceneManager.GetActiveScene().name,
             reachedStates = reachedStates.ToList(),
@@ -70,7 +75,7 @@ public class SaveLoad : MonoBehaviour
         }
 
         string json = File.ReadAllText(SavePath);
-        var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
+        var saveData = JsonUtility.FromJson<SaveData>(json);
 
         // Load reached states and latest unlocked parts
         reachedStates = new HashSet<string>(saveData.reachedStates);
@@ -110,7 +115,7 @@ public class SaveLoad : MonoBehaviour
 
 // Embedded save data classes
 [System.Serializable]
-public class DialogueProgressionSaveData
+public class SaveData
 {
     public string currentScene;
     public List<string> reachedStates;

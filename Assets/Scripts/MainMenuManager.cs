@@ -82,7 +82,7 @@ public class MainMenuManager : MonoBehaviour
     {
         // Load scene based on JSON
         string json = File.ReadAllText(savePath);
-        var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
+        var saveData = JsonUtility.FromJson<SaveData>(json);
         string sceneToLoad = saveData.currentScene;
         SceneManager.LoadScene(sceneToLoad);
 
