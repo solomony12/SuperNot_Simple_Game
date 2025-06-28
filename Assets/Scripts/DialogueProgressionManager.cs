@@ -11,10 +11,6 @@ public class DialogueProgressionManager : MonoBehaviour
 {
     public static DialogueProgressionManager Instance;
 
-    // Saving
-    private const string SaveFileName = "progression_save.json";
-    public string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
-
     // Data for story parts unlocking
     private UnlockPartsData unlockPartsData;
     private List<UnlockPart> unlockParts = new();
@@ -23,13 +19,6 @@ public class DialogueProgressionManager : MonoBehaviour
     private SortedDictionary<int, UnlockPart> mainStoryPartsByNumber = new();
     private Dictionary<string, SortedDictionary<int, UnlockPart>> characterArcPartsByCharacter = new();
     private Dictionary<string, SortedDictionary<int, UnlockPart>> randomPartsByGroup = new();
-
-    // Story parts reached
-    private HashSet<string> reachedStates = new();
-
-    // Latest story parts
-    private string latestMainStory;
-    private Dictionary<string, string> latestCharacterArcs = new();
 
     public event Action OnDataInitialized;
 
@@ -42,7 +31,7 @@ public class DialogueProgressionManager : MonoBehaviour
     public void Start()
     {
         LoadUnlockParts();
-        LoadProgress();
+        SaveLoad.Instance.LoadProgress();
         OnDataInitialized?.Invoke();
     }
 
@@ -53,7 +42,7 @@ public class DialogueProgressionManager : MonoBehaviour
     public void ReachState(string state)
     {
         // Tries to add to reachedStates
-        if (!reachedStates.Add(state))
+        if (!SaveLoad.Instance.ReachedStates.Add(state))
         {
             // If fails to add, it was already there so return
             return;
@@ -82,7 +71,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
 
         // Auto-Save
-        SaveProgress();
+        SaveLoad.Instance.SaveProgress();
     }
 
     /// <summary>
@@ -102,9 +91,9 @@ public class DialogueProgressionManager : MonoBehaviour
         string newLatestMain = $"{ScriptConstants.mainStoryMarkerID}{newNum:D2}";
 
         // Update main story
-        if (latestMainStory == null || TryExtractNumber(latestMainStory, out int currentNum) && newNum > currentNum)
+        if (SaveLoad.Instance.LatestMainStory == null || TryExtractNumber(SaveLoad.Instance.LatestMainStory, out int currentNum) && newNum > currentNum)
         {
-            latestMainStory = newLatestMain;
+            SaveLoad.Instance.LatestMainStory = newLatestMain;
         }
     }
 
@@ -122,9 +111,9 @@ public class DialogueProgressionManager : MonoBehaviour
         string character = parts[1];
 
         // Currently the character didn't have their arc ran yet so we add the first one
-        if (!latestCharacterArcs.ContainsKey(character))
+        if (!SaveLoad.Instance.LatestCharacterArcs.ContainsKey(character))
         {
-            latestCharacterArcs[character] = state;
+            SaveLoad.Instance.LatestCharacterArcs[character] = state;
         }
 
         // Add one episode
@@ -135,10 +124,10 @@ public class DialogueProgressionManager : MonoBehaviour
         string newLatestCharArc = $"{ScriptConstants.characterArcStoryMarkerID}{newNum:D2}_{character}";
 
         // Update character arc for that character
-        if (!latestCharacterArcs.TryGetValue(character, out string current) ||
+        if (!SaveLoad.Instance.LatestCharacterArcs.TryGetValue(character, out string current) ||
             TryExtractNumber(current.Split('_')[0], out int currentNum) && newNum > currentNum)
         {
-            latestCharacterArcs[character] = newLatestCharArc;
+            SaveLoad.Instance.LatestCharacterArcs[character] = newLatestCharArc;
         }
     }
 
@@ -220,14 +209,14 @@ public class DialogueProgressionManager : MonoBehaviour
     private void DiscoverNewlyUnlockedParts()
     {
         // Main story
-        if (TryExtractNumber(latestMainStory, out int currentMainNum))
+        if (TryExtractNumber(SaveLoad.Instance.LatestMainStory, out int currentMainNum))
         {
             int nextMainNum = currentMainNum + 1;
             if (mainStoryPartsByNumber.TryGetValue(nextMainNum, out var nextMainPart))
             {
-                if (!reachedStates.Contains(nextMainPart.node) && IsNodeUnlocked(nextMainPart.node))
+                if (!SaveLoad.Instance.ReachedStates.Contains(nextMainPart.node) && IsNodeUnlocked(nextMainPart.node))
                 {
-                    latestMainStory = nextMainPart.node;
+                    SaveLoad.Instance.LatestMainStory = nextMainPart.node;
                     Debug.Log($"Discovered new main story part: {nextMainPart.node}");
                 }
             }
@@ -241,7 +230,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
             // If we have a latest node already, extract its number, otherwise start from -1 (i.e., check from 0)
             int latestNum = -1;
-            if (latestCharacterArcs.TryGetValue(character, out string currentNode))
+            if (SaveLoad.Instance.LatestCharacterArcs.TryGetValue(character, out string currentNode))
             {
                 if (TryExtractNumber(currentNode.Split('_')[0], out int currentCharNum))
                     latestNum = currentCharNum;
@@ -251,9 +240,9 @@ public class DialogueProgressionManager : MonoBehaviour
             int nextNum = latestNum + 1;
             if (arcDict.TryGetValue(nextNum, out var nextCharPart))
             {
-                if (!reachedStates.Contains(nextCharPart.node) && IsNodeUnlocked(nextCharPart.node))
+                if (!SaveLoad.Instance.ReachedStates.Contains(nextCharPart.node) && IsNodeUnlocked(nextCharPart.node))
                 {
-                    latestCharacterArcs[character] = nextCharPart.node;
+                    SaveLoad.Instance.LatestCharacterArcs[character] = nextCharPart.node;
                     Debug.Log($"Discovered new character arc for {character}: {nextCharPart.node}");
                 }
             }
@@ -267,7 +256,7 @@ public class DialogueProgressionManager : MonoBehaviour
             foreach (var kvp in partsByNum)
             {
                 var node = kvp.Value.node;
-                if (reachedStates.Contains(node)) continue;
+                if (SaveLoad.Instance.ReachedStates.Contains(node)) continue;
 
                 if (IsNodeUnlocked(node))
                 {
@@ -278,16 +267,16 @@ public class DialogueProgressionManager : MonoBehaviour
     }
 
 
-    public string GetLatestMainStory() => latestMainStory;
+    public string GetLatestMainStory() => SaveLoad.Instance.LatestMainStory;
 
     /// <summary>
     /// Gets the latest unlocked main story part as an UnlockPart, or null if none found.
     /// </summary>
     public UnlockPart GetLatestMainStoryPart()
     {
-        if (string.IsNullOrEmpty(latestMainStory)) return null;
+        if (string.IsNullOrEmpty(SaveLoad.Instance.LatestMainStory)) return null;
 
-        if (TryExtractNumber(latestMainStory, out int num) && mainStoryPartsByNumber.TryGetValue(num, out var part))
+        if (TryExtractNumber(SaveLoad.Instance.LatestMainStory, out int num) && mainStoryPartsByNumber.TryGetValue(num, out var part))
         {
             if (IsNodeUnlocked(part.node)) return part;
         }
@@ -296,7 +285,7 @@ public class DialogueProgressionManager : MonoBehaviour
     }
 
     public string GetLatestCharacterArc(string character) =>
-        latestCharacterArcs.TryGetValue(character, out string node) ? node : null;
+        SaveLoad.Instance.LatestCharacterArcs.TryGetValue(character, out string node) ? node : null;
 
     /// <summary>
     /// Returns a list of the latest unlocked character arc parts for each character.
@@ -307,7 +296,7 @@ public class DialogueProgressionManager : MonoBehaviour
         List<UnlockPart> latestParts = new();
 
         // Get latest arcs for all characters
-        foreach (var kvp in latestCharacterArcs)
+        foreach (var kvp in SaveLoad.Instance.LatestCharacterArcs)
         {
             string character = kvp.Key;
             string latestNode = kvp.Value;
@@ -365,8 +354,8 @@ public class DialogueProgressionManager : MonoBehaviour
         }
 
         // Conditions
-        bool allConditionsMet = part.requiresAll.Count == 0 || part.requiresAll.All(state => reachedStates.Contains(state));
-        bool anyConditionMet = part.requiresAny.Count == 0 || part.requiresAny.Any(state => reachedStates.Contains(state));
+        bool allConditionsMet = part.requiresAll.Count == 0 || part.requiresAll.All(state => SaveLoad.Instance.ReachedStates.Contains(state));
+        bool anyConditionMet = part.requiresAny.Count == 0 || part.requiresAny.Any(state => SaveLoad.Instance.ReachedStates.Contains(state));
 
         return allConditionsMet && anyConditionMet;
     }
@@ -381,7 +370,7 @@ public class DialogueProgressionManager : MonoBehaviour
         string currentScene = SceneManager.GetActiveScene().name;
 
         // Check if there's a recorded latest character arc for this character
-        if (latestCharacterArcs.TryGetValue(characterName, out string latestNode))
+        if (SaveLoad.Instance.LatestCharacterArcs.TryGetValue(characterName, out string latestNode))
         {
             // Find the matching part for this character, scene, and node
             var part = unlockParts.FirstOrDefault(r =>
@@ -408,11 +397,11 @@ public class DialogueProgressionManager : MonoBehaviour
         List<UnlockPart> result = new();
 
         // 1. Add latest main story if it's in this scene
-        if (!string.IsNullOrEmpty(latestMainStory))
+        if (!string.IsNullOrEmpty(SaveLoad.Instance.LatestMainStory))
         {
 
             var mainPart = unlockParts.FirstOrDefault(part =>
-                part.node == latestMainStory && part.startingScene == currentScene);
+                part.node == SaveLoad.Instance.LatestMainStory && part.startingScene == currentScene);
 
             // Found the main part in this scene and it's unlocked
             if (mainPart != null && IsNodeUnlocked(mainPart.node))
@@ -422,7 +411,7 @@ public class DialogueProgressionManager : MonoBehaviour
         }
 
         // 2. Add latest character arcs if they're in this scene
-        foreach (var kvp in latestCharacterArcs)
+        foreach (var kvp in SaveLoad.Instance.LatestCharacterArcs)
         {
             string latestNode = kvp.Value;
             // Found the character part in this scene and it's unlocked
@@ -522,65 +511,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
 
 
-    // SAVE & LOAD
-
-    /// <summary>
-    /// Save current unlocked states of the game in a JSON file
-    /// </summary>
-    public void SaveProgress()
-    {
-        // TODO: Enable this when necessary or done with build (currently disabled for debugging)
-        //return;
-
-        // Save data
-        var saveData = new DialogueProgressionSaveData
-        {
-            currentScene = SceneManager.GetActiveScene().name,
-            reachedStates = reachedStates.ToList(),
-            latestMainStory = latestMainStory,
-            latestCharacterArcs = latestCharacterArcs
-                .Select(kvp => new CharacterArcEntry { character = kvp.Key, node = kvp.Value })
-                .ToList()
-        };
-
-        // Save to JSON
-        string json = JsonUtility.ToJson(saveData, true);
-        File.WriteAllText(SavePath, json);
-        Debug.Log("Progression saved");
-        Debug.Log("Save path: " + Application.persistentDataPath);
-    }
-
-    /// <summary>
-    /// Load current unlocked states of the game from a JSON file
-    /// </summary>
-    public void LoadProgress()
-    {
-        // New game - set initial main story part here
-        if (!File.Exists(SavePath))
-        {
-            latestMainStory = ScriptConstants.startingStoryID;
-            reachedStates = new HashSet<string>();
-            latestCharacterArcs = new Dictionary<string, string>();
-            Debug.Log("No save found. Starting new game with initial main story part");
-            return;
-        }
-
-        string json = File.ReadAllText(SavePath);
-        var saveData = JsonUtility.FromJson<DialogueProgressionSaveData>(json);
-
-        // Load reached states and latest unlocked parts
-        reachedStates = new HashSet<string>(saveData.reachedStates);
-        latestMainStory = saveData.latestMainStory;
-        latestCharacterArcs = new Dictionary<string, string>();
-
-        // Load character arc nodes
-        foreach (var arc in saveData.latestCharacterArcs)
-        {
-            latestCharacterArcs[arc.character] = arc.node;
-        }
-
-        Debug.Log("Progression loaded");
-    }
+    // Load parts
 
     /// <summary>
     /// Load in the unlock parts
@@ -588,7 +519,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
     public void LoadUnlockParts()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "DialogueUnlockParts.json");
+        string path = Path.Combine(Application.streamingAssetsPath, ScriptConstants.dialogueUnlockRulesString);
 
     #if UNITY_ANDROID && !UNITY_EDITOR
         StartCoroutine(LoadPartsAndroid(path));
@@ -631,21 +562,4 @@ public class DialogueProgressionManager : MonoBehaviour
         }
     }
 
-}
-
-// Embedded save data classes
-[System.Serializable]
-public class DialogueProgressionSaveData
-{
-    public string currentScene;
-    public List<string> reachedStates;
-    public string latestMainStory;
-    public List<CharacterArcEntry> latestCharacterArcs;
-}
-
-[System.Serializable]
-public class CharacterArcEntry
-{
-    public string character;
-    public string node;
 }

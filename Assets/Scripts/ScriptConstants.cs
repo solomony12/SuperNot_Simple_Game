@@ -33,6 +33,8 @@ public static class ScriptConstants
 
     public const string defaultString = "Default";
 
+    public const string dialogueUnlockRulesString = "DialogueUnlockParts.json";
+
     /// <summary>
     /// Character pose types
     /// </summary>
