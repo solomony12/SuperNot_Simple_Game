@@ -27,6 +27,12 @@ public class SaveLoad : MonoBehaviour
 
     // ----- SCENE ORGANIZER DATA -----
 
+    // Stores a list of game objects for each scene
+    private Dictionary<string, List<GameObject>> sceneNameToGameObjectsList = new();
+
+    // Stores the current image 'sprite name' (string), 'vector position' of each game object, and 'shouldBeSetActive' (bool)
+    private Dictionary<GameObject, (string, Vector3, bool)> gameObjectDetails = new();
+
 
     private void Awake()
     {
@@ -110,6 +116,20 @@ public class SaveLoad : MonoBehaviour
     {
         get { return latestCharacterArcs; }
         set { latestCharacterArcs = value; }
+    }
+
+    // Getter and Setter for sceneNameToGameObjectsList
+    public Dictionary<string, List<GameObject>> SceneNameToGameObjectsList
+    {
+        get { return sceneNameToGameObjectsList; }
+        set { sceneNameToGameObjectsList = value; }
+    }
+
+    // Getter and Setter for gameObjectDetails
+    public Dictionary<GameObject, (string, Vector3, bool)> GameObjectDetails
+    {
+        get { return gameObjectDetails; }
+        set { gameObjectDetails = value; }
     }
 }
 

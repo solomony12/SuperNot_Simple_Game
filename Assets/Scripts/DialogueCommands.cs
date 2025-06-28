@@ -118,6 +118,10 @@ public class DialogueCommands : MonoBehaviour
         // Prevents saving if game quit abruptly (like stopping editor or closing app or crash)
         if (isQuitting) return;
 
+        // TODO: SceneOrganizer needs to restore postions and update permanent positions BEFORE ReachState is called to save progress
+        // SceneOrganizer.RestorePositions();
+        // SceneOrganizer.UpdatePermanentPositions();
+
         // Mark story part as completed (if not random dialogue)
         if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))
         {
