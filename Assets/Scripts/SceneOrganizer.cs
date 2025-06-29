@@ -253,7 +253,7 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void RestoreGameObjects()
     {
-        Debug.Log("RESTORE GAME OBJECTS");
+        //Debug.Log("RESTORE GAME OBJECTS");
         foreach (string movedObj in temporaryGameObjectsList)
         {
             // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
@@ -269,7 +269,7 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void PermanentlyChangeGameObjects()
     {
-        Debug.Log("PERMANENT GAME OBJECTS");
+        //Debug.Log("PERMANENT GAME OBJECTS");
         foreach (string movedObj in permanentGameObjectsList)
         {
             // Update the SaveLoad data for that game object
@@ -286,7 +286,7 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void SaveCurrentSceneName()
     {
-        Debug.Log($"Saving current scene '{SceneManager.GetActiveScene().name}'");
+        //Debug.Log($"Saving current scene '{SceneManager.GetActiveScene().name}'");
         SaveLoad.Instance.CurrentScene = SceneManager.GetActiveScene().name;
     }
 
@@ -314,7 +314,7 @@ public class SceneOrganizer : MonoBehaviour
     // This method is called AFTER the scene has loaded
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log($"Scene '{scene.name}' loaded");
+        //Debug.Log($"Scene '{scene.name}' loaded");
 
         SaveCurrentSceneName();
 
