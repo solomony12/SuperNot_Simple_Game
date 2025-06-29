@@ -254,7 +254,7 @@ public class SceneOrganizer : MonoBehaviour
     public void RestoreGameObjects()
     {
         Debug.Log("RESTORE GAME OBJECTS");
-        foreach (string movedObj in copyOfGameObjects) // TODO: Debugging why images no work (change back to temporaryGameObjectsList)
+        foreach (string movedObj in temporaryGameObjectsList)
         {
             // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
             GameObject gameObj = HelperMethods.ParseGameObject(movedObj);
