@@ -2,7 +2,11 @@
 ---
 Main Story 00
 
+<<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat -122,-300 10 true>>
+
 Another line
+
+<<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat 0,-100 5 true>>
 
 The end of this part
 ===

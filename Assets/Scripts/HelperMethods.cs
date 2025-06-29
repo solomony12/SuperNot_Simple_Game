@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class HelperMethods
 {
@@ -39,36 +40,35 @@ public static class HelperMethods
     }
 
     /// <summary>
-    /// Parse string into Vector3
+    /// Parse string into Vector2
     /// </summary>
     /// <param name="posString">String to be parsed</param>
-    /// <returns>Vector3 position</returns>
-    public static Vector3 ParseVector3DefaultZero(string posString)
+    /// <param name="canvasRect">Canvas of the game</param>
+    /// <returns>Vector2 position</returns>
+    public static Vector2 ParseVector2OrDefaultZero(string posString)
     {
         if (string.IsNullOrEmpty(posString))
         {
-            Debug.LogError("Position string is null or empty. Using Vector3.zero");
-            return Vector3.zero;
+            Debug.LogError("Position string is null or empty. Using Vector2.zero");
+            return Vector2.zero;
         }
 
         string[] parts = posString.Split(',');
-        if (parts.Length != 3)
+        if (parts.Length != 2)
         {
-            Debug.LogError($"Invalid position string format: '{posString}'. Expected format 'x,y,z'. Using Vector3.zero");
-            return Vector3.zero;
+            Debug.LogError($"Invalid position string format: '{posString}'. Expected format 'x,y'. Using Vector2.zero");
+            return Vector2.zero;
         }
 
-        if (float.TryParse(parts[0], out float x) &&
-            float.TryParse(parts[1], out float y) &&
-            float.TryParse(parts[2], out float z))
+        if (!float.TryParse(parts[0].Trim(), out float x) || !float.TryParse(parts[1].Trim(), out float y))
         {
-            return new Vector3(x, y, z);
+            Debug.LogError($"Failed to parse position components from '{posString}'. Using Vector2.zero");
+            return Vector2.zero;
         }
-        else
-        {
-            Debug.LogError($"Failed to parse position components from '{posString}'. Using Vector3.zero");
-            return Vector3.zero;
-        }
+
+        // Since the position is relative to BottomPanel's anchor,
+        // just return the parsed vector directly for anchoredPosition.
+        return new Vector2(x, y);
     }
 
     /// <summary>

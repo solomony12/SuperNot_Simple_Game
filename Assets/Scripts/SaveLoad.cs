@@ -199,6 +199,6 @@ public class CharacterArcEntry
 public class InteractableObjectData
 {
     public string spriteImageName;
-    public Vector3 position;
+    public Vector2 position;
     public bool shouldBeActive;
 }

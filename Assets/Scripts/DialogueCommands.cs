@@ -18,8 +18,8 @@ public class DialogueCommands : MonoBehaviour
 
     private string currentStoryRunning;
 
+    public event Action OnSceneEndMid;
     public event Action OnSceneEnded;
-    public event Action OnAdvanceLine;
 
     bool isQuitting = false;
 
@@ -63,8 +63,9 @@ public class DialogueCommands : MonoBehaviour
     /// <returns>True if the last line was ran, indicating the end of the scene</returns>
     public bool AdvanceLine()
     {
+        Debug.Log("Start of AdvanceLine");
         dialogueRunner.RequestNextLine();
-        OnAdvanceLine?.Invoke();
+        Debug.Log("End of AdvanceLine");
         return dialogueRunner.IsDialogueRunning;
     }
 
@@ -125,8 +126,7 @@ public class DialogueCommands : MonoBehaviour
         if (isQuitting) return;
 
         // SceneOrganizer needs to restore temp and update permanent data BEFORE ReachState is called to save progress
-        SceneOrganizer.Instance.RestoreGameObjects();
-        SceneOrganizer.Instance.PermanentlyChangeGameObjects();
+        OnSceneEndMid?.Invoke();
 
         // Mark story part as completed (if not random dialogue)
         if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Collections;
 using System.IO;
 using UnityEngine.Windows;
+using static UnityEditor.PlayerSettings;
 
 public class SceneOrganizer : MonoBehaviour
 {
@@ -17,15 +18,15 @@ public class SceneOrganizer : MonoBehaviour
 
     private List<string> copyOfGameObjects = new();
 
-    private List<string> temporaryGameObjectsList = new();
-    private Dictionary<string, InteractableObjectData> temporaryGameObjectDetails = new();
+    private static List<string> temporaryGameObjectsList = new();
+    private static Dictionary<string, InteractableObjectData> temporaryGameObjectDetails = new();
 
     // TODO: any one of the three values could be empty so we need to account for that when animating
-    private List<string> permanentGameObjectsList = new();
-    private Dictionary<string, InteractableObjectData> permanentObjListData = new();
+    private static List<string> permanentGameObjectsList = new();
+    private static Dictionary<string, InteractableObjectData> permanentObjListData = new();
 
     private Dictionary<GameObject, Coroutine> activeAnimations = new Dictionary<GameObject, Coroutine>();
-    private Dictionary<GameObject, Vector3> targetPositions = new Dictionary<GameObject, Vector3>();
+    private Dictionary<GameObject, Vector2> targetPositions = new Dictionary<GameObject, Vector2>();
 
     private void Awake()
     {
@@ -69,7 +70,7 @@ public class SceneOrganizer : MonoBehaviour
                 GameObject gameObj = HelperMethods.ParseGameObject(gameObjStr);
                 SaveLoad.Instance.GameObjectDetails[gameObjStr] = new InteractableObjectData {
                     spriteImageName = gameObj.GetComponent<Image>().sprite.name, 
-                    position = gameObj.transform.position, 
+                    position = gameObj.GetComponent<RectTransform>().anchoredPosition, 
                     shouldBeActive = gameObj.activeSelf };
             }
         }
@@ -82,24 +83,24 @@ public class SceneOrganizer : MonoBehaviour
     }
 
     [YarnCommand("TemporaryUpdateObject")]
-    public void TemporaryUpdateObject(string gameObjName, string spriteImageName, string positionString, string durationString, string shouldBeEnabledString)
+    public static void TemporaryUpdateObject(string gameObjName, string spriteImageName, string positionString, string durationString, string shouldBeEnabledString)
     {
-        // Parse to GameObject and Vector3
+        // Parse to GameObject and Vector2
         var (gameObject, position, duration) = ParseGameObjectAndPositionAndDuration(gameObjName, positionString, durationString);
         // Parse to bool
-        bool shouldBeEnabled = shouldBeEnabledString.Equals(true.ToString());
+        bool shouldBeEnabled = Convert.ToBoolean(shouldBeEnabledString);
 
         // Store GameObject in temporaryObjList
         temporaryGameObjectsList.Add(gameObjName);
 
         // Update GameObject
-        UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
+        Instance.UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
     [YarnCommand("PermanentUpdateObject")]
-    public void PermanentUpdateObject(string gameObjName, string spriteImageName, string positionString, string durationString, string shouldBeEnabledString)
+    public static void PermanentUpdateObject(string gameObjName, string spriteImageName, string positionString, string durationString, string shouldBeEnabledString)
     {
-        // Parse to GameObject and Vector3
+        // Parse to GameObject and Vector2
         var (gameObject, position, duration) = ParseGameObjectAndPositionAndDuration(gameObjName, positionString, durationString);
         // Parse to bool
         bool shouldBeEnabled = string.IsNullOrEmpty(shouldBeEnabledString) ||
@@ -113,18 +114,18 @@ public class SceneOrganizer : MonoBehaviour
             shouldBeActive = shouldBeEnabled });
 
         // Update GameObject
-        UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
+        Instance.UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
     // TODO: If animation is interrupted by next line/click before duration is up, automatically finish the position movement
-    // Note: The Vector3 positions are absolute so it's not like (Move left by 10px) but (new position is here, here, and here)
+    // Note: The Vector2 positions are absolute so it's not like (Move left by 10px) but (new position is here, here, and here)
     // Note: We can have multiple animations playing at once so we can only auto-finish when the next click for next dialogue
     // was pressed and ALL animations haven't been completed yet
     // TODO: This means we need to store all on-currently going on animations and check their timers to see if they're still running
     // CurrentVector = OldVector + NewVector rather than CurrentVector = OldVector -> NewVector
-    public void UpdateGameObject(GameObject gameObj, string spriteImage, Vector3 pos, float duration, bool isActive)
+    public void UpdateGameObject(GameObject gameObj, string spriteImage, Vector2 pos, float duration, bool isActive)
     {
-        Debug.Log($"Updating game object '{gameObj.name}' with image '{spriteImage}' to position '{pos.ToString()}' and isActive = {isActive}");
+        Debug.Log($"Updating game object '{gameObj.name}' with image '{spriteImage}' to position '{pos.ToString()} (Anchored)' and isActive = {isActive}");
 
         // Image and isActive are updated immediately regardless of coroutine or not
         if (!string.IsNullOrEmpty(spriteImage))
@@ -140,13 +141,16 @@ public class SceneOrganizer : MonoBehaviour
         gameObj.SetActive(isActive);
 
         // If a position was added
-        if (pos != Vector3.zero)
+        if (pos != Vector2.zero)
         {
+            // Get the transform for relative positioning
+            RectTransform gameObjTransform = gameObj.GetComponent<RectTransform>();
+
             // We update the data in temporaryGameObjectDetails and use that to update the GameObject
             if (duration == 0f)
             {
                 // Update position immediately
-                gameObj.transform.position = pos;
+                gameObjTransform.anchoredPosition = pos;
             }
             // Animate position otherwise
             else
@@ -157,7 +161,7 @@ public class SceneOrganizer : MonoBehaviour
                     // Snap to the final position of the previous animation
                     if (targetPositions.ContainsKey(gameObj))
                     {
-                        gameObj.transform.position = targetPositions[gameObj];
+                        gameObjTransform.anchoredPosition = targetPositions[gameObj];
                     }
 
                     // Stop the previous animation
@@ -187,40 +191,50 @@ public class SceneOrganizer : MonoBehaviour
     /// <returns>IEnumerator for animation coroutine</returns>
     private IEnumerator AnimateMovement(GameObject gameObj, Vector3 targetPos, float duration)
     {
-        Vector3 startPos = gameObj.transform.position;
+        // Get the transform for relative positioning
+        RectTransform gameObjTransform = gameObj.GetComponent<RectTransform>();
+
+        Vector3 startPos = gameObjTransform.anchoredPosition;
         float timeElapsed = 0f;
 
         // Move
         while (timeElapsed < duration)
         {
-            gameObj.transform.position = Vector3.Lerp(startPos, targetPos, timeElapsed / duration);
+            gameObjTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
 
         // Set final position
-        gameObj.transform.position = targetPos;
+        gameObjTransform.anchoredPosition = targetPos;
 
         // Remove from active list
         activeAnimations.Remove(gameObj);
         targetPositions.Remove(gameObj);
     }
 
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-        // Next dialogue line is running so finish all animations from current line
-        DialogueCommands.Instance.OnAdvanceLine += FinishAllAnimationsImmediately;
+        DialogueCommands.Instance.OnSceneEndMid += RunCleanUp;
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        DialogueCommands.Instance.OnAdvanceLine -= FinishAllAnimationsImmediately;
+        DialogueCommands.Instance.OnSceneEndMid -= RunCleanUp;
     }
 
+    void RunCleanUp()
+    {
+        // SceneOrganizer needs to restore temp and update permanent data BEFORE ReachState is called to save progress
+        FinishAllAnimationsImmediately();
+        RestoreGameObjects();
+        PermanentlyChangeGameObjects();
+    }
+
+    // TODO: We need to be able to call this every time a dialogue line is completed
     /// <summary>
     /// Finishes all currently running animations
     /// </summary>
@@ -239,7 +253,9 @@ public class SceneOrganizer : MonoBehaviour
             // Snap to final position
             if (targetPositions.ContainsKey(obj))
             {
-                obj.transform.position = targetPositions[obj];
+                // Get the transform for relative positioning
+                RectTransform gameObjTransform = obj.GetComponent<RectTransform>();
+                gameObjTransform.anchoredPosition = targetPositions[obj];
             }
         }
 
@@ -256,7 +272,7 @@ public class SceneOrganizer : MonoBehaviour
         //Debug.Log("RESTORE GAME OBJECTS");
         foreach (string movedObj in temporaryGameObjectsList)
         {
-            // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
+            // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector2, bool)
             GameObject gameObj = HelperMethods.ParseGameObject(movedObj);
             InteractableObjectData objData = SaveLoad.Instance.GameObjectDetails[movedObj];
             UpdateGameObject(gameObj, objData.spriteImageName, objData.position, 0f, objData.shouldBeActive); // 0f for duration since instant
@@ -291,19 +307,19 @@ public class SceneOrganizer : MonoBehaviour
     }
 
     /// <summary>
-    /// Parses strings to GameObject and Vector3
+    /// Parses strings to GameObject and Vector2
     /// </summary>
     /// <param name="gameObjName">String to parse into GameObject</param>
-    /// <param name="positionString">String to parse into Vector3</param>
-    /// <returns>(GameObject, Vector3)</returns>
+    /// <param name="positionString">String to parse into Vector2</param>
+    /// <returns>(GameObject, Vector2)</returns>
     /// <exception cref="Exception">Incorrect format or wrong name/GameObject found</exception>
-    public static (GameObject, Vector3, float) ParseGameObjectAndPositionAndDuration(string gameObjName, string positionString, string durationString)
+    public static (GameObject, Vector2, float) ParseGameObjectAndPositionAndDuration(string gameObjName, string positionString, string durationString)
     {
         // Find the GameObject by name
         GameObject obj = HelperMethods.ParseGameObject(gameObjName);
 
-        // Parse the position string into Vector3
-        Vector3 position = HelperMethods.ParseVector3DefaultZero(positionString);
+        // Parse the position string into Vector2 (in relation to bottomPanel)
+        Vector2 position = HelperMethods.ParseVector2OrDefaultZero(positionString);
 
         // Parse the duration string into float
         float duration = HelperMethods.ParseFloatDefaultOne(durationString);

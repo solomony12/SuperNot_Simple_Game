@@ -28,12 +28,12 @@ public class Animations : MonoBehaviour
     /// <param name="onComplete">Action/method to run when animation is done</param>
     public void PlayAnimation(GameObject obj, AnimationType animation, float duration, Action onComplete)
     {
-        Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
+        //Debug.Log($"Playing animation {animation.ToString()} for {duration} seconds on {obj.gameObject.GetComponent<Image>().sprite.name}");
 
         // If an animation is already playing on obj, don't start another
         if (runningAnimations.ContainsKey(obj))
         {
-            Debug.LogWarning($"Animation already running on {obj.name}. Stopping it and starting new animation {animation.ToString()}.");
+            //Debug.LogWarning($"Animation already running on {obj.name}. Stopping it and starting new animation {animation.ToString()}.");
             StopExistingAnimation(obj, animation == AnimationType.FadeIn);
         }
 

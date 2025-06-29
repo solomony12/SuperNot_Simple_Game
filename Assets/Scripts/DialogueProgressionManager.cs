@@ -217,7 +217,7 @@ public class DialogueProgressionManager : MonoBehaviour
                 if (!SaveLoad.Instance.ReachedStates.Contains(nextMainPart.node) && IsNodeUnlocked(nextMainPart.node))
                 {
                     SaveLoad.Instance.LatestMainStory = nextMainPart.node;
-                    Debug.Log($"Discovered new main story part: {nextMainPart.node}");
+                    //Debug.Log($"Discovered new main story part: {nextMainPart.node}");
                 }
             }
         }
@@ -243,7 +243,7 @@ public class DialogueProgressionManager : MonoBehaviour
                 if (!SaveLoad.Instance.ReachedStates.Contains(nextCharPart.node) && IsNodeUnlocked(nextCharPart.node))
                 {
                     SaveLoad.Instance.LatestCharacterArcs[character] = nextCharPart.node;
-                    Debug.Log($"Discovered new character arc for {character}: {nextCharPart.node}");
+                    //Debug.Log($"Discovered new character arc for {character}: {nextCharPart.node}");
                 }
             }
         }
@@ -260,7 +260,7 @@ public class DialogueProgressionManager : MonoBehaviour
 
                 if (IsNodeUnlocked(node))
                 {
-                    Debug.Log($"Discovered untracked unlocked random node: {node}");
+                    //Debug.Log($"Discovered untracked unlocked random node: {node}");
                 }
             }
         }
