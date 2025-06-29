@@ -2389,6 +2389,7 @@ GameObject:
   - component: {fileID: 1393894657}
   - component: {fileID: 1393894658}
   - component: {fileID: 1393894659}
+  - component: {fileID: 1393894660}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -2498,6 +2499,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f04df181e1c3f645927feef527b7ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1393894660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393894650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1211f0b20c80b4f4898d94b39541c18d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 4194317699812459966, guid: 0bc0520141f0aa44eb7d35207dc3b26d, type: 3}
+  canvasRectTransform: {fileID: 902147865}
 --- !u!1 &1428449711
 GameObject:
   m_ObjectHideFlags: 0

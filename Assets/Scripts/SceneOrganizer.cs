@@ -29,7 +29,6 @@ public class SceneOrganizer : MonoBehaviour
     // Dictionary 2 has key of gameObject name and value of tuple (spriteName, position)
     // So use dictionary 1 to first select gameObjects names; then use those names in Dictionary 2 to store/view values
 
-    // TODO: EXTEND THIS TO ALL SPRITE, POSITION, AND SETACTIVE FOR ALLLLLLL METHODS
     // 0. When a scene starts, make a copy of gameObjectDetails. This will be what we use to update game objects temporarily during an active scene.
     // 1. The scene plays with any temporary animations. We update those game object names in the temporaryGameObjectDetails: [YarnCommand] TemporaryUpdateObject
     // 2. If it's a permanent animation, we also store the whole data in a permanentObjListData: [YarnCommand] PermanentUpdateObject
@@ -84,7 +83,7 @@ public class SceneOrganizer : MonoBehaviour
         // Store GameObject in temporaryObjList
         temporaryGameObjectsList.Add(gameObjName);
 
-        // TODO: Update GameObject
+        // Update GameObject
         UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
@@ -103,12 +102,15 @@ public class SceneOrganizer : MonoBehaviour
             position = position,
             shouldBeActive = shouldBeEnabled });
 
-        // TODO: Update GameObject
+        // Update GameObject
         UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
-    // TODO :If animation is interrupted by next line/click before duration is up, automatically finish the position movement
+    // TODO: If animation is interrupted by next line/click before duration is up, automatically finish the position movement
     // Note: The Vector3 positions are absolute so it's not like (Move left by 10px) but (new position is here, here, and here)
+    // Note: We can have multiple animations playing at once so we can only auto-finish when the next click for next dialogue
+    // was pressed and ALL animations haven't been completed yet
+    // TODO: This means we need to store all on-currently going on animations and check their timers to see if they're still running
     // CurrentVector = OldVector + NewVector rather than CurrentVector = OldVector -> NewVector
     public void UpdateGameObject(GameObject gameObj, string spriteImage, Vector3 pos, float duration, bool isActive)
     {
@@ -181,5 +183,52 @@ public class SceneOrganizer : MonoBehaviour
         float duration = HelperMethods.ParseFloatDefaultOne(durationString);
 
         return (obj, position, duration);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // This method is called AFTER the scene has loaded
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SaveCurrentSceneName();
+
+        // Load game data for that scene
+        try
+        {
+            List<string> interactableObjects = GameObject
+                    .FindGameObjectsWithTag(ScriptConstants.interactableObjectString)
+                    .Select(obj => obj.name)
+                    .ToList();
+            // For each interactable game object in the scene
+            foreach (string gameObjStr in interactableObjects)
+            {
+                // Data only exists if it has been permanetly modified before
+                if (SaveLoad.Instance.GameObjectDetails.TryGetValue(gameObjStr, out InteractableObjectData objData))
+                {
+                    Debug.Log("Modified info");
+                    GameObject gameObj = HelperMethods.ParseGameObject(gameObjStr);
+                    // Update image, position, and isActive
+                    gameObj.GetComponent<Image>().sprite.name = objData.spriteImageName;
+                    gameObj.transform.position = objData.position;
+                    gameObj.SetActive(objData.shouldBeActive);
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.ToString());
+        }
+
+        // Set markers
+        BottomToTopInteraction.Instance.SetMarkers();
     }
 }

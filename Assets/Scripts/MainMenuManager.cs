@@ -85,9 +85,6 @@ public class MainMenuManager : MonoBehaviour
         var saveData = JsonUtility.FromJson<SaveData>(json);
         string sceneToLoad = saveData.currentScene;
         SceneManager.LoadScene(sceneToLoad);
-
-        Destroy(GetComponent<MainMenuManager>());
-        Destroy(GetComponent<SaveLoad>());
     }
 
     /// <summary>
@@ -103,9 +100,6 @@ public class MainMenuManager : MonoBehaviour
 
         // Change the scene to the first starting scene
         SceneManager.LoadScene(ScriptConstants.newGameFirstScene);
-
-        Destroy(GetComponent<MainMenuManager>());
-        Destroy(GetComponent<SaveLoad>());
 
         // Reason why we don't make a new one is that a save is made/updated at the end of each scene.
         // If the first scene is never finished, we don't wanna save since that would skip the first one.

@@ -14,6 +14,8 @@ using static Effects;
 
 public class BottomToTopInteraction : MonoBehaviour
 {
+    public static BottomToTopInteraction Instance;
+
     public GameObject charDialParent;
     public static GameObject characterImagePose;
     public GameObject dialogueBoxPanel;
@@ -32,6 +34,8 @@ public class BottomToTopInteraction : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         // Commands scripts instances
         GameObject gameController = GameObject.FindWithTag(ScriptConstants.gameControllerString);
 
@@ -250,7 +254,7 @@ public class BottomToTopInteraction : MonoBehaviour
     /// <summary>
     /// Set the markers as children to the objects/characters they represent to start a story part
     /// </summary>
-    void SetMarkers()
+    public void SetMarkers()
     {
         ResetMarkers();
 
