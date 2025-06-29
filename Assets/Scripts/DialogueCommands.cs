@@ -87,6 +87,8 @@ public class DialogueCommands : MonoBehaviour
         {
             string mainStoryName = DialogueProgressionManager.Instance.GetLatestMainStory();
 
+            SceneOrganizer.Instance.StoreOriginalGameObjectsData();
+
             // Start yarn script scene with that name (mainStoryName)
             currentStoryRunning = mainStoryName;
             //Debug.Log($"Main currStoryRunning is {currentStoryRunning}");
@@ -95,6 +97,8 @@ public class DialogueCommands : MonoBehaviour
         else
         {
             string characterPartName = DialogueProgressionManager.Instance.GetLatestCharacterArc(objName);
+
+            SceneOrganizer.Instance.StoreOriginalGameObjectsData();
 
             // Start yarn script scene with that name (characterPartName)
             currentStoryRunning = characterPartName;
@@ -118,14 +122,15 @@ public class DialogueCommands : MonoBehaviour
         // Prevents saving if game quit abruptly (like stopping editor or closing app or crash)
         if (isQuitting) return;
 
-        // TODO: SceneOrganizer needs to restore postions and update permanent positions BEFORE ReachState is called to save progress
-        // SceneOrganizer.RestorePositions();
-        // SceneOrganizer.UpdatePermanentPositions();
+        // SceneOrganizer needs to restore temp and update permanent data BEFORE ReachState is called to save progress
+        SceneOrganizer.Instance.RestoreGameObjects();
+        SceneOrganizer.Instance.PermanentlyChangeGameObjects();
 
         // Mark story part as completed (if not random dialogue)
         if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))
         {
             Debug.Log($"Marking {currentStoryRunning} as completed");
+            SceneOrganizer.Instance.SaveCurrentSceneName();
             DialogueProgressionManager.Instance.ReachState(currentStoryRunning);
         }
 

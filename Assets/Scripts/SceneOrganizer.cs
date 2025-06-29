@@ -3,14 +3,26 @@ using UnityEngine;
 using Yarn.Unity;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Linq;
 
 public class SceneOrganizer : MonoBehaviour
 {
 
-    private List<GameObject> temporaryObjList = new();
+    public static SceneOrganizer Instance;
+
+    private List<string> temporaryGameObjectsList = new();
+    private Dictionary<string, InteractableObjectData> temporaryGameObjectDetails = new();
+
     // TODO: any one of the three values could be empty so we need to account for that when animating
-    private List<GameObject> permanentGameObjectsList = new();
-    private Dictionary<GameObject, (string, Vector3, bool)> permanentObjListData = new();
+    private List<string> permanentGameObjectsList = new();
+    private Dictionary<string, InteractableObjectData> permanentObjListData = new();
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // This is in SaveData:
     // A dictionary where key is a scene and values are lists of gameobjects per scene (Dictionary1 sceneToGameObjectsList<sceneName, List<GameObject>>)
@@ -18,12 +30,48 @@ public class SceneOrganizer : MonoBehaviour
     // So use dictionary 1 to first select gameObjects names; then use those names in Dictionary 2 to store/view values
 
     // TODO: EXTEND THIS TO ALL SPRITE, POSITION, AND SETACTIVE FOR ALLLLLLL METHODS
-    // 0. Store the original positions before the scene starts in a Dictionary (we don't need to do this as SaveLoad already has the current ones)
-    // 1. The scene plays with any temporary animations. Store those game object names in a temporaryObjList: [YarnCommand] TemporaryUpdateObject(GameObject, Position)
-    // 2. If it's a permanent animation, store the (GameObject, Position) in a permanentObjList: [YarnCommand] PermanentUpdateObject(GameObject, Position)
-    // 3. When the scene ends, restore to the original positions by looking through original positions
-    // 4. Then, loop through permanentList and update any of those game object's positions
-    // 5. The SaveProgress() should now be called here or after BUT NOT BEFORE (See EndOfScene method in DialogueCommands script)
+    // 0. When a scene starts, make a copy of gameObjectDetails. This will be what we use to update game objects temporarily during an active scene.
+    // 1. The scene plays with any temporary animations. We update those game object names in the temporaryGameObjectDetails: [YarnCommand] TemporaryUpdateObject
+    // 2. If it's a permanent animation, we also store the whole data in a permanentObjListData: [YarnCommand] PermanentUpdateObject
+    // 3. When the scene ends, restore temps and update any permanent game object data into SaveLoad, which is done in EndofScene() in DialogueCommands script BEFORE the ReachState() is called
+    // 4. ReachState() is called to SaveProgress()
+
+    public void StoreOriginalGameObjectsData()
+    {
+        // Clear all data from last scene
+        temporaryGameObjectsList.Clear();
+        temporaryGameObjectDetails.Clear();
+        permanentGameObjectsList.Clear();
+        permanentObjListData.Clear();
+        
+        string currentScene = SaveLoad.Instance.CurrentScene;
+
+        // If there's no key/scene in the dictionary, this means it's the first time we've visited the scene so we store its data
+        if (!SaveLoad.Instance.SceneNameToGameObjectsList.ContainsKey(currentScene))
+        {
+            List<string> interactableObjects = GameObject
+                .FindGameObjectsWithTag(ScriptConstants.interactableObjectString)
+                .Select(obj => obj.name)
+                .ToList();
+            // Save the list of game objects in that scene
+            SaveLoad.Instance.SceneNameToGameObjectsList[currentScene] = interactableObjects;
+            foreach (string gameObjStr in interactableObjects)
+            {
+                // Store the game object's data
+                GameObject gameObj = HelperMethods.ParseGameObject(gameObjStr);
+                SaveLoad.Instance.GameObjectDetails[gameObjStr] = new InteractableObjectData {
+                    spriteImageName = gameObj.GetComponent<Image>().sprite.name, 
+                    position = gameObj.transform.position, 
+                    shouldBeActive = gameObj.activeSelf };
+            }
+        }
+
+
+        // Grab all game objects in the current scene (safe copy (shallow copy of list elements))
+        temporaryGameObjectsList = new List<string>(SaveLoad.Instance.SceneNameToGameObjectsList[currentScene]);
+        // Grab a copy of their data too
+        temporaryGameObjectDetails = new Dictionary<string, InteractableObjectData>(SaveLoad.Instance.GameObjectDetails);
+    }
 
     [YarnCommand("TemporaryUpdateObject")]
     public void TemporaryUpdateObject(string gameObjName, string spriteImageName, string positionString, string durationString, string shouldBeEnabledString)
@@ -34,9 +82,10 @@ public class SceneOrganizer : MonoBehaviour
         bool shouldBeEnabled = shouldBeEnabledString.Equals(true.ToString());
 
         // Store GameObject in temporaryObjList
-        temporaryObjList.Add(gameObject);
+        temporaryGameObjectsList.Add(gameObjName);
 
         // TODO: Update GameObject
+        UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
     [YarnCommand("PermanentUpdateObject")]
@@ -48,29 +97,44 @@ public class SceneOrganizer : MonoBehaviour
         bool shouldBeEnabled = shouldBeEnabledString.Equals(true.ToString());
 
         // Store data in permanentObjList for that object
-        permanentGameObjectsList.Add(gameObject);
-        permanentObjListData.Add(gameObject, (spriteImageName, position, shouldBeEnabled));
+        permanentGameObjectsList.Add(gameObjName);
+        permanentObjListData.Add(gameObjName, new InteractableObjectData {
+            spriteImageName = spriteImageName,
+            position = position,
+            shouldBeActive = shouldBeEnabled });
 
         // TODO: Update GameObject
+        UpdateGameObject(gameObject, spriteImageName, position, duration, shouldBeEnabled);
     }
 
     // TODO :If animation is interrupted by next line/click before duration is up, automatically finish the position movement
-    // Note: We will move them relative to the given position, which means additive.
+    // Note: The Vector3 positions are absolute so it's not like (Move left by 10px) but (new position is here, here, and here)
     // CurrentVector = OldVector + NewVector rather than CurrentVector = OldVector -> NewVector
-    //public void UpdateGameObject()
+    public void UpdateGameObject(GameObject gameObj, string spriteImage, Vector3 pos, float duration, bool isActive)
+    {
+        // TODO: We update the data in temporaryGameObjectDetails and use that to update the GameObject
+        if (duration == 0f)
+        {
+            // TODO: Update immediately
+        }
+        else
+        {
+            // TODO: Coroutine
+        }
+    }
 
     /// <summary>
     /// Restores all game objects that were updated temporarily during a scene
     /// </summary>
     public void RestoreGameObjects()
     {
-        foreach (GameObject movedObj in temporaryObjList)
+        foreach (string movedObj in temporaryGameObjectsList)
         {
-            // TODO: Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
+            // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
+            GameObject gameObj = HelperMethods.ParseGameObject(movedObj);
+            InteractableObjectData objData = SaveLoad.Instance.GameObjectDetails[movedObj];
+            UpdateGameObject(gameObj, objData.spriteImageName, objData.position, 0f, objData.shouldBeActive); // 0f for duration since instant
         }
-
-        // At the end, clear temporaryObjList
-        temporaryObjList.Clear();
     }
 
     /// <summary>
@@ -79,14 +143,23 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void PermanentlyChangeGameObjects()
     {
-        foreach (GameObject movedObj in permanentGameObjectsList)
+        foreach (string movedObj in permanentGameObjectsList)
         {
-            // TODO: Update that GameObject to the original position using permanentObjListData
+            // Update the SaveLoad data for that game object
+            SaveLoad.Instance.GameObjectDetails[movedObj] = permanentObjListData[movedObj];
+            // Update that GameObject to the new original position using permanentObjListData
+            GameObject gameObj = HelperMethods.ParseGameObject(movedObj);
+            InteractableObjectData objData = permanentObjListData[movedObj];
+            UpdateGameObject(gameObj, objData.spriteImageName, objData.position, 0f, objData.shouldBeActive); // 0f for duration since instant
         }
+    }
 
-        // At the end, clear lists
-        permanentGameObjectsList.Clear();
-        permanentObjListData.Clear();
+    /// <summary>
+    /// Save the name of the current scene in SaveLoad
+    /// </summary>
+    public void SaveCurrentSceneName()
+    {
+        SaveLoad.Instance.CurrentScene = SceneManager.GetActiveScene().name;
     }
 
     /// <summary>
@@ -99,70 +172,14 @@ public class SceneOrganizer : MonoBehaviour
     public static (GameObject, Vector3, float) ParseGameObjectAndPositionAndDuration(string gameObjName, string positionString, string durationString)
     {
         // Find the GameObject by name
-        GameObject obj = GameObject.Find(gameObjName);
-        if (obj == null)
-        {
-            throw new Exception($"GameObject with name '{gameObjName}' not found.");
-        }
+        GameObject obj = HelperMethods.ParseGameObject(gameObjName);
 
         // Parse the position string into Vector3
-        Vector3 position = ParseVector3DefaultZero(positionString);
+        Vector3 position = HelperMethods.ParseVector3DefaultZero(positionString);
 
         // Parse the duration string into float
-        float duration = ParseFloatDefaultOne(durationString);
+        float duration = HelperMethods.ParseFloatDefaultOne(durationString);
 
         return (obj, position, duration);
-    }
-
-    /// <summary>
-    /// Parse string into Vector3
-    /// </summary>
-    /// <param name="posString">String to be parsed</param>
-    /// <returns>Vector3 position</returns>
-    private static Vector3 ParseVector3DefaultZero(string posString)
-    {
-        if (string.IsNullOrEmpty(posString))
-        {
-            Debug.LogError("Position string is null or empty. Using Vector3.zero");
-            return Vector3.zero;
-        }
-
-        string[] parts = posString.Split(',');
-        if (parts.Length != 3)
-        {
-            Debug.LogError($"Invalid position string format: '{posString}'. Expected format 'x,y,z'. Using Vector3.zero");
-            return Vector3.zero;
-        }
-
-        if (float.TryParse(parts[0], out float x) &&
-            float.TryParse(parts[1], out float y) &&
-            float.TryParse(parts[2], out float z))
-        {
-            return new Vector3(x, y, z);
-        }
-        else
-        {
-            Debug.LogError($"Failed to parse position components from '{posString}'. Using Vector3.zero");
-            return Vector3.zero;
-        }
-    }
-
-    /// <summary>
-    /// Parse string into float
-    /// </summary>
-    /// <param name="floatString">String to be parsed into</param>
-    /// <returns>Float</returns>
-    private static float ParseFloatDefaultOne(string floatString)
-    {
-        if (float.TryParse(floatString, out float number))
-        {
-            return number;
-        }
-        else
-        {
-            // Backup if failed to parse
-            Debug.LogWarning($"Failed to parse '{floatString}' as float. Returning 1.");
-            return 1f;
-        }
     }
 }

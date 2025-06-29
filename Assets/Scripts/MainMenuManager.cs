@@ -17,9 +17,9 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
-        continueButton = GameObject.Find("ContinueButton").GetComponent<Button>();
-        creditsPanel = GameObject.Find("CreditsPanel");
-        warningPanel = GameObject.Find("WarningPanel");
+        continueButton = HelperMethods.ParseGameObject("ContinueButton").GetComponent<Button>();
+        creditsPanel = HelperMethods.ParseGameObject("CreditsPanel");
+        warningPanel = HelperMethods.ParseGameObject("WarningPanel");
     }
 
     void Start()

@@ -263,7 +263,7 @@ public class BottomToTopInteraction : MonoBehaviour
             UnlockPart mainStory = DialogueProgressionManager.Instance.GetLatestMainStoryPart();
 
             // Find the game object the marker will be a child of
-            GameObject mainMarkerCharacter = GameObject.Find(mainStory.startingCharacter);
+            GameObject mainMarkerCharacter = HelperMethods.ParseGameObject(mainStory.startingCharacter);
 
             // Assign the marker as a child of the startingCharacter (or object) (and position)
             mainStoryMarker.transform.SetParent(mainMarkerCharacter.transform);
@@ -284,7 +284,7 @@ public class BottomToTopInteraction : MonoBehaviour
             foreach (UnlockPart charStory in characterStoryParts)
             {
                 // Find the game object the marker will be a child of
-                GameObject charMarkerCharacter = GameObject.Find(charStory.startingCharacter);
+                GameObject charMarkerCharacter = HelperMethods.ParseGameObject(charStory.startingCharacter);
 
                 // Make an instance of the character arc marker
                 GameObject newCharMarker = Instantiate(characterArcStoryMarker);

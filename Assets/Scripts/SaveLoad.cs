@@ -27,11 +27,13 @@ public class SaveLoad : MonoBehaviour
 
     // ----- SCENE ORGANIZER DATA -----
 
+    private string currentScene;
+
     // Stores a list of game objects for each scene
-    private Dictionary<string, List<GameObject>> sceneNameToGameObjectsList = new();
+    private Dictionary<string, List<string>> sceneNameToGameObjectsList = new();
 
     // Stores the current image 'sprite name' (string), 'vector position' of each game object, and 'shouldBeSetActive' (bool)
-    private Dictionary<GameObject, (string, Vector3, bool)> gameObjectDetails = new();
+    private Dictionary<string, InteractableObjectData> gameObjectDetails = new();
 
 
     private void Awake()
@@ -50,12 +52,15 @@ public class SaveLoad : MonoBehaviour
         // Save data
         var saveData = new SaveData
         {
-            currentScene = SceneManager.GetActiveScene().name,
             reachedStates = reachedStates.ToList(),
             latestMainStory = latestMainStory,
             latestCharacterArcs = latestCharacterArcs
                 .Select(kvp => new CharacterArcEntry { character = kvp.Key, node = kvp.Value })
-                .ToList()
+                .ToList(),
+            currentScene = currentScene,
+            sceneNameToGameObjectsList = sceneNameToGameObjectsList,
+            gameObjectDetails = gameObjectDetails
+
         };
 
         // Save to JSON
@@ -73,25 +78,56 @@ public class SaveLoad : MonoBehaviour
         // New game - set initial main story part here
         if (!File.Exists(SavePath))
         {
+            // ----- DIALOGUE PROGRESSION MANAGER DATA -----
             latestMainStory = ScriptConstants.startingStoryID;
             reachedStates = new HashSet<string>();
             latestCharacterArcs = new Dictionary<string, string>();
+
+            // ----- SCENE ORGANIZER DATA -----
+            currentScene = ScriptConstants.newGameFirstScene;
+            sceneNameToGameObjectsList = new Dictionary<string, List<string>>();
+            gameObjectDetails = new Dictionary<string, InteractableObjectData>();
+
             Debug.Log("No save found. Starting new game with initial main story part");
             return;
         }
 
+        // Load data:
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<SaveData>(json);
+
+        // ----- DIALOGUE PROGRESSION MANAGER DATA -----
 
         // Load reached states and latest unlocked parts
         reachedStates = new HashSet<string>(saveData.reachedStates);
         latestMainStory = saveData.latestMainStory;
         latestCharacterArcs = new Dictionary<string, string>();
-
         // Load character arc nodes
         foreach (var arc in saveData.latestCharacterArcs)
         {
             latestCharacterArcs[arc.character] = arc.node;
+        }
+
+        // ----- SCENE ORGANIZER DATA -----
+
+        currentScene = saveData.currentScene;
+        sceneNameToGameObjectsList = new Dictionary<string, List<string>>();
+        // Could be empty if no game objects have ever been moved in any scenes ever
+        if (saveData.sceneNameToGameObjectsList != null && saveData.sceneNameToGameObjectsList.Count > 0)
+        {
+            foreach (var kvp in saveData.sceneNameToGameObjectsList)
+            {
+                sceneNameToGameObjectsList[kvp.Key] = kvp.Value;
+            }
+        }
+        gameObjectDetails = new Dictionary<string, InteractableObjectData>();
+        // Could also be empty if no game objects have ever been moved in any scenes ever
+        if (saveData.gameObjectDetails != null && saveData.gameObjectDetails.Count > 0)
+        {
+            foreach (var kvp in saveData.gameObjectDetails)
+            {
+                gameObjectDetails[kvp.Key] = kvp.Value;
+            }
         }
 
         Debug.Log("Progression loaded");
@@ -118,15 +154,22 @@ public class SaveLoad : MonoBehaviour
         set { latestCharacterArcs = value; }
     }
 
+    // Getter and Setter for currentScene
+    public string CurrentScene
+    {
+        get { return currentScene; }
+        set { currentScene = value; }
+    }
+
     // Getter and Setter for sceneNameToGameObjectsList
-    public Dictionary<string, List<GameObject>> SceneNameToGameObjectsList
+    public Dictionary<string, List<string>> SceneNameToGameObjectsList
     {
         get { return sceneNameToGameObjectsList; }
         set { sceneNameToGameObjectsList = value; }
     }
 
     // Getter and Setter for gameObjectDetails
-    public Dictionary<GameObject, (string, Vector3, bool)> GameObjectDetails
+    public Dictionary<string, InteractableObjectData> GameObjectDetails
     {
         get { return gameObjectDetails; }
         set { gameObjectDetails = value; }
@@ -137,10 +180,12 @@ public class SaveLoad : MonoBehaviour
 [System.Serializable]
 public class SaveData
 {
-    public string currentScene;
     public List<string> reachedStates;
     public string latestMainStory;
     public List<CharacterArcEntry> latestCharacterArcs;
+    public string currentScene;
+    public Dictionary<string, List<string>> sceneNameToGameObjectsList;
+    public Dictionary<string, InteractableObjectData> gameObjectDetails;
 }
 
 [System.Serializable]
@@ -148,4 +193,12 @@ public class CharacterArcEntry
 {
     public string character;
     public string node;
+}
+
+[System.Serializable]
+public class InteractableObjectData
+{
+    public string spriteImageName;
+    public Vector3 position;
+    public bool shouldBeActive;
 }
