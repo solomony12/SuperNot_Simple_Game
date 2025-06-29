@@ -6,11 +6,16 @@ using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
+using System.IO;
+using UnityEngine.Windows;
 
 public class SceneOrganizer : MonoBehaviour
 {
 
     public static SceneOrganizer Instance;
+
+    private List<string> copyOfGameObjects = new();
 
     private List<string> temporaryGameObjectsList = new();
     private Dictionary<string, InteractableObjectData> temporaryGameObjectDetails = new();
@@ -18,6 +23,9 @@ public class SceneOrganizer : MonoBehaviour
     // TODO: any one of the three values could be empty so we need to account for that when animating
     private List<string> permanentGameObjectsList = new();
     private Dictionary<string, InteractableObjectData> permanentObjListData = new();
+
+    private Dictionary<GameObject, Coroutine> activeAnimations = new Dictionary<GameObject, Coroutine>();
+    private Dictionary<GameObject, Vector3> targetPositions = new Dictionary<GameObject, Vector3>();
 
     private void Awake()
     {
@@ -38,6 +46,7 @@ public class SceneOrganizer : MonoBehaviour
     public void StoreOriginalGameObjectsData()
     {
         // Clear all data from last scene
+        copyOfGameObjects.Clear();
         temporaryGameObjectsList.Clear();
         temporaryGameObjectDetails.Clear();
         permanentGameObjectsList.Clear();
@@ -67,7 +76,7 @@ public class SceneOrganizer : MonoBehaviour
 
 
         // Grab all game objects in the current scene (safe copy (shallow copy of list elements))
-        temporaryGameObjectsList = new List<string>(SaveLoad.Instance.SceneNameToGameObjectsList[currentScene]);
+        copyOfGameObjects = new List<string>(SaveLoad.Instance.SceneNameToGameObjectsList[currentScene]);
         // Grab a copy of their data too
         temporaryGameObjectDetails = new Dictionary<string, InteractableObjectData>(SaveLoad.Instance.GameObjectDetails);
     }
@@ -93,7 +102,8 @@ public class SceneOrganizer : MonoBehaviour
         // Parse to GameObject and Vector3
         var (gameObject, position, duration) = ParseGameObjectAndPositionAndDuration(gameObjName, positionString, durationString);
         // Parse to bool
-        bool shouldBeEnabled = shouldBeEnabledString.Equals(true.ToString());
+        bool shouldBeEnabled = string.IsNullOrEmpty(shouldBeEnabledString) ||
+                       shouldBeEnabledString.Equals("true", StringComparison.OrdinalIgnoreCase);
 
         // Store data in permanentObjList for that object
         permanentGameObjectsList.Add(gameObjName);
@@ -114,15 +124,128 @@ public class SceneOrganizer : MonoBehaviour
     // CurrentVector = OldVector + NewVector rather than CurrentVector = OldVector -> NewVector
     public void UpdateGameObject(GameObject gameObj, string spriteImage, Vector3 pos, float duration, bool isActive)
     {
-        // TODO: We update the data in temporaryGameObjectDetails and use that to update the GameObject
-        if (duration == 0f)
+        Debug.Log($"Updating game object '{gameObj.name}' with image '{spriteImage}' to position '{pos.ToString()}' and isActive = {isActive}");
+
+        // Image and isActive are updated immediately regardless of coroutine or not
+        if (!string.IsNullOrEmpty(spriteImage))
         {
-            // TODO: Update immediately
+            string path = $"{ScriptConstants.bottomPanelArtPath}{SaveLoad.Instance.CurrentScene}/{spriteImage}";
+            Sprite newSprite = Resources.Load<Sprite>(path);
+            if (newSprite == null)
+            {
+                throw new Exception($"Sprite not found at Resources/{path}");
+            }
+            gameObj.GetComponent<Image>().sprite = newSprite;
         }
-        else
+        gameObj.SetActive(isActive);
+
+        // If a position was added
+        if (pos != Vector3.zero)
         {
-            // TODO: Coroutine
+            // We update the data in temporaryGameObjectDetails and use that to update the GameObject
+            if (duration == 0f)
+            {
+                // Update position immediately
+                gameObj.transform.position = pos;
+            }
+            // Animate position otherwise
+            else
+            {
+                // If a previous animation is still running
+                if (activeAnimations.ContainsKey(gameObj))
+                {
+                    // Snap to the final position of the previous animation
+                    if (targetPositions.ContainsKey(gameObj))
+                    {
+                        gameObj.transform.position = targetPositions[gameObj];
+                    }
+
+                    // Stop the previous animation
+                    StopCoroutine(activeAnimations[gameObj]);
+
+                    // Clean up the previous animatino
+                    activeAnimations.Remove(gameObj);
+                    targetPositions.Remove(gameObj);
+                }
+
+                // Store new target position for this upcoming animation
+                targetPositions[gameObj] = pos;
+
+                // Start the new animation
+                Coroutine anim = StartCoroutine(AnimateMovement(gameObj, pos, duration));
+                activeAnimations[gameObj] = anim;
+            }
         }
+    }
+
+    /// <summary>
+    /// Moves <paramref name="gameObj"/> to <paramref name="targetPos"/> in <paramref name="duration"/> sections
+    /// </summary>
+    /// <param name="gameObj">GameObject to move</param>
+    /// <param name="targetPos">Absolute location to move it to</param>
+    /// <param name="duration">Aniation time in seconds</param>
+    /// <returns>IEnumerator for animation coroutine</returns>
+    private IEnumerator AnimateMovement(GameObject gameObj, Vector3 targetPos, float duration)
+    {
+        Vector3 startPos = gameObj.transform.position;
+        float timeElapsed = 0f;
+
+        // Move
+        while (timeElapsed < duration)
+        {
+            gameObj.transform.position = Vector3.Lerp(startPos, targetPos, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Set final position
+        gameObj.transform.position = targetPos;
+
+        // Remove from active list
+        activeAnimations.Remove(gameObj);
+        targetPositions.Remove(gameObj);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Next dialogue line is running so finish all animations from current line
+        DialogueCommands.Instance.OnAdvanceLine += FinishAllAnimationsImmediately;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        DialogueCommands.Instance.OnAdvanceLine -= FinishAllAnimationsImmediately;
+    }
+
+    /// <summary>
+    /// Finishes all currently running animations
+    /// </summary>
+    public void FinishAllAnimationsImmediately()
+    {
+        Debug.Log("Finishing all current animations");
+        // For all current animations
+        foreach (var kvp in activeAnimations)
+        {
+            GameObject obj = kvp.Key;
+            Coroutine anim = kvp.Value;
+
+            // Stop animation
+            StopCoroutine(anim);
+
+            // Snap to final position
+            if (targetPositions.ContainsKey(obj))
+            {
+                obj.transform.position = targetPositions[obj];
+            }
+        }
+
+        // Clean up
+        activeAnimations.Clear();
+        targetPositions.Clear();
     }
 
     /// <summary>
@@ -130,7 +253,8 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void RestoreGameObjects()
     {
-        foreach (string movedObj in temporaryGameObjectsList)
+        Debug.Log("RESTORE GAME OBJECTS");
+        foreach (string movedObj in copyOfGameObjects) // TODO: Debugging why images no work (change back to temporaryGameObjectsList)
         {
             // Restore position of that GameObject to the original data using SaveLoad's gameObjectDetails (string, Vector3, bool)
             GameObject gameObj = HelperMethods.ParseGameObject(movedObj);
@@ -145,6 +269,7 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void PermanentlyChangeGameObjects()
     {
+        Debug.Log("PERMANENT GAME OBJECTS");
         foreach (string movedObj in permanentGameObjectsList)
         {
             // Update the SaveLoad data for that game object
@@ -161,6 +286,7 @@ public class SceneOrganizer : MonoBehaviour
     /// </summary>
     public void SaveCurrentSceneName()
     {
+        Debug.Log($"Saving current scene '{SceneManager.GetActiveScene().name}'");
         SaveLoad.Instance.CurrentScene = SceneManager.GetActiveScene().name;
     }
 
@@ -185,19 +311,11 @@ public class SceneOrganizer : MonoBehaviour
         return (obj, position, duration);
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
     // This method is called AFTER the scene has loaded
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log($"Scene '{scene.name}' loaded");
+
         SaveCurrentSceneName();
 
         // Load game data for that scene
@@ -215,8 +333,10 @@ public class SceneOrganizer : MonoBehaviour
                 {
                     Debug.Log("Modified info");
                     GameObject gameObj = HelperMethods.ParseGameObject(gameObjStr);
+                    
+                    Sprite newSprite = Resources.Load<Sprite>($"{ScriptConstants.bottomPanelArtPath}{SaveLoad.Instance.CurrentScene}/{objData.spriteImageName}");
                     // Update image, position, and isActive
-                    gameObj.GetComponent<Image>().sprite.name = objData.spriteImageName;
+                    gameObj.GetComponent<Image>().sprite = newSprite;
                     gameObj.transform.position = objData.position;
                     gameObj.SetActive(objData.shouldBeActive);
                 }

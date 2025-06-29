@@ -19,6 +19,7 @@ public class DialogueCommands : MonoBehaviour
     private string currentStoryRunning;
 
     public event Action OnSceneEnded;
+    public event Action OnAdvanceLine;
 
     bool isQuitting = false;
 
@@ -63,7 +64,8 @@ public class DialogueCommands : MonoBehaviour
     public bool AdvanceLine()
     {
         dialogueRunner.RequestNextLine();
-        return true;
+        OnAdvanceLine?.Invoke();
+        return dialogueRunner.IsDialogueRunning;
     }
 
     /// <summary>
@@ -106,10 +108,10 @@ public class DialogueCommands : MonoBehaviour
         }
 
         // Play scene
-        Debug.Log($"Playing scene: {currentStoryRunning}");
+        //Debug.Log($"Playing scene: {currentStoryRunning}");
         dialogueRunner.StartDialogue(currentStoryRunning);
 
-        Debug.Log("Scene Start");
+        //Debug.Log("Scene Start");
     }
 
     /// <summary>
@@ -117,7 +119,7 @@ public class DialogueCommands : MonoBehaviour
     /// </summary>
     public void EndOfScene()
     {
-        Debug.Log("End of Scene");
+        //Debug.Log("End of Scene");
 
         // Prevents saving if game quit abruptly (like stopping editor or closing app or crash)
         if (isQuitting) return;
@@ -129,7 +131,7 @@ public class DialogueCommands : MonoBehaviour
         // Mark story part as completed (if not random dialogue)
         if (!currentStoryRunning.StartsWith(ScriptConstants.randomStoryID))
         {
-            Debug.Log($"Marking {currentStoryRunning} as completed");
+            //Debug.Log($"Marking {currentStoryRunning} as completed");
             SceneOrganizer.Instance.SaveCurrentSceneName();
             DialogueProgressionManager.Instance.ReachState(currentStoryRunning);
         }

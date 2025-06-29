@@ -4,6 +4,7 @@ public static class ScriptConstants
 {
     // Paths
     public const string characterArtPath = "Art/CharacterArt/";
+    public const string bottomPanelArtPath = "Art/BottomPanelArt/";
 
     // Tag name strings
     public const string gameControllerString = "GameController";
@@ -34,6 +35,9 @@ public static class ScriptConstants
     public const string defaultString = "Default";
 
     public const string dialogueUnlockRulesString = "DialogueUnlockParts.json";
+
+    // Used for sprite images where SpriteMode=Multiple since all sprite images' names end in _0 (or the setting you have it as such as (0))
+    public const string spriteImageSuffix = "_0";
 
     /// <summary>
     /// Character pose types

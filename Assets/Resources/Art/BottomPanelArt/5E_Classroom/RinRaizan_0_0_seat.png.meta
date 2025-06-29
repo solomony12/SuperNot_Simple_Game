@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: df673d29905559d429cdc8f7da66d8f4
+guid: 1fc70eac087af3a46a21dba42900082c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8517358518653333840
-    second: NozomiHinase_0_0_seat_0
+      213: 7055143054496462269
+    second: RinRaizan_0_0_seat_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NozomiHinase_0_0_seat_0
+      name: RinRaizan_0_0_seat_0
       rect:
         serializedVersion: 2
         x: 378
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 051baf0227cb33670800000000000000
-      internalID: 8517358518653333840
+      spriteID: db573d27a37e8e160800000000000000
+      internalID: 7055143054496462269
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      NozomiHinase_0_0_seat_0: 8517358518653333840
+      RinRaizan_0_0_seat_0: 7055143054496462269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

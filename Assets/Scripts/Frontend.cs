@@ -56,7 +56,7 @@ public class Frontend : MonoBehaviour
         if (File.Exists(path))
         {
             charNameSet = new HashSet<string>(File.ReadAllLines(path));
-            Debug.Log($"Loaded {charNameSet.Count} names.");
+            //Debug.Log($"Loaded {charNameSet.Count} names.");
         }
         else
         {
@@ -115,7 +115,7 @@ public class Frontend : MonoBehaviour
             int.TryParse(splitArray[1], out faceNum);
             int poseNum;
             int.TryParse(splitArray[2], out poseNum);
-            Debug.Log($"{nameStr}, {faceNum}, {poseNum}");
+            //Debug.Log($"{nameStr}, {faceNum}, {poseNum}");
 
             // If it's the same character/object that's currently showing, don't change the top at all
             // (the "if" statement below will not run)

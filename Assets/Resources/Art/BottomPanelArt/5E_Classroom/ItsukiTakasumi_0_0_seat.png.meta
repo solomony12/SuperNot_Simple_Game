@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d5aa68d69b10dfe42af8abdf0395fa48
+guid: d609b94435a956541bec24ddfc758a6a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2298926847375003639
-    second: HyoukaEnomoto_0_0_seat_0
+      213: 8636926069000083056
+    second: ItsukiTakasumi_0_0_seat_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HyoukaEnomoto_0_0_seat_0
+      name: ItsukiTakasumi_0_0_seat_0
       rect:
         serializedVersion: 2
         x: 378
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ff456699cd67ef10800000000000000
-      internalID: 2298926847375003639
+      spriteID: 0769f06df768cd770800000000000000
+      internalID: 8636926069000083056
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HyoukaEnomoto_0_0_seat_0: 2298926847375003639
+      ItsukiTakasumi_0_0_seat_0: 8636926069000083056
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

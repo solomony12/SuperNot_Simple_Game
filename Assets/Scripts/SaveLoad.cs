@@ -67,7 +67,7 @@ public class SaveLoad : MonoBehaviour
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
         Debug.Log("Progression saved");
-        Debug.Log("Save path: " + Application.persistentDataPath);
+        //Debug.Log("Save path: " + Application.persistentDataPath);
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class SaveLoad : MonoBehaviour
             }
         }
 
-        Debug.Log("Progression loaded");
+        //Debug.Log("Progression loaded");
     }
 
     // Getter and Setter for reachedStates
