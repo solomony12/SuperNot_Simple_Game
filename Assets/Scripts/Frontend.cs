@@ -12,9 +12,9 @@ using static Animations;
 using static Animations.AnimationType;
 using static Effects;
 
-public class BottomToTopInteraction : MonoBehaviour
+public class Frontend : MonoBehaviour
 {
-    public static BottomToTopInteraction Instance;
+    public static Frontend Instance;
 
     public GameObject charDialParent;
     public static GameObject characterImagePose;

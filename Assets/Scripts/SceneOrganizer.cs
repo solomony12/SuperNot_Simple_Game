@@ -229,6 +229,6 @@ public class SceneOrganizer : MonoBehaviour
         }
 
         // Set markers
-        BottomToTopInteraction.Instance.SetMarkers();
+        Frontend.Instance.SetMarkers();
     }
 }
