@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Yarn.Unity;
 using static Animations;
@@ -88,13 +89,11 @@ public class Frontend : MonoBehaviour
         // By default, we don't show it
         dialogueBoxPanel.SetActive(false);
 
-        // Markers are set for the scene once the listerner activates, which means the data has finished loading
+        // Set markers after all data and game objects have been loaded properly
+        SceneOrganizer.Instance.OnGameObjectsLoaded += SetMarkers;
 
         // When a scene ends
         DialogueCommands.Instance.OnSceneEnded += HandleSceneEnded;
-
-        // Upon Unity Scene load, wait for data to come before setting markers
-        DialogueProgressionManager.Instance.OnDataInitialized += SetMarkers;
     }
 
     void OnAnyButtonClicked(Button clickedButton)
@@ -256,6 +255,7 @@ public class Frontend : MonoBehaviour
     /// </summary>
     public void SetMarkers()
     {
+        //Debug.Log("Setting markers");
         ResetMarkers();
 
         // Get story parts

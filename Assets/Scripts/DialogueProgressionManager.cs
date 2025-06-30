@@ -32,7 +32,9 @@ public class DialogueProgressionManager : MonoBehaviour
     {
         LoadUnlockParts();
         SaveLoad.Instance.LoadProgress();
+        //Debug.Log("OnDataInitialized Invoked");
         OnDataInitialized?.Invoke();
+        //Debug.Log("After OnDataInitialized Invoked");
     }
 
     /// <summary>

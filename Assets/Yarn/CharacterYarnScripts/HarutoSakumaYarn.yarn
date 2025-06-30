@@ -5,29 +5,23 @@ Haruto: Koume says a lot of stuff that doesn't mean much sometimes.
 Haruto: You should ignore her.
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume: I'd thought you wanted me to be more active.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
-
 Haruto: Yes, but not tell lies.
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume: Who's lying, you dope.
 ===
 title: C01_HarutoSakuma
 ---
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default Dim FadeIn 5>>
-
 Koume walks out in only a white bra and a pair of matching shorts.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Affection Shake 1.5>>
-
 Haruto: Put on a hoodie, will you?
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default "" fdafj; 10>>
-
 Koume holds her arms up like a child to allow Haruto to slide an oversized black hoodie over her.
 
 The sleeves hang past her hands further than usual.
@@ -37,7 +31,6 @@ Koume: *sniffs the sleeves*
 Koume: This one isn't mine.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Dim>>
-
 Haruto: Just wear it.
 
 He sits back down on the couch and picks up his book, adjusting his reading glasses as he found his place.
@@ -45,7 +38,6 @@ He sits back down on the couch and picks up his book, adjusting his reading glas
 Haruto: I don't want you to get another cold staying here and I'm not turning up the thermostat.
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume plops down on the next cushion by his feet.
 
 Reaching forward, she picks out a bottle of ocean blue nail polish and began painting Haruto's toes.
@@ -53,11 +45,9 @@ Reaching forward, she picks out a bottle of ocean blue nail polish and began pai
 She stares at her friend who's focused on his novel.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
-
 The pencil stuck by his ear twitched ever so slightly every time he exhaled.
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume: Hey, Haruto.
 
 She gently pokes his knee.
@@ -65,17 +55,14 @@ She gently pokes his knee.
 Koume: Why don't you like Akasako-sensei?
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
-
 Haruto: What do you mean?
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume: He's nice and he's properly teaching us.
 
 Koume: He hasn't punished any of us despite what we've been doing.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default>>
-
 Haruto lets out a chuckle but didn't look up from his book.
 
 Haruto: If that's what you think niceness is, then I'm sorry to tell you.
@@ -83,7 +70,6 @@ Haruto: If that's what you think niceness is, then I'm sorry to tell you.
 Haruto: He's not.
 
 <<ShowCharacter KoumeMomone_Default KoumeMomone_Default>>
-
 Koume: But he is.
 
 Koume: He listens to our requests and makes sure everyone is following along.
@@ -95,7 +81,6 @@ She hugs her knees.
 Koume: And he doesn't fear us.
 
 <<ShowCharacter HarutoSakuma_Default HarutoSakuma_Default Dim FadeOut>>
-
 Haruto: Someone like him should frighten us the most.
 
 Haruto finally glances up with a serious expression.

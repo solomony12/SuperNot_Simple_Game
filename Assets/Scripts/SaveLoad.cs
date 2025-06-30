@@ -57,10 +57,15 @@ public class SaveLoad : MonoBehaviour
             latestCharacterArcs = latestCharacterArcs
                 .Select(kvp => new CharacterArcEntry { character = kvp.Key, node = kvp.Value })
                 .ToList(),
-            currentScene = currentScene,
-            sceneNameToGameObjectsList = sceneNameToGameObjectsList,
-            gameObjectDetails = gameObjectDetails
 
+            currentScene = currentScene,
+            sceneNameToGameObjectsList = sceneNameToGameObjectsList
+                .Select(kvp => new SceneGameObjectsEntry { sceneName = kvp.Key, gameObjects = kvp.Value })
+                .ToList(),
+
+            gameObjectDetails = gameObjectDetails
+                .Select(kvp => new GameObjectDetailsEntry { objectName = kvp.Key, data = kvp.Value })
+                .ToList()
         };
 
         // Save to JSON
@@ -111,24 +116,18 @@ public class SaveLoad : MonoBehaviour
         // ----- SCENE ORGANIZER DATA -----
 
         currentScene = saveData.currentScene;
+
         sceneNameToGameObjectsList = new Dictionary<string, List<string>>();
         // Could be empty if no game objects have ever been moved in any scenes ever
-        if (saveData.sceneNameToGameObjectsList != null && saveData.sceneNameToGameObjectsList.Count > 0)
-        {
-            foreach (var kvp in saveData.sceneNameToGameObjectsList)
-            {
-                sceneNameToGameObjectsList[kvp.Key] = kvp.Value;
-            }
-        }
+        sceneNameToGameObjectsList = saveData.sceneNameToGameObjectsList != null
+            ? saveData.sceneNameToGameObjectsList.ToDictionary(entry => entry.sceneName, entry => entry.gameObjects)
+            : new Dictionary<string, List<string>>();
+        
         gameObjectDetails = new Dictionary<string, InteractableObjectData>();
         // Could also be empty if no game objects have ever been moved in any scenes ever
-        if (saveData.gameObjectDetails != null && saveData.gameObjectDetails.Count > 0)
-        {
-            foreach (var kvp in saveData.gameObjectDetails)
-            {
-                gameObjectDetails[kvp.Key] = kvp.Value;
-            }
-        }
+        gameObjectDetails = saveData.gameObjectDetails != null
+            ? saveData.gameObjectDetails.ToDictionary(entry => entry.objectName, entry => entry.data)
+            : new Dictionary<string, InteractableObjectData>();
 
         //Debug.Log("Progression loaded");
     }
@@ -183,9 +182,10 @@ public class SaveData
     public List<string> reachedStates;
     public string latestMainStory;
     public List<CharacterArcEntry> latestCharacterArcs;
+
     public string currentScene;
-    public Dictionary<string, List<string>> sceneNameToGameObjectsList;
-    public Dictionary<string, InteractableObjectData> gameObjectDetails;
+    public List<SceneGameObjectsEntry> sceneNameToGameObjectsList;
+    public List<GameObjectDetailsEntry> gameObjectDetails;
 }
 
 [System.Serializable]
@@ -193,6 +193,20 @@ public class CharacterArcEntry
 {
     public string character;
     public string node;
+}
+
+[System.Serializable]
+public class SceneGameObjectsEntry
+{
+    public string sceneName;
+    public List<string> gameObjects;
+}
+
+[System.Serializable]
+public class GameObjectDetailsEntry
+{
+    public string objectName;
+    public InteractableObjectData data;
 }
 
 [System.Serializable]

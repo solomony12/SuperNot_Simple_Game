@@ -28,9 +28,20 @@ public class SceneOrganizer : MonoBehaviour
     private Dictionary<GameObject, Coroutine> activeAnimations = new Dictionary<GameObject, Coroutine>();
     private Dictionary<GameObject, Vector2> targetPositions = new Dictionary<GameObject, Vector2>();
 
+    public event Action OnGameObjectsLoaded;
+
     private void Awake()
     {
         Instance = this;
+
+        // Upon Unity Scene load, wait for data to come before setting markers
+        Debug.Log("Subscribing to OnDataInitialized");
+        DialogueProgressionManager.Instance.OnDataInitialized += OnSceneLoaded;
+    }
+
+    private void Start()
+    {
+
     }
 
     // This is in SaveData:
@@ -88,7 +99,8 @@ public class SceneOrganizer : MonoBehaviour
         // Parse to GameObject and Vector2
         var (gameObject, position, duration) = ParseGameObjectAndPositionAndDuration(gameObjName, positionString, durationString);
         // Parse to bool
-        bool shouldBeEnabled = Convert.ToBoolean(shouldBeEnabledString);
+        bool shouldBeEnabled = string.IsNullOrEmpty(shouldBeEnabledString) ||
+                       shouldBeEnabledString.Equals("true", StringComparison.OrdinalIgnoreCase);
 
         // Store GameObject in temporaryObjList
         temporaryGameObjectsList.Add(gameObjName);
@@ -216,13 +228,11 @@ public class SceneOrganizer : MonoBehaviour
 
     void OnEnable()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         DialogueCommands.Instance.OnSceneEndMid += RunCleanUp;
     }
 
     void OnDisable()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
         DialogueCommands.Instance.OnSceneEndMid -= RunCleanUp;
     }
 
@@ -327,44 +337,33 @@ public class SceneOrganizer : MonoBehaviour
         return (obj, position, duration);
     }
 
-    // This method is called AFTER the scene has loaded
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // This method is called AFTER the scene has loaded and data has loaded in
+    private void OnSceneLoaded()
     {
-        //Debug.Log($"Scene '{scene.name}' loaded");
-
+        Debug.Log($"Loading scene data");
         SaveCurrentSceneName();
 
-        // Load game data for that scene
         try
         {
-            List<string> interactableObjects = GameObject
-                    .FindGameObjectsWithTag(ScriptConstants.interactableObjectString)
-                    .Select(obj => obj.name)
-                    .ToList();
-            // For each interactable game object in the scene
-            foreach (string gameObjStr in interactableObjects)
+            // Load game data for that scene if it exists (was modified permanently before)
+            if (SaveLoad.Instance.SceneNameToGameObjectsList.TryGetValue(SaveLoad.Instance.CurrentScene, out temporaryGameObjectsList)
+                && temporaryGameObjectsList != null
+                && temporaryGameObjectsList.Count > 0)
             {
-                // Data only exists if it has been permanetly modified before
-                if (SaveLoad.Instance.GameObjectDetails.TryGetValue(gameObjStr, out InteractableObjectData objData))
-                {
-                    Debug.Log("Modified info");
-                    GameObject gameObj = HelperMethods.ParseGameObject(gameObjStr);
-                    
-                    Sprite newSprite = Resources.Load<Sprite>($"{ScriptConstants.bottomPanelArtPath}{SaveLoad.Instance.CurrentScene}/{objData.spriteImageName}");
-                    // Update image, position, and isActive
-                    gameObj.GetComponent<Image>().sprite = newSprite;
-                    gameObj.transform.position = objData.position;
-                    gameObj.SetActive(objData.shouldBeActive);
-                }
-
+                Debug.Log($"Restoring Game Objects");
+                RestoreGameObjects();
             }
+            else
+            {
+                temporaryGameObjectsList = new();
+            }
+            Debug.Log($"After potential game object data loaded and restored");
         }
         catch (Exception ex)
         {
             throw new Exception(ex.ToString());
         }
 
-        // Set markers
-        Frontend.Instance.SetMarkers();
+        OnGameObjectsLoaded?.Invoke();
     }
 }

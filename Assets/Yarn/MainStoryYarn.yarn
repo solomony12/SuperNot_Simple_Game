@@ -3,10 +3,13 @@
 Main Story 00
 
 <<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat -122,-300 10 true>>
-
 Another line
 
-<<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat 0,-100 5 true>>
+<<PermanentUpdateObject YuukaKannouji YuukaKannouji_0_0_seat 0,-100 5 true>>
+More lines for testing
+
+<<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat -122,-357 10 true>>
+One more line after this
 
 The end of this part
 ===
@@ -17,31 +20,25 @@ Main Story 01
 Arisa: Heyyyy Mako~
 
 <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
-
 Makoto: What do you want?
 
 <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
-
 Arisa: Don't be so cold, Mako~
 
 Arisa: I just wanted to see if you wanted this!
 
 <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
-
 Makoto: What is that?
 
 <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
-
 Arisa: It's a limited-edition Chiikawa keychain!
 
 <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
-
 Makoto: ...
 
 Makoto: And why would I want that..?
 
 <<ShowCharacter ArisaYoneyama_Default ArisaYoneyama_Default>>
-
 Arisa: *pouting* Do you want it or not?
 
 <<ShowCharacter MakotoAtsukawa_Default MakotoAtsukawa_Default>>
