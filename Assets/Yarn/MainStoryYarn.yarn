@@ -3,6 +3,7 @@
 Main Story 00
 
 <<TemporaryUpdateObject YuukaKannouji YuukaKannouji_0_0_seat -122,-300 10 true>>
+<<TemporaryUpdateObject ArisaYoneyama ArisaYoneyama_0_0_seat 128,-300 10 true>>
 Another line
 
 <<PermanentUpdateObject YuukaKannouji YuukaKannouji_0_0_seat 0,-100 5 true>>
