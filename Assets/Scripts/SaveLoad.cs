@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -117,13 +118,11 @@ public class SaveLoad : MonoBehaviour
 
         currentScene = saveData.currentScene;
 
-        sceneNameToGameObjectsList = new Dictionary<string, List<string>>();
         // Could be empty if no game objects have ever been moved in any scenes ever
         sceneNameToGameObjectsList = saveData.sceneNameToGameObjectsList != null
-            ? saveData.sceneNameToGameObjectsList.ToDictionary(entry => entry.sceneName, entry => entry.gameObjects)
+            ? saveData.sceneNameToGameObjectsList.ToDictionary(entry => entry.sceneName, entry => new List<string>(entry.gameObjects))
             : new Dictionary<string, List<string>>();
-        
-        gameObjectDetails = new Dictionary<string, InteractableObjectData>();
+
         // Could also be empty if no game objects have ever been moved in any scenes ever
         gameObjectDetails = saveData.gameObjectDetails != null
             ? saveData.gameObjectDetails.ToDictionary(entry => entry.objectName, entry => entry.data)

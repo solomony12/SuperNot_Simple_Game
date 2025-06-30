@@ -29,6 +29,9 @@ public static class ScriptConstants
     // TODO: Change when we figure out which one is the first
     public const string newGameFirstScene = "5E_Classroom";
 
+    // Scene names
+    public const string mainMenuSceneName = "MainMenu";
+
     // Animation values
     public const float defaultAnimationDuration = 0.5f;
 

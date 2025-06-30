@@ -28,13 +28,25 @@ public class DialogueProgressionManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Start()
+    private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == ScriptConstants.mainMenuSceneName) return;
+
         LoadUnlockParts();
         SaveLoad.Instance.LoadProgress();
-        //Debug.Log("OnDataInitialized Invoked");
+        Debug.Log("OnDataInitialized Invoked");
         OnDataInitialized?.Invoke();
-        //Debug.Log("After OnDataInitialized Invoked");
+        Debug.Log("After OnDataInitialized Invoked");
     }
 
     /// <summary>

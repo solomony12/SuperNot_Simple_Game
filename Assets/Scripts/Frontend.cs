@@ -63,6 +63,11 @@ public class Frontend : MonoBehaviour
         {
             throw new Exception("names.txt was not found");
         }
+
+        // Listeners
+        // Set markers after all data and game objects have been loaded properly
+        SceneOrganizer.Instance.OnGameObjectsLoaded += SetMarkers;
+        ScriptsManager.Instance.OnScriptsLoaded += AddListeners;
     }
     void Start()
     {
@@ -88,10 +93,9 @@ public class Frontend : MonoBehaviour
 
         // By default, we don't show it
         dialogueBoxPanel.SetActive(false);
-
-        // Set markers after all data and game objects have been loaded properly
-        SceneOrganizer.Instance.OnGameObjectsLoaded += SetMarkers;
-
+    }
+    private void AddListeners()
+    {
         // When a scene ends
         DialogueCommands.Instance.OnSceneEnded += HandleSceneEnded;
     }
@@ -256,7 +260,7 @@ public class Frontend : MonoBehaviour
     /// </summary>
     public void SetMarkers()
     {
-        //Debug.Log("Setting markers");
+        Debug.Log("Setting markers");
         ResetMarkers();
 
         // Get story parts

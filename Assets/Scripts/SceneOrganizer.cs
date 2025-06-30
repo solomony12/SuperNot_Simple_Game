@@ -10,6 +10,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine.Windows;
 using static UnityEditor.PlayerSettings;
+using UnityEditor.SearchService;
 
 public class SceneOrganizer : MonoBehaviour
 {
@@ -36,13 +37,8 @@ public class SceneOrganizer : MonoBehaviour
 
         // Upon Unity Scene load, wait for data to come before setting markers
         Debug.Log("Subscribing to OnDataInitialized");
-        DialogueProgressionManager.Instance.OnDataInitialized += OnSceneLoaded;
-        DialogueCommands.Instance.OnNextDialogueLinePlayed += FinishAllAnimationsImmediately;
-    }
-
-    private void Start()
-    {
-
+        DialogueProgressionManager.Instance.OnDataInitialized += OnSceneReady;
+        ScriptsManager.Instance.OnScriptsLoaded += AddListeners;
     }
 
     // This is in SaveData:
@@ -74,6 +70,13 @@ public class SceneOrganizer : MonoBehaviour
                 .FindGameObjectsWithTag(ScriptConstants.interactableObjectString)
                 .Select(obj => obj.name)
                 .ToList();
+
+            if (interactableObjects == null || !interactableObjects.Any())
+            {
+                Debug.Log("It's blank!");
+                throw new InvalidOperationException("No interactable objects found in the scene.");
+            }
+
             // Save the list of game objects in that scene
             SaveLoad.Instance.SceneNameToGameObjectsList[currentScene] = interactableObjects;
             foreach (string gameObjStr in interactableObjects)
@@ -227,14 +230,19 @@ public class SceneOrganizer : MonoBehaviour
     }
 
 
-    void OnEnable()
+    private void AddListeners()
     {
+        DialogueCommands.Instance.OnDialogueCommandsLoaded += FinishAllAnimationsImmediately;
         DialogueCommands.Instance.OnSceneEndMid += RunCleanUp;
     }
 
     void OnDisable()
     {
-        DialogueCommands.Instance.OnSceneEndMid -= RunCleanUp;
+        if (SceneManager.GetActiveScene().name != ScriptConstants.mainMenuSceneName)
+        {
+            DialogueCommands.Instance.OnDialogueCommandsLoaded -= FinishAllAnimationsImmediately;
+            DialogueCommands.Instance.OnSceneEndMid -= RunCleanUp;
+        }
     }
 
     void RunCleanUp()
@@ -339,7 +347,7 @@ public class SceneOrganizer : MonoBehaviour
     }
 
     // This method is called AFTER the scene has loaded and data has loaded in
-    private void OnSceneLoaded()
+    private void OnSceneReady()
     {
         Debug.Log($"Loading scene data");
         SaveCurrentSceneName();
@@ -357,6 +365,7 @@ public class SceneOrganizer : MonoBehaviour
             else
             {
                 temporaryGameObjectsList = new();
+                Debug.Log($"No Game Objects Data Restored");
             }
             Debug.Log($"After potential game object data loaded and restored");
         }

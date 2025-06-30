@@ -18,6 +18,7 @@ public class DialogueCommands : MonoBehaviour
 
     private string currentStoryRunning;
 
+    public event Action OnDialogueCommandsLoaded;
     public event Action OnSceneEndMid;
     public event Action OnSceneEnded;
     public event Action OnNextDialogueLinePlayed;
@@ -41,6 +42,8 @@ public class DialogueCommands : MonoBehaviour
     {
         // Listener(s)
         dialogueRunner.onDialogueComplete.AddListener(EndOfScene);
+
+        OnDialogueCommandsLoaded?.Invoke();
     }
     void OnApplicationQuit()
     {
