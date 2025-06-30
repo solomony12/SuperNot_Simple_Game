@@ -37,6 +37,7 @@ public class SceneOrganizer : MonoBehaviour
         // Upon Unity Scene load, wait for data to come before setting markers
         Debug.Log("Subscribing to OnDataInitialized");
         DialogueProgressionManager.Instance.OnDataInitialized += OnSceneLoaded;
+        DialogueCommands.Instance.OnNextDialogueLinePlayed += FinishAllAnimationsImmediately;
     }
 
     private void Start()

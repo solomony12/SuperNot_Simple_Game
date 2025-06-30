@@ -20,6 +20,7 @@ public class DialogueCommands : MonoBehaviour
 
     public event Action OnSceneEndMid;
     public event Action OnSceneEnded;
+    public event Action OnNextDialogueLinePlayed;
 
     bool isQuitting = false;
 
@@ -63,9 +64,10 @@ public class DialogueCommands : MonoBehaviour
     /// <returns>True if the last line was ran, indicating the end of the scene</returns>
     public bool AdvanceLine()
     {
-        Debug.Log("Start of AdvanceLine");
+        //Debug.Log("Start of AdvanceLine");
+        OnNextDialogueLinePlayed?.Invoke();
         dialogueRunner.RequestNextLine();
-        Debug.Log("End of AdvanceLine");
+        //Debug.Log("End of AdvanceLine");
         return dialogueRunner.IsDialogueRunning;
     }
 

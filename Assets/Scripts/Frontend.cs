@@ -177,11 +177,12 @@ public class Frontend : MonoBehaviour
 
 
         // The character/dialogue box was clicked on. Advance dialogue (top)
-        if (clickedButton.gameObject.CompareTag(ScriptConstants.characterAndDialogueString))
+        if (clickedButton.gameObject.CompareTag(ScriptConstants.characterAndDialogueString) || clickedButton.gameObject.CompareTag(ScriptConstants.dialogueBoxPanelString))
         {
             // Check to see if it's enabled/already faded-in
             if (dialogueBoxPanel.activeSelf)
             {
+                //Debug.Log("Play next line");
                 // Yarn Spinner here to go through the dialogue as well as different expressions/poses
                 // This just calls 'next' in DialogueCommands. This script file should basically do NOTHING else
                 DialogueCommands.Instance.AdvanceLine();
