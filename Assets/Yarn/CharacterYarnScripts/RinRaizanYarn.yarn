@@ -1,4 +1,39 @@
-﻿title: R00_RinRaizan
+﻿title: C00_RinRaizan
+---
+<<ShowCharacter ItsukiTakasumi_Default ItsukiTakasumi_Default>>
+Itsuki: What is it, what is it?
+
+<<ShowCharacter ItsukiTakasumi_Default ItsukiTakasumi_Default Affection>>
+Itsuki: Oh? Is it a love letter?
+
+<<ShowCharacter RinRaizan_Default RinRaizan_Default Dim>>
+Rin: ...
+
+<<ShowCharacter ItsukiTakasumi_Default ItsukiTakasumi_Default>>
+Itsuki: Rin... are you alright?
+
+<<ShowCharacter RinRaizan_Default RinRaizan_Default Dim>>
+Rin: Y-yeah...
+
+Rin: Itsuki. Why don't you go on ahead?
+
+Rin: I would like to read this by myself.
+
+<<ShowCharacter ItsukiTakasumi_Default ItsukiTakasumi_Default>>
+Itsuki: Alright...
+
+Itsuki casts one last worried glance at Rin before giving a small wave.
+
+Itsuki: See you in class, okay?
+
+<<ShowCharacter RinRaizan_Default RinRaizan_Default Dim>>
+Rin: Yeah...
+
+...
+
+
+===
+title: R00_RinRaizan
 ---
 Rin: How may I be of assistance?
 ===

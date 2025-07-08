@@ -64,6 +64,14 @@
                 "description": ""
             },
             {
+                "node": "C00_RinRaizan",
+                "startingCharacter": "RinRaizan",
+                "startingScene": "5E_Classroom",
+                "rules": "Test character arc unlock",
+                "title" : "",
+                "description": ""
+            },
+            {
                 "node": "R00_RinRaizan",
                 "startingCharacter": "RinRaizan",
                 "rules": "Basic random",
